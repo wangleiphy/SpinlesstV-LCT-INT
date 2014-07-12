@@ -14,7 +14,7 @@ class Green_function{
     public:
 
         ///constructor: how many time slices, how many sites
-        Green_function(unsigned int nsite, const Mat& K, const double beta)
+        Green_function(site_type nsite, const Mat& K, const time_type beta)
         :ns_(nsite)
         ,beta_(beta)
         {
@@ -27,7 +27,7 @@ class Green_function{
    
         }
  
-         Mat B(const double tau1, const double tau2, const tlist_type& tlist, vlist_type& vlist) const { // B(tau1) ... B(tau2)
+         Mat B(const time_type tau1, const time_type tau2, const tlist_type& tlist, vlist_type& vlist) const { // B(tau1) ... B(tau2)
      
              assert(tau1>=tau2); 
      
@@ -39,7 +39,7 @@ class Green_function{
              //    return Mat::Identity(nsite, nsite); 
              //}else{
 
-             std::cout << (lower- tlist.begin())  << " " <<  (upper- tlist.begin())  << " " << tlist.size()   << std::endl;    
+             //std::cout << (lower- tlist.begin())  << " " <<  (upper- tlist.begin())  << " " << tlist.size()   << std::endl;    
              std::cout << *lower << " " <<  *upper  << std::endl;    
              //std::copy(lower, upper, std::ostream_iterator<double>(std::cout, " "));
              //std::cout << std::endl;  
@@ -50,13 +50,14 @@ class Green_function{
              }else{
             
                  Mat res = expmK(*lower - tau2);
-                 for (tlist_type::const_iterator it=lower; it!=upper; ++it) {
+
+                 for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {
                     
-                     double tau = *it; 
-                     res.row(vlist[tau].first) *= -1.; 
-                     res.row(vlist[tau].second) *= -1.; 
+                     time_type tau = *it1; 
+                     res.row(vlist[tau][0]) *= -1.; 
+                     res.row(vlist[tau][1]) *= -1.; 
                  
-                     double dtau = (it == upper-1) ? tau1 - tau: *(it+1) - tau; 
+                     time_type dtau = (it2 ==upper) ? tau1 - tau: *it2 - tau; 
                  
                      std::cout << "tau, dtau " << tau << " " << dtau << std::endl; 
                      res = expmK( dtau ) *res; 
@@ -66,12 +67,12 @@ class Green_function{
          }
      
          //equal time Green's function at tau 
-         Mat G(const double tau, const tlist_type& tlist, vlist_type& vlist) const {// this is very expansive because of inverse
+         Mat G(const time_type tau, const tlist_type& tlist, vlist_type& vlist) const {// this is very expansive because of inverse
            Mat res = Mat::Identity(ns_, ns_) + B(tau, 0., tlist, vlist) * B(beta_, tau, tlist, vlist); 
            return res.inverse(); 
          }
      
-         Mat expmK(const double tau) const {// exp(-tau * K)
+         Mat expmK(const time_type tau) const {// exp(-tau * K)
              Eigen::VectorXd v(ns_); 
              for(unsigned l=0; l<ns_; ++l) 
                  v(l) = exp(-tau * wK_(l)); 
@@ -79,8 +80,8 @@ class Green_function{
          }
 
     private:
-        const unsigned ns_; 
-        const double beta_; 
+        const site_type ns_; 
+        const time_type beta_; 
 
         //eigen value and vectors of K 
         Eigen::VectorXd wK_; 

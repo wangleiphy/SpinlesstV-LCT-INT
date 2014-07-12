@@ -12,6 +12,7 @@ void InteractionExpansion::add()
   double tau = beta*random();
 
   std::vector<site_t> sites; 
+
   alps::graph_helper<>::bond_descriptor b = lattice.bond(randomint(n_bond));
   sites.push_back(lattice.source(b));
   sites.push_back(lattice.target(b));

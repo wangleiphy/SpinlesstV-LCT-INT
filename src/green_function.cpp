@@ -12,7 +12,7 @@ int main(){
         K((i+1)%nsite, i) = -1.0; 
     }
 
-    Green_function gf(nsite, K, beta); 
+    Green_function gf(K, beta); 
 
     time_type tau1 = 2.513; 
     time_type tau2 = 0.513;  

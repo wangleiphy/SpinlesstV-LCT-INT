@@ -4,14 +4,14 @@ void InteractionExpansion::add()
 {
   //std::cout << "##add##" << std::endl; 
 
-  int pert_order = M.num_vertices(); 
+  int pert_order = tlist.size(); 
 
   if(pert_order+1 > max_order) 
     return; 
 
   double tau = beta*random();
 
-  std::vector<site_t> sites; 
+  std::vector<site_type> sites; 
 
   alps::graph_helper<>::bond_descriptor b = lattice.bond(randomint(n_bond));
   sites.push_back(lattice.source(b));
@@ -37,17 +37,11 @@ void InteractionExpansion::add()
     //  std::cout << M.creators()[i].s()<< "("<< M.creators()[i].t() << ")"  << ","; 
     //}
     //std::cout << std::endl; 
- 
-    assert(M.creators().size() == M.matrix().rows()); 
-    assert(M.creators().size() == 2*M.num_vertices()); 
-
     sign*=metropolis_weight<0.?-1.:1.;
   }else{
 
     measurements["Add"] << 0.;
 
-    assert(M.creators().size() == M.matrix().rows()); 
-    assert(M.creators().size() == 2*M.num_vertices()); 
   }
 }
 
@@ -55,12 +49,12 @@ void InteractionExpansion::add()
 void InteractionExpansion::remove()
 {
     //std::cout << "##remove##" << std::endl; 
-    unsigned pert_order = M.num_vertices(); 
+    unsigned pert_order = tlist.size(); 
 
     if(pert_order < 1)
       return;    
 
-    unsigned vertex_nr=randomint( pert_order)
+    unsigned vertex_nr=randomint(pert_order);  
 
     double metropolis_weight = 4.*pert_order/(-beta*V*n_bond) * remove_impl(vertex_nr, true);
     //std::cout << "after remove_impl" << std::endl; 
@@ -79,18 +73,11 @@ void InteractionExpansion::remove()
       //  std::cout << M.creators()[i].s()<< "("<< M.creators()[i].t() << ")"  << ","; 
       //}
       //std::cout << std::endl; 
-
-      assert(M.creators().size() == M.matrix().rows()); 
-      assert(M.creators().size() == 2*M.num_vertices()); 
-
       sign*=metropolis_weight<0.?-1.:1.;
 
     }else{
 
       measurements["Removal"] << 0.;
 
-      //do nothing
-      assert(M.creators().size() == M.matrix().rows()); 
-      assert(M.creators().size() == 2*M.num_vertices()); 
     }
 }

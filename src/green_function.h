@@ -14,8 +14,8 @@ class Green_function{
     public:
 
         ///constructor: how many time slices, how many sites
-        Green_function(site_type nsite, const Mat& K, const time_type beta)
-        :ns_(nsite)
+        Green_function(const Mat& K, const time_type beta)
+        :ns_(K.rows())
         ,beta_(beta)
         {
    

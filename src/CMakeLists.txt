@@ -30,11 +30,21 @@ endif(USE_MACHINE)
 enable_language(CXX)
 
 set (SOURCE
-     green_function.cpp 
+     fastupdate.cpp
+     solver.cpp 
+     io.cpp 
+     interaction_expansion.cpp 
+     model.cpp
+     observables.cpp 
+     main.cpp 
      )
 
 
-add_executable(green_function ${SOURCE})
+add_executable(green_function green_function.cpp)
 target_link_libraries(green_function ${ALPS_LIBRARIES})
+
+add_executable(main ${SOURCE})
+target_link_libraries(main ${ALPS_LIBRARIES})
+
 
 #install(TARGETS main DESTINATION bin)

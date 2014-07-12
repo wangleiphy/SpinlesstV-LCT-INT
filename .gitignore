@@ -1,0 +1,10 @@
+bin/
+data/
+jobs/
+build/
+src/*.o*
+run/jobfile
+run/core
+run/job2kill 
+helper/lattice.graph 
+run/*.txt

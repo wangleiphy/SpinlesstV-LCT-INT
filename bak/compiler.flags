@@ -1,0 +1,4 @@
+#CXXFLAGS= -O3 -DNDEBUG -DMEASUREFARTHEST
+#CXXFLAGS += -DEIGEN_USE_MKL_ALL -I/users/lewang/Libs/include/eigen3/ -mkl=parallel 
+#CXXFLAGS += -openmp -I/users/lewang/Libs/include/eigen3/ 
+CXXFLAGS += -I/opt/local/include/eigen3/ #-save-temps

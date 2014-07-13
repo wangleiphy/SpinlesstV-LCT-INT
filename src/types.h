@@ -6,7 +6,7 @@
 #include <Eigen/Dense>
 
 typedef unsigned site_type;  
-typedef unsigned itime_type;  
+typedef unsigned long itime_type;  
 
 typedef double time_type; 
 typedef std::set<itime_type> tlist_type; 

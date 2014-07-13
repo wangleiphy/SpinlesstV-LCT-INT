@@ -4,11 +4,11 @@
 
 void InteractionExpansion::test(){
     
-      unsigned Ntry = 20; 
+      unsigned Ntry = 10; 
 
       for (unsigned itry = 0; itry < Ntry ; ++itry) {
 
-            if (random() < 0.8 ) {//adds ONE vertex
+            if (random() < 0.5 ) {//adds ONE vertex
             //if (itry%2==0 ) {//adds ONE vertex
                 std::vector<site_type> sites;  
             
@@ -20,6 +20,8 @@ void InteractionExpansion::test(){
             
                 std::cout << "#######################"  << std::endl; 
                 std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
+                std::cout << "detratio:" << add_impl(itau, sites, true) << std::endl; 
+
                 double detratio = add_impl(itau, sites, false);  
 
                 std::cout << "weight after: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
@@ -36,6 +38,8 @@ void InteractionExpansion::test(){
 
                 std::cout << "#######################"  << std::endl; 
                 std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
+                std::cout << "detratio:" << remove_impl(vertex, true) << std::endl; 
+
                 double detratio = remove_impl(vertex, false); 
                 
                 std::cout << "weight after: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 

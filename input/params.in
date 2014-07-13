@@ -1,7 +1,7 @@
 LATTICE_LIBRARY = "../input/mylattices.xml"
-LATTICE = "honeycomb lattice"
-L = 6  
-W = 6
+LATTICE = "chain lattice"
+L = 6
+W = 1
 MAX_ORDER = 1024
 TEMPERATURE = 0.6
 V = 1.0

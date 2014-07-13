@@ -5,31 +5,36 @@
 double InteractionExpansion::add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight)
 {
     
-
   Mat gtau = gf.G(itau, tlist, vlist); // gf at the current time 
-
   //std::cout << "gtau:\n"<< gtau<< std::endl; 
 
-  Eigen::Matrix2d S; 
-  S(0, 0) = gtau(sites[0], sites[0]);
-  S(0, 1) = gtau(sites[0], sites[1]);
-  S(1, 0) = gtau(sites[1], sites[0]); 
-  S(1, 1) = gtau(sites[1], sites[1]);
+  site_type si = sites[0]; 
+  site_type sj = sites[1]; 
+  double ratio = -4.* gtau(si, sj) *  gtau(sj, si); 
 
-  S = Eigen::Matrix2d::Identity() -2.0 *(Eigen::Matrix2d::Identity() - S); 
-
-  double detratio = S.determinant(); 
-
-  //return weight if we have nothing else to do
   if(compute_only_weight){
-      return detratio; 
+       
+  }else{
+
+        //update gtau 
+        gtau -= gtau.col(sj)*gtau.row(si)/gtau(si, sj) + gtau.col(si) * gtau.row(sj)/gtau(sj, si);
+
+        gtau.col(si) *= -1.; 
+        gtau.col(sj) *= -1.; 
+
+        std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
+   
+        //update the vertex configuration 
+        tlist.insert(itau); 
+        vlist[itau] = sites; 
+   
+        gtau = gf.G(itau, tlist, vlist);
+        std::cout << "gtau from scratch:\n"<< gtau<< std::endl; 
+        
+   
   }
 
-  //update the vertex configuration 
-  tlist.insert(itau); 
-  vlist[itau] = sites; 
-
-  return detratio; 
+  return ratio; 
 }
 
 
@@ -43,30 +48,31 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
  itime_type itau = *it; 
 
  Mat gtau = gf.G(itau, tlist, vlist); // gf at the current time 
-
  //std::cout << "gtau:\n"<< gtau<< std::endl; 
-
+ 
  site_type si = vlist[itau][0]; 
  site_type sj = vlist[itau][1]; 
 
- Eigen::Matrix2d S; 
- S(0, 0) = gtau(si, si);
- S(0, 1) = gtau(si, sj);
- S(1, 0) = gtau(sj, si);
- S(1, 1) = gtau(sj, sj);
+ double ratio = -4.* gtau(si, sj) *  gtau(sj, si); 
 
- S = Eigen::Matrix2d::Identity() -2.0 *(Eigen::Matrix2d::Identity() - S); 
- double detratio = S.determinant(); 
-
- //return weight if we have nothing else to do
  if(compute_only_weight){
-     return detratio; 
+    
+ }else{
+
+     //update gtau 
+     gtau -= gtau.col(sj)*gtau.row(si)/gtau(si, sj) + gtau.col(si) * gtau.row(sj)/gtau(sj, si);
+
+     gtau.col(si) *= -1.; 
+     gtau.col(sj) *= -1.; 
+     std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
+     
+     //update the vertex configuration 
+     tlist.erase(itau); 
+     vlist.erase(itau); 
+     
+     gtau = gf.G(itau, tlist, vlist);
+     std::cout << "gtau from scratch:\n"<< gtau<< std::endl; 
+    
  }
-
- //update the vertex configuration 
- tlist.erase(itau); 
- vlist.erase(itau); 
-
- return detratio; 
- 
+     return ratio; 
 }

@@ -122,6 +122,7 @@ int main(int argc, char** argv){
      
       if (comm.rank() ==0) 
       {
+
                sim.evaluate(results);
 
                alps::hdf5::archive ar(h5output_file, "w");

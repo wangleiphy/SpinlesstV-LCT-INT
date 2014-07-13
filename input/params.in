@@ -1,0 +1,14 @@
+LATTICE_LIBRARY = "../input/mylattices.xml"
+LATTICE = "honeycomb lattice"
+L = 3 
+W = 3
+MAX_ORDER = 1024
+TEMPERATURE = 0.6
+V = 1.0
+MEASUREMENT_PERIOD = 100
+THERMALIZATION = 10000
+SWEEPS = 10000
+SEED = 42
+RECALC_PERIOD = 1000
+BINNUMBER = 256
+filename = '../data/test.dat'

@@ -36,15 +36,17 @@ set (SOURCE
      interaction_expansion.cpp 
      model.cpp
      observables.cpp 
-     main.cpp 
+     measure.cpp 
      )
-
 
 add_executable(green_function green_function.cpp)
 target_link_libraries(green_function ${ALPS_LIBRARIES})
 
-add_executable(main ${SOURCE})
+add_executable(main ${SOURCE} main.cpp)
 target_link_libraries(main ${ALPS_LIBRARIES})
+
+add_executable(test ${SOURCE} test.cpp)
+target_link_libraries(test ${ALPS_LIBRARIES})
 
 
 #install(TARGETS main DESTINATION bin)

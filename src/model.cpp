@@ -9,7 +9,10 @@ void InteractionExpansion::add()
   if(pert_order+1 > max_order) 
     return; 
 
-  double tau = beta*random();
+  itime_type itau = randomint(itime_max);
+
+  if (tlist.find(itau) != tlist.end()) // we can not have two vertex at the same tau 
+      return; 
 
   std::vector<site_type> sites; 
 
@@ -17,11 +20,17 @@ void InteractionExpansion::add()
   sites.push_back(lattice.source(b));
   sites.push_back(lattice.target(b));
 
-  // true means compute_only_weight
-  double metropolis_weight = -0.25*beta*V*n_bond/(pert_order+1)*add_impl(tau, sites, true);
 
-  //if (metropolis_weight<0.){
+  // true means compute_only_weight
+  double metropolis_weight = -0.25*beta*V*n_bond/(pert_order+1)*add_impl(itau, sites, true);
+
+  //if (metropolis_weight<0. && fabs(metropolis_weight) > 1E-10){
   //  std::cout << metropolis_weight << " < 0 in add" << std::endl; 
+
+  //  std::cout << "itau, b:"  << itau << " " << b << std::endl; 
+  //  std::cout << "tlist: "; 
+  //  std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+  //  std::cout << std::endl; 
   //  abort();  
   //}
 
@@ -30,7 +39,7 @@ void InteractionExpansion::add()
     std::stringstream obs_name;
     measurements["Add"] << 1.;
 
-    add_impl(tau, sites, false);
+    add_impl(itau, sites, false);
 
     //std::cout << "add " << n << " vertices." << "creators: ";  
     //for (unsigned int  i=0; i< M.creators().size(); ++i) {

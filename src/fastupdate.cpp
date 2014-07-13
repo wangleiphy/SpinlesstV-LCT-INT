@@ -2,10 +2,13 @@
 #include <iterator> 
 
 /*implement add vertex*/
-double InteractionExpansion::add_impl(const time_type tau, const std::vector<site_type>& sites, const bool compute_only_weight)
+double InteractionExpansion::add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight)
 {
+    
 
-  Mat gtau = gf.G(tau, tlist, vlist); // gf at the current time 
+  Mat gtau = gf.G(itau, tlist, vlist); // gf at the current time 
+
+  //std::cout << "gtau:\n"<< gtau<< std::endl; 
 
   Eigen::Matrix2d S; 
   S(0, 0) = gtau(sites[0], sites[0]);
@@ -23,8 +26,8 @@ double InteractionExpansion::add_impl(const time_type tau, const std::vector<sit
   }
 
   //update the vertex configuration 
-  tlist.insert(tau); 
-  vlist[tau] = sites; 
+  tlist.insert(itau); 
+  vlist[itau] = sites; 
 
   return detratio; 
 }
@@ -37,15 +40,20 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
 
  tlist_type::const_iterator it(tlist.begin());    
  std::advance(it, vertex);
- double tau = *it; 
+ itime_type itau = *it; 
 
- Mat gtau = gf.G(tau, tlist, vlist); // gf at the current time 
+ Mat gtau = gf.G(itau, tlist, vlist); // gf at the current time 
+
+ //std::cout << "gtau:\n"<< gtau<< std::endl; 
+
+ site_type si = vlist[itau][0]; 
+ site_type sj = vlist[itau][1]; 
 
  Eigen::Matrix2d S; 
- S(0, 0) = gtau(vlist[tau][0], vlist[tau][0]);
- S(0, 1) = gtau(vlist[tau][0], vlist[tau][1]);
- S(1, 0) = gtau(vlist[tau][1], vlist[tau][0]);
- S(1, 1) = gtau(vlist[tau][1], vlist[tau][1]);
+ S(0, 0) = gtau(si, si);
+ S(0, 1) = gtau(si, sj);
+ S(1, 0) = gtau(sj, si);
+ S(1, 1) = gtau(sj, sj);
 
  S = Eigen::Matrix2d::Identity() -2.0 *(Eigen::Matrix2d::Identity() - S); 
  double detratio = S.determinant(); 
@@ -56,8 +64,8 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
  }
 
  //update the vertex configuration 
- tlist.erase(tau); 
- vlist.erase(tau); 
+ tlist.erase(itau); 
+ vlist.erase(itau); 
 
  return detratio; 
  

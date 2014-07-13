@@ -8,6 +8,7 @@ void InteractionExpansion::initialize_observables()
                << alps::ngs::RealObservable("PertOrder")
                << alps::ngs::RealObservable("Add")
                << alps::ngs::RealObservable("Removal")
+               << alps::ngs::RealObservable("M2")
                ; 
 }
 
@@ -17,6 +18,9 @@ void InteractionExpansion::measure_observables()
 {
   measurements["Sign"]<<sign;
   measurements["PertOrder"] << double(tlist.size());
+
+  measure_M2();
+
 }
 
 //finial evaluation 

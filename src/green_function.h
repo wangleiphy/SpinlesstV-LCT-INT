@@ -9,6 +9,7 @@
 //void wrapgf(const double tau1, const double tau2){
 //}
 
+
 class Green_function{
 
     public:
@@ -27,57 +28,71 @@ class Green_function{
    
         }
  
-         Mat B(const time_type tau1, const time_type tau2, const tlist_type& tlist, vlist_type& vlist) const { // B(tau1) ... B(tau2)
+         Mat B(const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist) const { // B(tau1) ... B(tau2)
      
-             assert(tau1>=tau2); 
+             assert(itau1>=itau2); 
      
              tlist_type::const_iterator lower, upper; 
-             lower = std::lower_bound (tlist.begin(), tlist.end(), tau2); 
-             upper = std::upper_bound (tlist.begin(), tlist.end(), tau1); 
-            
-             //if (lower == upper){
-             //    return Mat::Identity(nsite, nsite); 
-             //}else{
+             lower = std::lower_bound (tlist.begin(), tlist.end(), itau2, std::less_equal<itime_type>()); //equal is exclude 
+             upper = std::upper_bound (tlist.begin(), tlist.end(), itau1); 
 
              //std::cout << (lower- tlist.begin())  << " " <<  (upper- tlist.begin())  << " " << tlist.size()   << std::endl;    
-             std::cout << *lower << " " <<  *upper  << std::endl;    
              //std::copy(lower, upper, std::ostream_iterator<double>(std::cout, " "));
              //std::cout << std::endl;  
+            
+             //std::cout << "tlist: " << std::endl; 
+             //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+             //std::cout << std::endl; 
+
+             //std::cout << "tau1, tau2: "<< itau1 << " " << itau2  << std::endl;    
+             //std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
+             //std::cout << std::endl; 
              
              //upper > tau1 > lower > tau2 
              if (lower == upper ) {// there is no vertex in between tau1 and tau2 
-                 return expmK(tau1 - tau2); 
+                 return expmK(itau1 - itau2); 
              }else{
-            
-                 Mat res = expmK(*lower - tau2);
 
+                 Mat res = expmK(*lower - itau2);
                  for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {
                     
-                     time_type tau = *it1; 
-                     res.row(vlist[tau][0]) *= -1.; 
-                     res.row(vlist[tau][1]) *= -1.; 
+                     itime_type itau = *it1; 
+                     res.row(vlist[itau][0]) *= -1.; 
+                     res.row(vlist[itau][1]) *= -1.; 
+                     //std::cout << "act vertex " << std::endl; 
                  
-                     time_type dtau = (it2 ==upper) ? tau1 - tau: *it2 - tau; 
+                     itime_type ditau = (it2 ==upper) ? itau1 - itau: *it2 - itau; 
                  
-                     std::cout << "tau, dtau " << tau << " " << dtau << std::endl; 
-                     res = expmK( dtau ) *res; 
+                     //std::cout << "itau, ditau " << itau << " " << ditau << std::endl; 
+                     res = expmK( ditau ) *res; 
                  }
+                 //std::cout << "##############" << std::endl; 
                  return res; 
              }
          }
      
          //equal time Green's function at tau 
-         Mat G(const time_type tau, const tlist_type& tlist, vlist_type& vlist) const {// this is very expansive because of inverse
-           Mat res = Mat::Identity(ns_, ns_) + B(tau, 0., tlist, vlist) * B(beta_, tau, tlist, vlist); 
+         Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) const {// this is very expansive because of inverse
+           Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
            return res.inverse(); 
          }
      
-         Mat expmK(const time_type tau) const {// exp(-tau * K)
+         Mat expmK(const itime_type itau) const {// exp(-tau * K)
+             assert(itau>=0); 
+
+             if (itau ==0)
+                 return Mat::Identity(ns_, ns_); 
+
              Eigen::VectorXd v(ns_); 
              for(unsigned l=0; l<ns_; ++l) 
-                 v(l) = exp(-tau * wK_(l)); 
+                 v(l) = exp(-itime2time(itau) * wK_(l)); 
              return uK_ * v.asDiagonal() * uK_.adjoint(); 
          }
+
+
+        time_type itime2time(const itime_type itau) const{
+            return beta_ * itau/std::numeric_limits<itime_type>::max(); 
+        }
 
     private:
         const site_type ns_; 

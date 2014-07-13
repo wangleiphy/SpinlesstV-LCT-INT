@@ -26,6 +26,7 @@ public:
   unsigned long progress() const {return sweeps;};        
   void evaluate(results_type& results);
 
+  void test(); 
 
 private:
   
@@ -45,19 +46,22 @@ private:
 
   // in file update.cpp:
   // add or remove vertex in partition funciton sector  
-  double add_impl(const double tau, const std::vector<site_type>& sites, const bool compute_only_weight); 
+  double add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight); 
   double remove_impl(const unsigned vertex, const bool compute_only_weight);
 
   /*measurement functions*/
   // in file observables.cpp
   void initialize_observables();
   void measure_observables();
+  // in file measure.cpp
+  void measure_M2();
 
   /*private member variables, constant throughout the simulation*/
   const alps::Parameters Params;
   const alps::graph_helper<> lattice; 
   const unsigned int max_order;                        
-
+    
+  const unsigned n_site; 
   const unsigned n_bond; // number of *interaction* bond (fine when n.n. hopping and V )
   Eigen::MatrixXd K_;    // the kinetic energy matrix 
 
@@ -76,9 +80,17 @@ private:
   unsigned long sweeps;        
 
   double sign;
+    
+  template<typename T>
+  T randomint(const T i) {return random() * i;}//random int [0, i) 
 
-  unsigned int randomint(const unsigned int i) {return random() * i;}//random int [0, i) 
-
+  //random number generator 
+  //typedef boost::mt19937 engine_type;
+  //engine_type eng_;
+  //mutable boost::variate_generator<engine_type&, boost::uniform_int<itime_type> >  itime_rng; 
+  //mutable boost::variate_generator<engine_type&, boost::uniform_int<site_type> >  bond_rng; 
+  //mutable boost::variate_generator<engine_type&, boost::uniform_real<> > ratio_rng; 
+    
 };
 
 #endif

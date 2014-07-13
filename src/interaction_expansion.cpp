@@ -10,6 +10,7 @@ InteractionExpansion::InteractionExpansion(alps::params &parms, int node)
 Params(make_deprecated_parameters(parms)), 
 lattice(Params),
 max_order(boost::lexical_cast<unsigned int>(parms["MAX_ORDER"])),
+n_site(lattice.num_sites()),
 n_bond(lattice.num_bonds()),
 K_(buildK(lattice)), 
 mc_steps((boost::uint64_t)parms["SWEEPS"]),
@@ -24,6 +25,10 @@ recalc_period(parms["RECALC_PERIOD"] | 500),
 measurement_period(parms["MEASUREMENT_PERIOD"] | 200),
 sweeps(0),
 sign(1.)
+//eng_(parms["SEED"] |42), 
+//itime_rng(eng_, boost::uniform_int<itime_type>(0,std::numeric_limits<itime_type>::max())), 
+//bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))
+//ratio_rng(eng_, boost::uniform_real<>)
 {
     //initialize ALPS observables
     initialize_observables();

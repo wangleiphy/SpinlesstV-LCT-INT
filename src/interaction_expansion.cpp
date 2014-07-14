@@ -44,8 +44,8 @@ void InteractionExpansion::update()
   for(unsigned int i=0;i<measurement_period;++i){
     sweeps++;
     interaction_expansion_step();                
-    if(sweeps % recalc_period ==0)
-       gf.fromscratch(tlist, vlist);
+    //if(sweeps % recalc_period ==0)
+    //   gf.fromscratch(tlist, vlist);
   }
 }
 

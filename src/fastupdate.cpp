@@ -5,9 +5,9 @@
 double InteractionExpansion::add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight)
 {
 
-  Mat gtau = gf.G(itau, tlist, vlist) ; 
+  //Mat gtau = gf.G(itau, tlist, vlist) ; 
 
-  //Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
+  Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
   //std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
   //std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
 
@@ -23,12 +23,12 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
   }else{
 
         //update gtau in eigen basis  
-        //gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
-        //         +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
-        //        )/gij;
+        gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
+                 +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
+                )/gij;
 
         
-        //gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
+        gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
 
         //std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
    
@@ -53,9 +53,9 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
  std::advance(it, vertex);
  itime_type itau = *it; 
 
- Mat gtau = gf.G(itau, tlist, vlist) ; 
+ //Mat gtau = gf.G(itau, tlist, vlist) ; 
 
- //Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member, gtau is in eigen basis 
+ Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member, gtau is in eigen basis 
  //std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
  //std::cout << "gtau from scratch:\n"<<   gf.G(itau, tlist, vlist) << std::endl; 
  
@@ -72,12 +72,12 @@ double ratio = -4.* gij * gij; // gji = gij when they belongs to different subla
  }else{
 
      //update gtau in eigen basis  
-     //gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
-     //         +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
-     //        )/gij;
+     gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
+              +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
+             )/gij;
 
      // * U^\dagger V U  
-     //gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
+     gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
 
      //std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
      

@@ -8,7 +8,9 @@ void InteractionExpansion::measure_M2()
    site_type si = randomint(n_site); 
    site_type sj = randomint(n_site); 
 
-   Mat gtau = gf.G(itau, tlist, vlist);
+   //Mat gtau = gf.G(itau, tlist, vlist);
+
+   Mat gtau = gf.wrap(itau, tlist, vlist);  
 
    double gij = gf.U().row(si) * gtau * gf.Udag().col(sj); // rotate it to real space 
 

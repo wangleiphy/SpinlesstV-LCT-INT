@@ -33,9 +33,13 @@ class Green_function{
          gtau_ = gtau_.inverse(); 
 
         }
+
+        void fromscratch(const tlist_type& tlist, const vlist_type& vlist){
+            gtau_ = G(itau_, tlist, vlist); 
+        }
         
         //return a reference so update of vertex will afftect it 
-        Mat& wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
+        Mat& wrap(const itime_type itau, const tlist_type& tlist, const vlist_type& vlist) {
 
             if (itau >= itau_) {
                 Mat Bmat = B(itau, itau_, tlist, vlist); 

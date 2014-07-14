@@ -60,9 +60,9 @@ double InteractionExpansion::remove_impl(const itime_type itau, const bool compu
  site_type sj = vlist[itau][1]; 
 
 
-double gij = gf.U().row(si) * gtau * gf.Udag().col(sj); // rotate it to real space 
+ double gij = gf.U().row(si) * gtau * gf.Udag().col(sj); // rotate it to real space 
 
-double ratio = -4.* gij * gij; // gji = gij when they belongs to different sublattice 
+ double ratio = -4.* gij * gij; // gji = gij when they belongs to different sublattice 
 
  if(compute_only_weight){
     

@@ -6,8 +6,8 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
 {
     
   Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
-  std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
-  std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
+  //std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
+  //std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
 
   site_type si = sites[0]; 
   site_type sj = sites[1]; 
@@ -23,13 +23,13 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
         gtau.col(si) *= -1.; 
         gtau.col(sj) *= -1.; 
 
-        std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
+        //std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
    
         //update the vertex configuration 
         tlist.insert(itau); 
         vlist[itau] = sites; 
    
-        std::cout << "gtau from scratch:\n"<<  gf.G(itau, tlist, vlist) << std::endl; 
+        //std::cout << "gtau from scratch:\n"<<  gf.G(itau, tlist, vlist) << std::endl; 
    
   }
 
@@ -48,8 +48,8 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
 
  Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
 
- std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
- std::cout << "gtau:\n"<<   gf.G(itau, tlist, vlist) << std::endl; 
+ //std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
+ //std::cout << "gtau:\n"<<   gf.G(itau, tlist, vlist) << std::endl; 
  
  site_type si = vlist[itau][0]; 
  site_type sj = vlist[itau][1]; 
@@ -65,13 +65,14 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
 
      gtau.col(si) *= -1.; 
      gtau.col(sj) *= -1.; 
-     std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
+
+     //std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
      
      //update the vertex configuration 
      tlist.erase(itau); 
      vlist.erase(itau); 
      
-     std::cout << "gtau from scratch:\n"<< gf.G(itau, tlist, vlist) << std::endl; 
+     //std::cout << "gtau from scratch:\n"<< gf.G(itau, tlist, vlist) << std::endl; 
     
  }
      return ratio; 

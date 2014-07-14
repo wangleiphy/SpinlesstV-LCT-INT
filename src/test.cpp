@@ -10,6 +10,7 @@ void InteractionExpansion::test(){
 
             if (random() < 0.5 ) {//adds ONE vertex
             //if (itry%2==0 ) {//adds ONE vertex
+            //if ( true ) {//adds ONE vertex
                 std::vector<site_type> sites;  
             
                 alps::graph_helper<>::bond_descriptor b = lattice.bond(randomint(n_bond));
@@ -20,7 +21,6 @@ void InteractionExpansion::test(){
             
                 std::cout << "#######################"  << std::endl; 
                 std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
-                std::cout << "detratio:" << add_impl(itau, sites, true) << std::endl; 
 
                 double detratio = add_impl(itau, sites, false);  
 
@@ -38,7 +38,6 @@ void InteractionExpansion::test(){
 
                 std::cout << "#######################"  << std::endl; 
                 std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
-                std::cout << "detratio:" << remove_impl(vertex, true) << std::endl; 
 
                 double detratio = remove_impl(vertex, false); 
                 

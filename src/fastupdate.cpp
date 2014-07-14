@@ -5,8 +5,9 @@
 double InteractionExpansion::add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight)
 {
     
-  Mat gtau = gf.G(itau, tlist, vlist); // gf at the current time 
-  //std::cout << "gtau:\n"<< gtau<< std::endl; 
+  Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
+  std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
+  std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
 
   site_type si = sites[0]; 
   site_type sj = sites[1]; 
@@ -28,9 +29,7 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
         tlist.insert(itau); 
         vlist[itau] = sites; 
    
-        gtau = gf.G(itau, tlist, vlist);
-        std::cout << "gtau from scratch:\n"<< gtau<< std::endl; 
-        
+        std::cout << "gtau from scratch:\n"<<  gf.G(itau, tlist, vlist) << std::endl; 
    
   }
 
@@ -47,8 +46,10 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
  std::advance(it, vertex);
  itime_type itau = *it; 
 
- Mat gtau = gf.G(itau, tlist, vlist); // gf at the current time 
- //std::cout << "gtau:\n"<< gtau<< std::endl; 
+ Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
+
+ std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
+ std::cout << "gtau:\n"<<   gf.G(itau, tlist, vlist) << std::endl; 
  
  site_type si = vlist[itau][0]; 
  site_type sj = vlist[itau][1]; 
@@ -70,8 +71,7 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
      tlist.erase(itau); 
      vlist.erase(itau); 
      
-     gtau = gf.G(itau, tlist, vlist);
-     std::cout << "gtau from scratch:\n"<< gtau<< std::endl; 
+     std::cout << "gtau from scratch:\n"<< gf.G(itau, tlist, vlist) << std::endl; 
     
  }
      return ratio; 

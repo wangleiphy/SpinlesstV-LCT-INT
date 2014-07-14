@@ -18,6 +18,8 @@ class Green_function{
         Green_function(const Mat& K, const time_type beta)
         :ns_(K.rows())
         ,beta_(beta)
+        ,itau_(0)
+        ,gtau_()
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;
@@ -25,8 +27,37 @@ class Green_function{
    
          wK_ = ces.eigenvalues();  
          uK_ = ces.eigenvectors(); 
-   
+        
+         //initially gtau_ is noninteracting gf at time itau = 0 
+         gtau_ = Mat::Identity(ns_, ns_) + expmK(itime_max);
+         gtau_ = gtau_.inverse(); 
+
         }
+        
+        //return a reference so update of vertex will afftect it 
+        Mat& wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
+
+            if (itau >= itau_) {
+                Mat Bmat = B(itau, itau_, tlist, vlist); 
+                itau_ = itau; 
+                gtau_ = Bmat * gtau_ * Bmat.inverse();
+                return gtau_; 
+            }else{
+                Mat Bmat = B(itau_, itau, tlist, vlist); 
+                itau_ = itau; 
+                gtau_ = Bmat.inverse() * gtau_  * Bmat; 
+                return gtau_; 
+            }
+        }
+
+         //equal time Green's function at tau 
+         Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) const {// this is very expansive because of inverse
+           Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
+           return res.inverse(); 
+         }
+
+
+    private:
  
          Mat B(const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist) const { // B(tau1) ... B(tau2)
      
@@ -70,12 +101,7 @@ class Green_function{
                  return res; 
              }
          }
-     
-         //equal time Green's function at tau 
-         Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) const {// this is very expansive because of inverse
-           Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
-           return res.inverse(); 
-         }
+    
      
          Mat expmK(const itime_type itau) const {// exp(-tau * K)
              assert(itau>=0); 
@@ -91,7 +117,7 @@ class Green_function{
 
 
         time_type itime2time(const itime_type itau) const{
-            return beta_ * itau/std::numeric_limits<itime_type>::max(); 
+            return beta_ * itau/itime_max; 
         }
 
     private:
@@ -101,7 +127,9 @@ class Green_function{
         //eigen value and vectors of K 
         Eigen::VectorXd wK_; 
         Mat uK_; 
- 
+
+        itime_type itau_; 
+        Mat gtau_; 
 };
 
 #endif

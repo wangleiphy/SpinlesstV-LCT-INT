@@ -27,8 +27,7 @@ class Green_function{
    
          wK_ = ces.eigenvalues();  
          uK_ = ces.eigenvectors(); 
-
-         uKdag_ = uK_.adjoint(); 
+         uKdag_ = ces.eigenvectors().adjoint(); 
         
          //initially gtau_ is noninteracting gf at time itau = 0 
          gtau_ = Mat::Identity(ns_, ns_) + expmK(itime_max);

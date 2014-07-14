@@ -23,12 +23,12 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
   }else{
 
         //update gtau in eigen basis  
-        gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
-                 +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
-                )/gij;
+        //gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
+        //         +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
+        //        )/gij;
 
         
-        gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
+        //gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
 
         //std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
    
@@ -72,12 +72,12 @@ double ratio = -4.* gij * gij; // gji = gij when they belongs to different subla
  }else{
 
      //update gtau in eigen basis  
-     gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
-              +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
-             )/gij;
+     //gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
+     //         +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
+     //        )/gij;
 
      // * U^\dagger V U  
-     gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
+     //gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
 
      //std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
      

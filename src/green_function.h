@@ -37,7 +37,14 @@ class Green_function{
         }
 
         void fromscratch(const tlist_type& tlist, vlist_type& vlist){
-            gtau_ = G(itau_, tlist, vlist); 
+
+            Mat gtau = G(itau_, tlist, vlist); 
+
+            double max_diff = ((gtau - gtau_).cwiseAbs()).maxCoeff(); 
+            if(max_diff > 1.e-8)
+              std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
+            
+            gtau_ = gtau; 
         }
 
         const Mat& gtau()const {return gtau_; }

@@ -8,12 +8,7 @@ void InteractionExpansion::measure_M2()
 
    double gij = gf.U().row(si) * gf.gtau() * gf.Udag().col(sj); // rotate it to real space 
 
-   double parity = lattice.parity(si) * lattice.parity(sj);  
-   double gji = -parity * gij;  
-   double delta = si==sj? 1.0: 0.0; 
+   //g_ji = delta_ij - eta_i eta_j * g_ij 
 
-   /*CDW structure factor*/
-   double M2= parity*(delta-gji) * gij; 
-
-   measurements["M2"] << M2; 
+   measurements["M2"] <<  (gij * gij); 
 }

@@ -5,11 +5,6 @@
 #include <iterator>
 #include <iostream>
 
-// G(tau2) = B(tau2, tau1) G(tau1) B^{-1}(tau2, tau1)
-//void wrapgf(const double tau1, const double tau2){
-//}
-
-
 class Green_function{
 
     public:
@@ -35,7 +30,7 @@ class Green_function{
 
         }
 
-        void fromscratch(const tlist_type& tlist, vlist_type& vlist){
+        void rebuild(const tlist_type& tlist, vlist_type& vlist){
 
             Mat gtau = G(itau_, tlist, vlist); 
 
@@ -44,6 +39,11 @@ class Green_function{
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
             
             gtau_ = gtau; 
+        }
+
+        void blockjump(const itime_type itau, const tlist_type& tlist, vlist_type& vlist){
+             itau_ = itau; 
+             gtau_ = G(itau_, tlist, vlist); 
         }
 
         const Mat& gtau()const {return gtau_; }

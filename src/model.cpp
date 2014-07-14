@@ -4,12 +4,16 @@ void InteractionExpansion::add()
 {
   //std::cout << "##add##" << std::endl; 
 
-  int pert_order = tlist.size(); 
-
-  if(pert_order+1 > max_order) 
+  if(tlist.size()+1 > max_order) 
     return; 
+    
+  tlist_type::const_iterator lower, upper; 
+  lower = std::lower_bound (tlist.begin(), tlist.end(), iblock*blocksize); 
+  upper = std::upper_bound (tlist.begin(), tlist.end(), (iblock+1)*blocksize, std::less_equal<itime_type>());  //equal is exclude
 
-  itime_type itau = randomint(itime_max);
+  unsigned num_vertices = std::distance(lower, upper);  //number of vertices in this block
+
+  itime_type itau = iblock*blocksize + randomint(blocksize);// a random time inside this block 
 
   if (tlist.find(itau) != tlist.end()) // we can not have two vertex at the same tau 
       return; 
@@ -20,19 +24,8 @@ void InteractionExpansion::add()
   sites.push_back(lattice.source(b));
   sites.push_back(lattice.target(b));
 
-
   // true means compute_only_weight
-  double metropolis_weight = -0.25*beta*V*n_bond/(pert_order+1)*add_impl(itau, sites, true);
-
-  //if (metropolis_weight<0. && fabs(metropolis_weight) > 1E-10){
-  //  std::cout << metropolis_weight << " < 0 in add" << std::endl; 
-
-  //  std::cout << "itau, b:"  << itau << " " << b << std::endl; 
-  //  std::cout << "tlist: "; 
-  //  std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-  //  std::cout << std::endl; 
-  //  abort();  
-  //}
+  double metropolis_weight = -0.25*(beta/nblock)*V*n_bond/(num_vertices+1)*add_impl(itau, sites, true);
 
   if(fabs(metropolis_weight) > random()){
 
@@ -41,11 +34,6 @@ void InteractionExpansion::add()
 
     add_impl(itau, sites, false);
 
-    //std::cout << "add " << n << " vertices." << "creators: ";  
-    //for (unsigned int  i=0; i< M.creators().size(); ++i) {
-    //  std::cout << M.creators()[i].s()<< "("<< M.creators()[i].t() << ")"  << ","; 
-    //}
-    //std::cout << std::endl; 
     sign*=metropolis_weight<0.?-1.:1.;
   }else{
 
@@ -58,24 +46,27 @@ void InteractionExpansion::add()
 void InteractionExpansion::remove()
 {
     //std::cout << "##remove##" << std::endl; 
-    unsigned pert_order = tlist.size(); 
-
-    if(pert_order < 1)
+    if(tlist.size()< 1)
       return;    
 
-    unsigned vertex_nr=randomint(pert_order);  
+    tlist_type::const_iterator lower, upper; 
+    lower = std::lower_bound (tlist.begin(), tlist.end(), iblock*blocksize); 
+    upper = std::upper_bound (tlist.begin(), tlist.end(), (iblock+1)*blocksize, std::less_equal<itime_type>());  //equal is exclude
 
-    double metropolis_weight = 4.*pert_order/(-beta*V*n_bond) * remove_impl(vertex_nr, true);
-    //std::cout << "after remove_impl" << std::endl; 
-    //if (metropolis_weight<0.){
-    //  std::cout << metropolis_weight << " < 0 in remove" << std::endl; 
-    // abort();  
-    //}
+    unsigned num_vertices = std::distance(lower, upper); //number of vertices in this block
+
+    if(num_vertices < 1)
+        return; 
+
+    std::advance(lower, randomint(num_vertices)); //the vertex to remove 
+    itime_type itau = *lower; 
+
+    double metropolis_weight = 4.*num_vertices/(-(beta/nblock)*V*n_bond) * remove_impl(itau, true);
 
     if(fabs(metropolis_weight) > random()){ //do the actual update
 
       measurements["Removal"] << 1.;
-      remove_impl(vertex_nr, false);  // false means really perform, not only compute weight
+      remove_impl(itau, false);  // false means really perform, not only compute weight
 
       //std::cout << "remove " << n << " vertices." << "creators: ";  
       //for (unsigned int  i=0; i< M.creators().size(); ++i) {

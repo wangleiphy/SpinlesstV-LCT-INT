@@ -24,6 +24,7 @@ public:
   //print progress 
   unsigned pertorder() const {return tlist.size();}; 
   unsigned long progress() const {return sweeps;};        
+  unsigned block() const {return iblock;};   
   void evaluate(results_type& results);
 
   void test(); 
@@ -76,7 +77,10 @@ private:
   Green_function gf; 
   
   const unsigned recalc_period;                
-  const unsigned measurement_period;        
+  const unsigned nblock; 
+  const unsigned steps_per_block;        
+  const itime_type blocksize;
+  unsigned iblock; 
   unsigned long sweeps;        
 
   double sign;

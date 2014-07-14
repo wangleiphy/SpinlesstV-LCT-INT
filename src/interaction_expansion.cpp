@@ -22,7 +22,9 @@ tlist(),
 vlist(), 
 gf(K_, beta), 
 recalc_period(parms["RECALC_PERIOD"] | 500),
-measurement_period(parms["MEASUREMENT_PERIOD"] | 200),
+nblock(parms["NBLOCKS"] | 1),
+steps_per_block(parms["STEPS_PER_BLOCK"] | 100),
+blocksize(itime_max/nblock),
 sweeps(0),
 sign(1.)
 //eng_(parms["SEED"] |42), 
@@ -41,12 +43,10 @@ sign(1.)
 
 void InteractionExpansion::update()
 {
-  for(unsigned int i=0;i<measurement_period;++i){
-    sweeps++;
-    interaction_expansion_step();                
-    if(sweeps % recalc_period ==0)
-       gf.fromscratch(tlist, vlist);
-  }
+   sweeps++;
+   interaction_expansion_step();                
+   if(sweeps % recalc_period ==0)
+      gf.rebuild(tlist, vlist);
 }
 
 void InteractionExpansion::measure(){
@@ -59,5 +59,5 @@ void InteractionExpansion::measure(){
 }
 
 double InteractionExpansion::fraction_completed() const {
-    return (sweeps < therm_steps ? 0. : ( sweeps - therm_steps )/double(measurement_period)/ double(mc_steps));
+    return (sweeps < therm_steps ? 0. : ( sweeps - therm_steps )/double(mc_steps));
 }

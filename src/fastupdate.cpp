@@ -44,14 +44,11 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
 }
 
 
-/*implement remove vertex in partition funciton sector*/
-double InteractionExpansion::remove_impl(const unsigned vertex, const bool compute_only_weight)
+/*implement remove vertex at time itau*/
+double InteractionExpansion::remove_impl(const itime_type itau, const bool compute_only_weight)
 {// this will only get call when there is a vertex 
  // vertices contains from small to large indices 
 
- tlist_type::const_iterator it(tlist.begin());    
- std::advance(it, vertex);
- itime_type itau = *it; 
 
  //Mat gtau = gf.G(itau, tlist, vlist) ; 
 

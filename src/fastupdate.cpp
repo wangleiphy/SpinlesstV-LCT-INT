@@ -5,25 +5,30 @@
 double InteractionExpansion::add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight)
 {
 
-  //Mat gtau = gf.G(itau, tlist, vlist) ; 
+  Mat gtau = gf.G(itau, tlist, vlist) ; 
 
-  Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
-  std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
-  std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
+  //Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
+  //std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
+  //std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
 
   site_type si = sites[0]; 
   site_type sj = sites[1]; 
-  double ratio = -4.* gtau(si, sj) *  gtau(sj, si); 
+  
+  double gij = gf.U().row(si) * gtau * gf.Udag().col(sj); // rotate it to real space 
+
+  double ratio = -4.* gij * gij; // gji = gij when they belongs to different sublattice 
 
   if(compute_only_weight){
        
   }else{
 
-        //update gtau 
-        gtau -= gtau.col(sj)*gtau.row(si)/gtau(si, sj) + gtau.col(si) * gtau.row(sj)/gtau(sj, si);
+        //update gtau in eigen basis  
+        gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
+                 +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
+                )/gij;
 
-        gtau.col(si) *= -1.; 
-        gtau.col(sj) *= -1.; 
+        
+        gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
 
         //std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
    
@@ -48,26 +53,31 @@ double InteractionExpansion::remove_impl(const unsigned vertex, const bool compu
  std::advance(it, vertex);
  itime_type itau = *it; 
 
- //Mat gtau = gf.G(itau, tlist, vlist) ; 
+ Mat gtau = gf.G(itau, tlist, vlist) ; 
 
- Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
- std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
- std::cout << "gtau:\n"<<   gf.G(itau, tlist, vlist) << std::endl; 
+ //Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member, gtau is in eigen basis 
+ //std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
+ //std::cout << "gtau from scratch:\n"<<   gf.G(itau, tlist, vlist) << std::endl; 
  
  site_type si = vlist[itau][0]; 
  site_type sj = vlist[itau][1]; 
 
- double ratio = -4.* gtau(si, sj) *  gtau(sj, si); 
+
+double gij = gf.U().row(si) * gtau * gf.Udag().col(sj); // rotate it to real space 
+
+double ratio = -4.* gij * gij; // gji = gij when they belongs to different sublattice 
 
  if(compute_only_weight){
     
  }else{
 
-     //update gtau 
-     gtau -= gtau.col(sj)*gtau.row(si)/gtau(si, sj) + gtau.col(si) * gtau.row(sj)/gtau(sj, si);
+     //update gtau in eigen basis  
+     gtau -= ( (gtau * gf.Udag().col(sj)) * (gf.U().row(si)* gtau) 
+              +(gtau * gf.Udag().col(si)) * (gf.U().row(sj)* gtau)
+             )/gij;
 
-     gtau.col(si) *= -1.; 
-     gtau.col(sj) *= -1.; 
+     // * U^\dagger V U  
+     gtau -= 2.* (gtau* gf.Udag().col(si)) * gf.U().row(si) + 2.* (gtau*gf.Udag().col(sj)) * gf.U().row(sj); 
 
      //std::cout << "gtau from fastupdate:\n"<< gtau<< std::endl; 
      

@@ -27,6 +27,8 @@ class Green_function{
    
          wK_ = ces.eigenvalues();  
          uK_ = ces.eigenvectors(); 
+
+         uKdag_ = uK_.adjoint(); 
         
          //initially gtau_ is noninteracting gf at time itau = 0 
          gtau_ = Mat::Identity(ns_, ns_) + expmK(itime_max);
@@ -34,12 +36,14 @@ class Green_function{
 
         }
 
-        void fromscratch(const tlist_type& tlist, const vlist_type& vlist){
+        void fromscratch(const tlist_type& tlist, vlist_type& vlist){
             gtau_ = G(itau_, tlist, vlist); 
         }
+
+        const Mat& gtau()const {return gtau_; }
         
         //return a reference so update of vertex will afftect it 
-        Mat& wrap(const itime_type itau, const tlist_type& tlist, const vlist_type& vlist) {
+        Mat& wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
 
             if (itau >= itau_) {
                 Mat Bmat = B(itau, itau_, tlist, vlist); 
@@ -59,7 +63,15 @@ class Green_function{
            Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
            return res.inverse(); 
          }
+        
+         //U and U^{dgger} 
+         const Mat& U() const{
+             return uK_;  
+         }
 
+         const Mat& Udag() const{
+             return uKdag_;  
+         }
 
     private:
  
@@ -70,18 +82,6 @@ class Green_function{
              tlist_type::const_iterator lower, upper; 
              lower = std::lower_bound (tlist.begin(), tlist.end(), itau2, std::less_equal<itime_type>()); //equal is exclude 
              upper = std::upper_bound (tlist.begin(), tlist.end(), itau1); 
-
-             //std::cout << (lower- tlist.begin())  << " " <<  (upper- tlist.begin())  << " " << tlist.size()   << std::endl;    
-             //std::copy(lower, upper, std::ostream_iterator<double>(std::cout, " "));
-             //std::cout << std::endl;  
-            
-             //std::cout << "tlist: " << std::endl; 
-             //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-             //std::cout << std::endl; 
-
-             //std::cout << "tau1, tau2: "<< itau1 << " " << itau2  << std::endl;    
-             //std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
-             //std::cout << std::endl; 
              
              //upper > tau1 > lower > tau2 
              if (lower == upper ) {// there is no vertex in between tau1 and tau2 
@@ -92,14 +92,11 @@ class Green_function{
                  for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {
                     
                      itime_type itau = *it1; 
-                     res.row(vlist[itau][0]) *= -1.; 
-                     res.row(vlist[itau][1]) *= -1.; 
+                     Vprop(vlist[itau][0], vlist[itau][1], res); 
                      //std::cout << "act vertex " << std::endl; 
                  
                      itime_type ditau = (it2 ==upper) ? itau1 - itau: *it2 - itau; 
-                 
-                     //std::cout << "itau, ditau " << itau << " " << ditau << std::endl; 
-                     res = expmK( ditau ) *res; 
+                     Kprop(ditau , res); 
                  }
                  //std::cout << "##############" << std::endl; 
                  return res; 
@@ -107,7 +104,7 @@ class Green_function{
          }
     
      
-         Mat expmK(const itime_type itau) const {// exp(-tau * K)
+         Mat expmK(const itime_type itau) const {// exp(-tau * w)
              assert(itau>=0); 
 
              if (itau ==0)
@@ -116,9 +113,21 @@ class Green_function{
              Eigen::VectorXd v(ns_); 
              for(unsigned l=0; l<ns_; ++l) 
                  v(l) = exp(-itime2time(itau) * wK_(l)); 
-             return uK_ * v.asDiagonal() * uK_.adjoint(); 
+             return v.asDiagonal(); 
          }
 
+        void Kprop(const itime_type itau, Mat& A) const{// exp(-tau *w) * A 
+            if (itau ==0) 
+                return; 
+
+             for(unsigned l=0; l<ns_; ++l) 
+                  A.row(l) *= exp(-itime2time(itau) * wK_(l));
+        }
+
+        void Vprop(const site_type si, const site_type sj , Mat& A) const{ //U^{dagger} V U * A 
+
+            A -= 2.* uKdag_.col(si) * (uK_.row(si)* A) + 2.* uKdag_.col(sj) * (uK_.row(sj)* A); 
+        }
 
         time_type itime2time(const itime_type itau) const{
             return beta_ * itau/itime_max; 
@@ -130,7 +139,7 @@ class Green_function{
 
         //eigen value and vectors of K 
         Eigen::VectorXd wK_; 
-        Mat uK_; 
+        Mat uK_, uKdag_; 
 
         itime_type itau_; 
         Mat gtau_; 

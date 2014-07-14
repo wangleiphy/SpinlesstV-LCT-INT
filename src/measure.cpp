@@ -3,18 +3,17 @@
 void InteractionExpansion::measure_M2()
 {
 
-   itime_type itau = randomint(itime_max);
-   Mat gtau = gf.G(itau, tlist, vlist); // gf at the current time 
+   site_type si = randomint(n_site); 
+   site_type sj = randomint(n_site); 
+
+   double gij = gf.U().row(si) * gf.gtau() * gf.Udag().col(sj); // rotate it to real space 
+
+   double parity = lattice.parity(si) * lattice.parity(sj);  
+   double gji = -parity * gij;  
+   double delta = si==sj? 1.0: 0.0; 
 
    /*CDW structure factor*/
-   double M2 = 0.; 
-   for (site_type i =0; i< n_site; ++i){  
-          for (site_type j =0; j< n_site; ++j){  
-           double delta = i==j? 1.0: 0.0; 
-           M2 += lattice.parity(i) * lattice.parity(j) * 
-                 ((1. - gtau(i,i))  * (1. - gtau(j,j)) + (delta-gtau(j,i)) * gtau(i,j)); 
-          }
-   }
+   double M2= parity*(delta-gji) * gij; 
 
-   measurements["M2"] << M2/(n_site*n_site); 
+   measurements["M2"] << M2; 
 }

@@ -141,9 +141,9 @@ class Green_function{
              lower = std::lower_bound (tlist.begin(), tlist.end(), itau2, std::less_equal<itime_type>()); //equal is exclude 
              upper = std::upper_bound (tlist.begin(), tlist.end(), itau1); 
 
-             std::cout << "vertices at" << std::endl; 
-             std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
-             std::cout << std::endl;  
+             //std::cout << "vertices at" << std::endl; 
+             //std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
+             //std::cout << std::endl;  
 
              //upper > tau1 > lower > tau2 
              if (lower == upper ) {// there is no vertex in between tau1 and tau2 
@@ -153,16 +153,16 @@ class Green_function{
 
                  Kprop(sign, *lower - itau2, side, A);
 
-                 std::cout << "initial " << *lower << " " << itau2 << " " <<  *lower - itau2 << std::endl; 
+                 //std::cout << "initial " << *lower << " " << itau2 << " " <<  *lower - itau2 << std::endl; 
                  for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {
                     
                      itime_type itau = *it1; 
                      Vprop(vlist[itau][0], vlist[itau][1], side, A); 
-                     std::cout << "act vertex at " << itau  << std::endl; 
+                     //std::cout << "act vertex at " << itau  << std::endl; 
                  
                      itime_type ditau = (it2 ==upper) ? itau1 - itau: *it2 - itau; 
                      Kprop(sign, ditau , side, A); 
-                     std::cout << "Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
+                     //std::cout << "Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
                  }
                  //std::cout << "##############" << std::endl; 
              }
@@ -180,9 +180,9 @@ class Green_function{
              lower = std::lower_bound (tlist.begin(), tlist.end(), itau2, std::less_equal<itime_type>()); 
              upper = std::upper_bound (tlist.begin(), tlist.end(), itau1); 
                 
-             std::cout << "vertices at" << std::endl; 
-             std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
-             std::cout << std::endl;  
+             //std::cout << "vertices at" << std::endl; 
+             //std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
+             //std::cout << std::endl;  
 
              //upper > tau1 > lower > tau2 
              if (lower == upper ) {// there is no vertex in between tau1 and tau2 
@@ -191,16 +191,16 @@ class Green_function{
              }else{
 
                  Kprop(sign, itau1 - *(--upper), side, A);
-                 std::cout << "initial " << *upper << " " << itau1 << " " << itau1 - *upper << std::endl; 
+                 //std::cout << "initial " << *upper << " " << itau1 << " " << itau1 - *upper << std::endl; 
                  for (tlist_type::const_iterator it1 =upper, it2 =--upper; it1!=lower; --it1, --it2) {
                     
                      itime_type itau = *it1; 
                      Vprop(vlist[itau][0], vlist[itau][1], side, A); 
-                     std::cout << "act vertex at " << itau  << std::endl; 
+                     //std::cout << "act vertex at " << itau  << std::endl; 
                  
                      itime_type ditau = itau - *it2; 
                      Kprop(sign, ditau , side, A); 
-                     std::cout << "Kprop " <<  itau << " " << *it2  << " " << ditau << std::endl; 
+                     //std::cout << "Kprop " <<  itau << " " << *it2  << " " << ditau << std::endl; 
                  }
                  {
                      //the last step by hand (it1 = lower, it2 point to tau2) 
@@ -210,7 +210,7 @@ class Green_function{
              
                      itime_type ditau = itau - itau2; 
                      Kprop(sign, ditau , side, A); 
-                     std::cout << "Kprop " <<  itau << " " <<  itau2 << " " << ditau << std::endl; 
+                     //std::cout << "Kprop " <<  itau << " " <<  itau2 << " " << ditau << std::endl; 
                  }
                  //std::cout << "##############" << std::endl; 
              }

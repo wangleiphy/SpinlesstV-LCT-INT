@@ -14,7 +14,7 @@ class Green_function{
         :ns_(K.rows())
         ,beta_(beta)
         ,itau_(0)
-        ,gtau_()
+        ,gtau_(Mat::Zero(ns_, ns_))
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;
@@ -26,10 +26,9 @@ class Green_function{
 
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
         
-         //initially gtau_ is noninteracting gf at time itau = 0 
-         gtau_ = Mat::Identity(ns_, ns_) + expmK(-1, itime_max); // 1+ exp(-K*beta)
-         gtau_ = gtau_.inverse(); 
-
+         //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
+         for(site_type l=0; l<ns_; ++l) 
+            gtau_(l,l) = wK_(l)>0. ? 1./(1.+exp(-beta*wK_(l))) : exp(beta_*wK_(l))/(1.+exp(beta_*wK_(l))) ; // it is samething, to avoid overflow 
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){

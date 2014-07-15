@@ -1,10 +1,10 @@
 LATTICE_LIBRARY = "../input/mylattices.xml"
-LATTICE = "honeycomb lattice"
-L = 6 
-W = 6
+LATTICE = "open chain lattice"
+L = 4
+W = 1
 MAX_ORDER = 1024
-TEMPERATURE = 0.125 
-V = 1.4 
+TEMPERATURE = 0.6
+V = 1.0
 THERMALIZATION = 1000
 SWEEPS = 10000
 SEED = 42

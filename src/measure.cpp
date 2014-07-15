@@ -10,7 +10,7 @@ void InteractionExpansion::measure_M2()
    //Mat gtau = gf.G(itau, tlist, vlist);
    //Mat gtau = gf.wrap(itau, tlist, vlist); 
 
-   Eigen::VectorXd denmat = gf.U() * (gf.gtau() * gf.Udag().col(si)); // rotate it to real space, N^2 operation
+   Eigen::VectorXd denmat = gf.denmat(si); //g_{ij} for fixed i 
 
    //g_ji = delta_ij - eta_i eta_j * g_ij 
 

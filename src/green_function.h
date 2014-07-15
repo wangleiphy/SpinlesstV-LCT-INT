@@ -14,7 +14,9 @@ class Green_function{
         :ns_(K.rows())
         ,beta_(beta)
         ,itau_(0)
-        ,gtau_(Mat::Zero(ns_, ns_))
+        ,U_(Mat::Identity(ns_, ns_))
+        ,D_(Mat::Zero(ns_, ns_))
+        ,V_(Mat::Identity(ns_, ns_))
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;
@@ -28,63 +30,94 @@ class Green_function{
         
          //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
          for(site_type l=0; l<ns_; ++l) 
-            gtau_(l,l) = wK_(l)>0. ? 1./(1.+exp(-beta*wK_(l))) : exp(beta_*wK_(l))/(1.+exp(beta_*wK_(l))) ; // it is samething, to avoid overflow 
+            D_(l, l) = wK_(l)>0. ? 1./(1.+exp(-beta*wK_(l))) : exp(beta_*wK_(l))/(1.+exp(beta_*wK_(l))) ; // it is samething, to avoid overflow 
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
 
             Mat gtau = G(itau_, tlist, vlist); 
 
-            double max_diff = ((gtau - gtau_).cwiseAbs()).maxCoeff(); 
+            double max_diff = ((gtau - U_*D_*V_).cwiseAbs()).maxCoeff(); 
             if(max_diff > 1.e-6)
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
             
-            gtau_ = gtau; 
+            //gtau_ = gtau; 
+            //U_ = 
+            //D_ = 
+            //V_ = 
         }
         
+        /*
         //jump to a new time itau from scratch
         void blockjump(const itime_type itau, const tlist_type& tlist, vlist_type& vlist){
              gtau_ = G(itau, tlist, vlist);  
              itau_ = itau; 
         }
+        */
 
-        const Mat& gtau()const {return gtau_; }
+        Mat gtau() const {
+            return U_* D_* V_; 
+        }
+
+        double gij(const site_type si, const site_type sj)const {
+            // (U gtau U^{dagger} )_ij 
+            // gtau in eigen basis is stored as U_*D_*V_ 
+            return  (uK_.row(si) *U_) *D_ * (V_ * uKdag_.col(sj));  
+        }
+
+        Eigen::VectorXd denmat(const site_type si)const {
+            // (U gtau U^{dagger} )_ij 
+            // gtau in eigen basis is stored as U*D*V 
+            return  uK_ *(U_ *D_ * (V_ * uKdag_.col(si)));  
+        }
+            
+        //update changes D_ and V_ 
+        void update(const site_type si, const site_type sj, const double gij){
+
+             //update D_
+             D_ -=  ( (D_* (V_* uKdag_.col(sj))) * ((uK_.row(si)*U_)*D_)
+                    + (D_* (V_* uKdag_.col(si))) * ((uK_.row(sj)*U_)*D_)
+                    )/gij; 
+             
+             // * U^\dagger V U from right 
+             V_ -= 2.* (V_* uKdag_.col(si)) * uK_.row(si) + 2.* (V_*uKdag_.col(sj)) * uK_.row(sj); // this thing is fixed 
+        }
         
-        //return a reference so update of vertex will afftect it 
-        Mat& wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
-
+        //wrap does not change D_  
+        void wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
 
             if (itau >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, itau, itau_, tlist, vlist, U_);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, itau, itau_, tlist, vlist, V_); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
 
-                //std::cout << "B*Binv: " << itau << " " << itau_ << "\n" << B(itau, itau_, tlist, vlist) * Binv(itau, itau_, tlist, vlist) << std::endl;
-
-                //std::cout << "det(B):\n" <<  B(itau, itau_, tlist, vlist).determinant() << std::endl; 
-
-                //std::cout << "Binv:\n" <<  Binv(itau, itau_, tlist, vlist) << std::endl; 
-                //std::cout << "B^{-1}:\n" <<  B(itau, itau_, tlist, vlist).inverse() << std::endl; 
-
-                gtau_ = B(itau, itau_, tlist, vlist) * gtau_ * Binv(itau, itau_, tlist, vlist);
                 itau_ = itau; 
+
             }else{
 
-                //std::cout << "B*Binv: " << itau << " " << itau_ << "\n" << B(itau_, itau, tlist, vlist) * Binv(itau_, itau, tlist, vlist) << std::endl;
+                // B^{-1} G B 
+                propagator2(1, itau_, itau, tlist, vlist, U_); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, itau, tlist, vlist, V_);   //  V_ * B(tau1) ... B(tau2)
 
-                //std::cout << "det(B):\n" <<  B(itau_, itau, tlist, vlist).determinant() << std::endl; 
-                //std::cout << "Binv:\n" <<  Binv(itau_, itau, tlist, vlist) << std::endl; 
-                //std::cout << "B^{-1}:\n" <<  B(itau_, itau, tlist, vlist).inverse() << std::endl; 
-
-                gtau_ = Binv(itau_, itau, tlist, vlist) * gtau_  * B(itau_, itau, tlist, vlist); 
                 itau_ = itau; 
             }
-                return gtau_; 
         }
 
          //equal time Green's function at tau 
-         Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) const {// this is very expansive because of inverse
-           Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
+         Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
+           //Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
+
+           Mat B_tau_0 = Mat::Identity(ns_, ns_); 
+           propagator1(-1, itau, 0, tlist, vlist, B_tau_0);
+
+           Mat B_beta_tau =  Mat::Identity(ns_, ns_);
+           propagator1(-1, itime_max, itau, tlist, vlist, B_beta_tau);
+
+           Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
            return res.inverse(); 
          }
         
+         /*
          //U and U^{dgger} 
          const Mat& U() const{
              return uK_;  
@@ -93,50 +126,97 @@ class Green_function{
          const Mat& Udag() const{
              return uKdag_;  
          }
+         */
 
-         Mat B(const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist) const { // B(tau1) ... B(tau2)
-             return BorBinv(-1, itau1, itau2, tlist, vlist); 
-         }
-
-         Mat Binv(const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist) const { // B^{-1}(tau2) ... B^{-1}(tau1)
-             return BorBinv(1, itau1, itau2, tlist, vlist); 
-         }
-
-    private:
-             
-
-         Mat BorBinv(const int sign, const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist) const { 
+        
+         // it can do  B(tau1)... B(tau2) * A  when sign = -1
+         // or        A* B(tau2)^{-1} ... B(tau1)^{-1} when sign = 1 
+         void propagator1(const int sign, const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist, Mat& A) { 
      
              assert(itau1>=itau2); 
+
+             std::string side = (sign ==-1) ? "L" : "R"; 
      
              tlist_type::const_iterator lower, upper; 
              lower = std::lower_bound (tlist.begin(), tlist.end(), itau2, std::less_equal<itime_type>()); //equal is exclude 
              upper = std::upper_bound (tlist.begin(), tlist.end(), itau1); 
-             
+
+             std::cout << "vertices at" << std::endl; 
+             std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
+             std::cout << std::endl;  
+
              //upper > tau1 > lower > tau2 
              if (lower == upper ) {// there is no vertex in between tau1 and tau2 
-                 return expmK(sign, itau1 - itau2); 
+                 return Kprop(sign, itau1 - itau2, side, A); 
+
              }else{
 
-                 Mat res = expmK(sign, *lower - itau2);
-                 //std::cout << "initial " << *lower << " " << itau2 << " " <<  *lower - itau2 << std::endl; 
- 
+                 Kprop(sign, *lower - itau2, side, A);
+
+                 std::cout << "initial " << *lower << " " << itau2 << " " <<  *lower - itau2 << std::endl; 
                  for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {
                     
                      itime_type itau = *it1; 
-                     Vprop(sign, vlist[itau][0], vlist[itau][1], res); 
-                     //std::cout << "act vertex at " << itau  << std::endl; 
+                     Vprop(vlist[itau][0], vlist[itau][1], side, A); 
+                     std::cout << "act vertex at " << itau  << std::endl; 
                  
                      itime_type ditau = (it2 ==upper) ? itau1 - itau: *it2 - itau; 
-                     Kprop(sign, ditau , res); 
-                     //std::cout << "Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
+                     Kprop(sign, ditau , side, A); 
+                     std::cout << "Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
                  }
                  //std::cout << "##############" << std::endl; 
-                 return res; 
+             }
+         }
+
+         // it can do A* B(tau1)... B(tau2)  when sign = -1
+         // or        B(tau2)^{-1} ... B(tau1)^{-1}* A when sign = 1 
+         void propagator2(const int sign, const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist, Mat& A) { 
+     
+             assert(itau1>=itau2); 
+
+             std::string side = (sign ==1) ? "L" : "R"; 
+     
+             tlist_type::const_iterator lower, upper; 
+             lower = std::lower_bound (tlist.begin(), tlist.end(), itau2, std::less_equal<itime_type>()); 
+             upper = std::upper_bound (tlist.begin(), tlist.end(), itau1); 
+                
+             std::cout << "vertices at" << std::endl; 
+             std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
+             std::cout << std::endl;  
+
+             //upper > tau1 > lower > tau2 
+             if (lower == upper ) {// there is no vertex in between tau1 and tau2 
+                 return Kprop(sign, itau1 - itau2, side, A); 
+
+             }else{
+
+                 Kprop(sign, itau1 - *(--upper), side, A);
+                 std::cout << "initial " << *upper << " " << itau1 << " " << itau1 - *upper << std::endl; 
+                 for (tlist_type::const_iterator it1 =upper, it2 =--upper; it1!=lower; --it1, --it2) {
+                    
+                     itime_type itau = *it1; 
+                     Vprop(vlist[itau][0], vlist[itau][1], side, A); 
+                     std::cout << "act vertex at " << itau  << std::endl; 
+                 
+                     itime_type ditau = itau - *it2; 
+                     Kprop(sign, ditau , side, A); 
+                     std::cout << "Kprop " <<  itau << " " << *it2  << " " << ditau << std::endl; 
+                 }
+                 {
+                     //the last step by hand (it1 = lower, it2 point to tau2) 
+                     itime_type itau = *lower; 
+                     Vprop(vlist[itau][0], vlist[itau][1], side, A); 
+                     std::cout << "act vertex at " << itau  << std::endl; 
+             
+                     itime_type ditau = itau - itau2; 
+                     Kprop(sign, ditau , side, A); 
+                     std::cout << "Kprop " <<  itau << " " <<  itau2 << " " << ditau << std::endl; 
+                 }
+                 //std::cout << "##############" << std::endl; 
              }
          }
     
-     
+         /*
          Mat expmK(const int sign, const itime_type itau) const {// exp(sign * tau * w)
              assert(itau>=0); 
 
@@ -151,38 +231,32 @@ class Green_function{
              
              return v.asDiagonal(); 
          }
+         */
 
-        void Kprop(const int sign, const itime_type itau, Mat& A) const{// exp(-tau *w) * A  or A * exp(tau*w)
+    private:
+
+        void Kprop(const int sign, const itime_type itau, const std::string side, Mat& A) const{
             if (itau ==0) 
                 return; 
                 
             time_type tau = itime2time(itau); 
             //std::cout << "tau: " << tau << std::endl; 
 
-            if (sign ==-1) {
+            if (side == "L") { //  exp( sign * tau *w) * A 
                 for(unsigned l=0; l<ns_; ++l) 
-                  A.row(l) *= exp(- tau * wK_(l));
-            }else if (sign == 1) {
+                  A.row(l) *= exp( sign * tau * wK_(l));
+            }else if (side == "R") { // A * exp(sign * tau*w)
                 for(unsigned l=0; l<ns_; ++l) 
-                  A.col(l) *= exp( tau * wK_(l));
+                  A.col(l) *= exp( sign * tau * wK_(l));
             }
         }
 
-        void Vprop(const int sign, const site_type si, const site_type sj , Mat& A) const{ // sign=1: A*U^{dagger} V U;  sign=-1 : U^{dagger} V U * A 
+        void Vprop(const site_type si, const site_type sj, const std::string side,  Mat& A) const{ // A*U^{dagger} V U or U^{dagger} V U * A 
             
-            if (sign == 1){
+            if (side == "R"){
                 A -= 2.* (A*uKdag_.col(si))* uK_.row(si) + 2.* (A*uKdag_.col(sj)) * uK_.row(sj);
-                //A = A*uKdag_; 
-                //A.col(si) *= -1; 
-                //A.col(sj) *= -1; 
-                //A = A* uK_; 
-
-            }else if (sign== -1){
+            }else if (side == "L"){
                 A -= 2.* uKdag_.col(si) * (uK_.row(si)* A) + 2.* uKdag_.col(sj) * (uK_.row(sj)* A); 
-                //A = uK_*A; 
-               //A.row(si) *= -1; 
-               // A.row(sj) *= -1; 
-                //A = uKdag_ * A; 
             }
         }
 
@@ -200,7 +274,10 @@ class Green_function{
         Mat uKdag_; 
 
         itime_type itau_; 
-        Mat gtau_; 
+
+        //gtau = U_*D_*V_
+        Mat U_, D_, V_; 
+
 };
 
 #endif

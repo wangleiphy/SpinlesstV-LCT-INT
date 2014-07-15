@@ -54,14 +54,17 @@ int main(){
     std::cout << std::endl; 
           
     itime_type itau1 = 3143890026; //(2.5/beta)*std::numeric_limits<itime_type>::max(); 
-    itime_type itau2 = 167542; //(0.513/beta)*std::numeric_limits<itime_type>::max();  
+    itime_type itau2 = 787846414; //(0.513/beta)*std::numeric_limits<itime_type>::max();  
 
-    Mat B = gf.B(itau1, itau2, tlist, vlist); 
-    //std::cout << "B:\n" << B << std::endl; 
+    Mat B = Mat::Identity(nsite, nsite); 
+    gf.propagator1(-1, itau1, itau2, tlist, vlist, B);
+    std::cout << "B:\n" << B << std::endl; 
+
     std::cout << "###########" << std::endl; 
-    Mat Binv = gf.Binv(itau1, itau2, tlist, vlist); 
-    //std::cout << "Binv:\n" << Binv << std::endl; 
-    
+    Mat Binv = Mat::Identity(nsite, nsite); 
+    gf.propagator1(1, itau1, itau2, tlist, vlist, Binv);
+
+    std::cout << "Binv:\n" << Binv << std::endl; 
     std::cout << "B*Binv:\n" << B*Binv << std::endl; 
 
     return 0; 

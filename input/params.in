@@ -11,5 +11,5 @@ SEED = 42
 RECALC_PERIOD = 10
 BINNUMBER = 256
 filename = '../data/test.dat'
-NBLOCKS = 5
+NBLOCKS = 1
 STEPS_PER_BLOCK= 10

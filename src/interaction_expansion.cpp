@@ -48,7 +48,7 @@ void InteractionExpansion::update()// sweep in one block
 
    for (unsigned i=0; i< nblock; ++i){
 
-      sweeps++;
+      sweeps++; // one sweep means try go through a block (with steps_per_block updates)
       interaction_expansion_step();                
  
       iblock += direction; 
@@ -66,7 +66,7 @@ void InteractionExpansion::update()// sweep in one block
 
 
 void InteractionExpansion::measure(){
-  if (sweeps  <  therm_steps) 
+  if (sweeps < therm_steps) 
    {
     //do nothing 
    }else{

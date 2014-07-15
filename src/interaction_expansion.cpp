@@ -20,7 +20,6 @@ beta(1./temperature),
 V(boost::lexical_cast<double>(parms["V"])),                        
 tlist(), 
 vlist(), 
-gf(K_, beta), 
 recalc_period(parms["RECALC_PERIOD"] | 500),
 nblock(parms["NBLOCKS"] | 1),
 steps_per_block(parms["STEPS_PER_BLOCK"] | 100),
@@ -28,7 +27,8 @@ blocksize(itime_max/nblock),
 iblock(0),
 direction(nblock==1? 0:1),
 sweeps(0),
-sign(1.)
+sign(1.), 
+gf(K_, beta, nblock, blocksize)
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,std::numeric_limits<itime_type>::max())), 
 //bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))

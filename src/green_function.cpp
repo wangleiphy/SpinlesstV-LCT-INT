@@ -4,7 +4,7 @@
 
 int main(){
     
-    time_type beta = 4.0; 
+    time_type beta = 0.2; 
     site_type nsite = 8; 
     Mat K = Mat::Zero(nsite, nsite); 
 
@@ -13,8 +13,9 @@ int main(){
         K((i+1)%nsite, i) = -1.0; 
     }
 
-    Green_function gf(K, beta); 
-
+    unsigned nblock = 5; 
+    unsigned blocksize = itime_max/nblock; 
+    Green_function gf(K, beta, nblock, blocksize); 
 
     typedef boost::mt19937 engine_type;
     engine_type eng(42);
@@ -27,7 +28,7 @@ int main(){
     tlist_type tlist; 
     vlist_type vlist; 
     
-    unsigned Nv = 10;   
+    unsigned Nv = 1;   
     itime_type itau; 
     for (unsigned i=0; i< Nv; ++i) {
         itau = itime_rng(); 
@@ -45,8 +46,14 @@ int main(){
     //Mat B = gf.B(itau1, itau2, tlist, vlist); 
     //std::cout << "B:\n" << B << std::endl; 
 
+    itau = itime_rng(); 
     Mat G = gf.G(itau, tlist, vlist); 
     std::cout << "G:\n" << G << std::endl; 
+
+    Mat Gstable = gf.Gstable(itau, tlist, vlist); 
+    std::cout << "Gstable:\n" << Gstable << std::endl; 
+
+    /*
     std::cout << "w: " << G.determinant() << std::endl; 
 
     std::cout << "tlist: "; 
@@ -66,6 +73,7 @@ int main(){
 
     std::cout << "Binv:\n" << Binv << std::endl; 
     std::cout << "B*Binv:\n" << B*Binv << std::endl; 
+    */
 
     return 0; 
 }

@@ -10,13 +10,15 @@ class Green_function{
     public:
 
         ///constructor: how many time slices, how many sites
-        Green_function(const Mat& K, const time_type beta)
+        Green_function(const Mat& K, const time_type beta, const unsigned nblock, const unsigned blocksize)
         :ns_(K.rows())
         ,beta_(beta)
         ,itau_(0)
         ,U_(Mat::Identity(ns_, ns_))
         ,D_(Mat::Zero(ns_, ns_))
         ,V_(Mat::Identity(ns_, ns_))
+        ,nblock_(nblock)// number of blocks 
+        ,blocksize_(blocksize)
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;
@@ -114,50 +116,62 @@ class Green_function{
          Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
            //Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
            //Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
-   
+       
+            Mat B_tau_0 = Mat::Identity(ns_, ns_); 
+            propagator1(-1, itau, 0, tlist, vlist, B_tau_0);
+            
+            Mat B_beta_tau =  Mat::Identity(ns_, ns_);
+            propagator2(-1, itime_max, itau, tlist, vlist, B_beta_tau);
+            
+            Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
+            return res.inverse(); 
+         }
+
+        Mat Gstable(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
           //B_tau_0 = U1*D1*V1
           Mat U1 = Mat::Identity(ns_, ns_); 
           Mat D1 = Mat::Identity(ns_, ns_); 
           Mat V1 = Mat::Identity(ns_, ns_); 
            
-          unsigned b = itau/blocksize; //block index 
-        
+          unsigned b = itau/blocksize_; //block index 
+          std::cout << "block: " << b << std::endl; 
+
            for (unsigned ib=0; ib< b; ++ib) {
-                propagator1(-1, (ib+1)*blocksize, ib*blocksize, tlist, vlist, U1);
-                U1 = U1*D1; 
-                Eigen::JacobiSVD<Mat> svd(U1, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+                propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, U1);
+
+                Eigen::JacobiSVD<Mat> svd(U1*D1, Eigen::ComputeThinU | Eigen::ComputeThinV); 
                 U1 = svd.matrixU();
                 D1 = svd.singularValues().asDiagonal();
-                V1 = svd.matrixV()* V1;
+                V1 = svd.matrixV().adjoint()* V1;
            }
-           propagator1(-1, itau, b*blocksize, tlist, vlist, U1);
-
+           propagator1(-1, itau, b*blocksize_, tlist, vlist, U1);
+        
           //B_beta_tau = U2*D2*V2
           Mat U2 = Mat::Identity(ns_, ns_); 
           Mat D2 = Mat::Identity(ns_, ns_); 
           Mat V2 = Mat::Identity(ns_, ns_); 
 
-          for (unsigned ib=blocks; ib> b+1; --ib) {
-            propagator2(-1, b*blocksize, (b-1)*blocksize , tlist, vlist, V2);
-            V2 = D2*V2; 
-            Eigen::JacobiSVD<Mat> svd(V2, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-            U2 = U1*svd.matrixU();
-            D2 = svd.singularValues().asDiagonal();
-            V2 = svd.matrixV();
-          }
-           propagator2(-1, (b+1)*blocksize, itau, tlist, vlist, V2);
+          for (unsigned ib=nblock_; ib> b+1; --ib) {
+            propagator2(-1, ib*blocksize_, (ib-1)*blocksize_, tlist, vlist, V2);
 
-           Mat res= V2.adjoint() * U1.adjoint()+ D1.asDiagonal() * V1 * U2 * D2.asDiagonal(); 
+            Eigen::JacobiSVD<Mat> svd(D2*V2, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+            U2 = U2*svd.matrixU();
+            D2 = svd.singularValues().asDiagonal();
+            V2 = svd.matrixV().adjoint();
+          }
+
+           propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, V2);
+
+           Mat res= U1.inverse()*V2.inverse() + D1 * V1 * U2 * D2;
 
            Eigen::JacobiSVD<Mat> svd(res, Eigen::ComputeThinU | Eigen::ComputeThinV); 
            
            Mat U, D, V;   
            U = svd.matrixU(); 
-           Dinv = (1./svd.singularValues()).asDiagonal(); 
+           D = svd.singularValues().asDiagonal(); 
            V = svd.matrixV().adjoint();
 
-           return V2.adjoint() * V.adjoint() * Dinv * U.adjoint() * U1.adjoint(); 
-
+           return (V*V2).inverse() * D.inverse() * (U1*U).inverse(); 
          }
         
          /*
@@ -320,6 +334,9 @@ class Green_function{
 
         //gtau = U_*D_*V_
         Mat U_, D_, V_; 
+        
+        //blocks are used when calculating G from scratch 
+        unsigned nblock_, blocksize_; 
 
 };
 

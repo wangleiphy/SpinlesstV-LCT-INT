@@ -75,7 +75,6 @@ private:
   const double V;                        
   tlist_type tlist; //a list contains time where we have vertex 
   vlist_type vlist; //map from tau to sites 
-  Green_function gf; 
   
   const unsigned recalc_period;                
   const unsigned nblock; 
@@ -86,6 +85,8 @@ private:
   unsigned long sweeps;        
 
   double sign;
+
+  Green_function gf; 
     
   template<typename T>
   T randomint(const T i) {return random() * i;}//random int [0, i) 

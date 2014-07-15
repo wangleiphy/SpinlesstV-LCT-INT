@@ -56,6 +56,7 @@ private:
   void measure_observables();
   // in file measure.cpp
   void measure_M2();
+  void measure_vhist(); 
 
   /*private member variables, constant throughout the simulation*/
   const alps::Parameters Params;

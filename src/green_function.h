@@ -37,7 +37,7 @@ class Green_function{
             Mat gtau = G(itau_, tlist, vlist); 
 
             double max_diff = ((gtau - gtau_).cwiseAbs()).maxCoeff(); 
-            if(max_diff > 1.e-8)
+            if(max_diff > 1.e-6)
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
             
             gtau_ = gtau; 

@@ -48,5 +48,4 @@ target_link_libraries(main ${ALPS_LIBRARIES})
 add_executable(test ${SOURCE} test.cpp)
 target_link_libraries(test ${ALPS_LIBRARIES})
 
-
-#install(TARGETS main DESTINATION bin)
+install(TARGETS main DESTINATION bin)

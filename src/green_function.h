@@ -37,7 +37,7 @@ class Green_function{
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
 
-            Mat gtau = G(itau_, tlist, vlist); // from scratch 
+            Mat gtau = Gstable(itau_, tlist, vlist); // from scratch 
 
             double max_diff = ((gtau - U_*D_*V_).cwiseAbs()).maxCoeff(); 
             if(max_diff > 1.e-6)
@@ -134,7 +134,6 @@ class Green_function{
           Mat V1 = Mat::Identity(ns_, ns_); 
            
           unsigned b = itau/blocksize_; //block index 
-          std::cout << "block: " << b << std::endl; 
 
            for (unsigned ib=0; ib< b; ++ib) {
                 propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, U1);

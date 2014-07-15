@@ -4,7 +4,7 @@
 
 int main(){
     
-    time_type beta = 4.; 
+    time_type beta = 4.0; 
     site_type nsite = 8; 
     Mat K = Mat::Zero(nsite, nsite); 
 
@@ -27,19 +27,20 @@ int main(){
     tlist_type tlist; 
     vlist_type vlist; 
     
-    unsigned Nv = 5;   
+    unsigned Nv = 10;   
     itime_type itau; 
     for (unsigned i=0; i< Nv; ++i) {
         itau = itime_rng(); 
 
         tlist.insert(itau); 
 
-        vlist[itau].push_back(1);  
-        vlist[itau].push_back(2);  
+        std::vector<site_type> sites; 
+        sites.push_back(1);  
+        sites.push_back(2);  
+
+        vlist[itau] = sites;
     }
 
-    //itime_type itau1 = 3143890026; //(2.5/beta)*std::numeric_limits<itime_type>::max(); 
-    //itime_type itau2 = 1608637542; //(0.513/beta)*std::numeric_limits<itime_type>::max();  
 
     //Mat B = gf.B(itau1, itau2, tlist, vlist); 
     //std::cout << "B:\n" << B << std::endl; 
@@ -47,6 +48,21 @@ int main(){
     Mat G = gf.G(itau, tlist, vlist); 
     std::cout << "G:\n" << G << std::endl; 
     std::cout << "w: " << G.determinant() << std::endl; 
+
+    std::cout << "tlist: "; 
+    std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+    std::cout << std::endl; 
+          
+    itime_type itau1 = 3143890026; //(2.5/beta)*std::numeric_limits<itime_type>::max(); 
+    itime_type itau2 = 167542; //(0.513/beta)*std::numeric_limits<itime_type>::max();  
+
+    Mat B = gf.B(itau1, itau2, tlist, vlist); 
+    //std::cout << "B:\n" << B << std::endl; 
+    std::cout << "###########" << std::endl; 
+    Mat Binv = gf.Binv(itau1, itau2, tlist, vlist); 
+    //std::cout << "Binv:\n" << Binv << std::endl; 
+    
+    std::cout << "B*Binv:\n" << B*Binv << std::endl; 
 
     return 0; 
 }

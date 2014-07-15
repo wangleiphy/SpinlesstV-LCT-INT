@@ -25,6 +25,8 @@ recalc_period(parms["RECALC_PERIOD"] | 500),
 nblock(parms["NBLOCKS"] | 1),
 steps_per_block(parms["STEPS_PER_BLOCK"] | 100),
 blocksize(itime_max/nblock),
+iblock(0),
+direction(nblock==1? 0:1),
 sweeps(0),
 sign(1.)
 //eng_(parms["SEED"] |42), 
@@ -41,13 +43,27 @@ sign(1.)
 }
 
 
-void InteractionExpansion::update()
+void InteractionExpansion::update()// sweep in one block 
 {
-   sweeps++;
-   interaction_expansion_step();                
-   if(sweeps % recalc_period ==0)
-      gf.rebuild(tlist, vlist);
+
+   for (unsigned i=0; i< nblock; ++i){
+
+      sweeps++;
+      interaction_expansion_step();                
+ 
+      iblock += direction; 
+      gf.blockjump(iblock*blocksize, tlist, vlist); // we jump to a new block and calculate gf at its time origin 
+ 
+      //if hit the end, revert the sweep direction 
+      if (iblock == nblock-1 || iblock == 0)
+          direction *= -1; 
+ 
+      if(sweeps % recalc_period ==0)
+         gf.rebuild(tlist, vlist);
+
+    }
 }
+
 
 void InteractionExpansion::measure(){
   if (sweeps  <  therm_steps) 
@@ -59,5 +75,5 @@ void InteractionExpansion::measure(){
 }
 
 double InteractionExpansion::fraction_completed() const {
-    return (sweeps < therm_steps ? 0. : ( sweeps - therm_steps )/double(mc_steps));
+    return (sweeps < therm_steps ? 0. : (sweeps - therm_steps)/double(nblock)/double(mc_steps));
 }

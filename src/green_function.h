@@ -40,10 +40,12 @@ class Green_function{
             
             gtau_ = gtau; 
         }
-
+        
+        //jump to a new time itau 
         void blockjump(const itime_type itau, const tlist_type& tlist, vlist_type& vlist){
              itau_ = itau; 
-             gtau_ = G(itau_, tlist, vlist); 
+             gtau_ = G(itau_, tlist, vlist); //from scratch 
+             //gtau_ = wrap(itau, tlist, vlist); //fast wrap 
         }
 
         const Mat& gtau()const {return gtau_; }

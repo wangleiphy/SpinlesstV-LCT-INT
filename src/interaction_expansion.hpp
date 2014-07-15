@@ -81,6 +81,7 @@ private:
   const unsigned steps_per_block;        
   const itime_type blocksize;
   unsigned iblock; 
+  int direction; 
   unsigned long sweeps;        
 
   double sign;

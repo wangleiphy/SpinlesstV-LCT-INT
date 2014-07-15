@@ -63,7 +63,7 @@ class MpiSimulation : public InteractionExpansion
                                   << "Time used " << schedule_checker.timespend() << "s. " 
                                   << "Sweeps " << progress()  << " "
                                   << "PertOrder " << pertorder()  << " "
-                                  << "Block " << block()  << std::endl;
+                                  << "Block " << block()  << std::endl; 
 
                 }
             }

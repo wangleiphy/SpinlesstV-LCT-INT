@@ -58,22 +58,22 @@ class Green_function{
 
             if (itau >= itau_) {
 
-                std::cout << "B*Binv: " << itau << " " << itau_ << "\n" << B(itau, itau_, tlist, vlist) * Binv(itau, itau_, tlist, vlist) << std::endl;
+                //std::cout << "B*Binv: " << itau << " " << itau_ << "\n" << B(itau, itau_, tlist, vlist) * Binv(itau, itau_, tlist, vlist) << std::endl;
 
-                std::cout << "det(B):\n" <<  B(itau, itau_, tlist, vlist).determinant() << std::endl; 
+                //std::cout << "det(B):\n" <<  B(itau, itau_, tlist, vlist).determinant() << std::endl; 
 
-                std::cout << "Binv:\n" <<  Binv(itau, itau_, tlist, vlist) << std::endl; 
-                std::cout << "B^{-1}:\n" <<  B(itau, itau_, tlist, vlist).inverse() << std::endl; 
+                //std::cout << "Binv:\n" <<  Binv(itau, itau_, tlist, vlist) << std::endl; 
+                //std::cout << "B^{-1}:\n" <<  B(itau, itau_, tlist, vlist).inverse() << std::endl; 
 
                 gtau_ = B(itau, itau_, tlist, vlist) * gtau_ * Binv(itau, itau_, tlist, vlist);
                 itau_ = itau; 
             }else{
 
-                std::cout << "B*Binv: " << itau << " " << itau_ << "\n" << B(itau_, itau, tlist, vlist) * Binv(itau_, itau, tlist, vlist) << std::endl;
+                //std::cout << "B*Binv: " << itau << " " << itau_ << "\n" << B(itau_, itau, tlist, vlist) * Binv(itau_, itau, tlist, vlist) << std::endl;
 
-                std::cout << "det(B):\n" <<  B(itau_, itau, tlist, vlist).determinant() << std::endl; 
-                std::cout << "Binv:\n" <<  Binv(itau_, itau, tlist, vlist) << std::endl; 
-                std::cout << "B^{-1}:\n" <<  B(itau_, itau, tlist, vlist).inverse() << std::endl; 
+                //std::cout << "det(B):\n" <<  B(itau_, itau, tlist, vlist).determinant() << std::endl; 
+                //std::cout << "Binv:\n" <<  Binv(itau_, itau, tlist, vlist) << std::endl; 
+                //std::cout << "B^{-1}:\n" <<  B(itau_, itau, tlist, vlist).inverse() << std::endl; 
 
                 gtau_ = Binv(itau_, itau, tlist, vlist) * gtau_  * B(itau_, itau, tlist, vlist); 
                 itau_ = itau; 
@@ -121,17 +121,17 @@ class Green_function{
              }else{
 
                  Mat res = expmK(sign, *lower - itau2);
-                 std::cout << "initial " << *lower << " " << itau2 << " " <<  *lower - itau2 << std::endl; 
+                 //std::cout << "initial " << *lower << " " << itau2 << " " <<  *lower - itau2 << std::endl; 
  
                  for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {
                     
                      itime_type itau = *it1; 
                      Vprop(sign, vlist[itau][0], vlist[itau][1], res); 
-                     std::cout << "act vertex at " << itau  << std::endl; 
+                     //std::cout << "act vertex at " << itau  << std::endl; 
                  
                      itime_type ditau = (it2 ==upper) ? itau1 - itau: *it2 - itau; 
                      Kprop(sign, ditau , res); 
-                     std::cout << "Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
+                     //std::cout << "Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
                  }
                  //std::cout << "##############" << std::endl; 
                  return res; 

@@ -8,9 +8,9 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
   //Mat gtau = gf.G(itau, tlist, vlist) ; 
 
   Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member 
-  std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
-  std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
-  std::cout << "################################################ max diff:" <<  ((gtau - gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
+  //std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
+  //std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
+  //std::cout << "################################################ max diff:" <<  ((gtau - gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
 
   site_type si = sites[0]; 
   site_type sj = sites[1]; 
@@ -54,9 +54,9 @@ double InteractionExpansion::remove_impl(const itime_type itau, const bool compu
  //Mat gtau = gf.G(itau, tlist, vlist) ; 
 
  Mat& gtau = gf.wrap(itau, tlist, vlist); // reference to its private member, gtau is in eigen basis 
- std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
- std::cout << "gtau from scratch:\n"<<   gf.G(itau, tlist, vlist) << std::endl; 
- std::cout << "################################################ max diff:" <<  ((gtau - gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
+ //std::cout << "gtau from wrap:\n"<< gtau<< std::endl; 
+ //std::cout << "gtau from scratch:\n"<<   gf.G(itau, tlist, vlist) << std::endl; 
+ //std::cout << "################################################ max diff:" <<  ((gtau - gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
  
  site_type si = vlist[itau][0]; 
  site_type sj = vlist[itau][1]; 

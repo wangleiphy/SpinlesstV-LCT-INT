@@ -4,7 +4,7 @@
 
 void InteractionExpansion::test(){
     
-      unsigned Ntry = 4; 
+      unsigned Ntry = 100; 
 
       for (unsigned itry = 0; itry < Ntry ; ++itry) {
 

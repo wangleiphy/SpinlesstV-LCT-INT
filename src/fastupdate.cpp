@@ -9,10 +9,10 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
 
   gf.wrap(itau, tlist, vlist); // reference to its private member 
     
-  const Mat& gtau = gf.gtau(); 
-  std::cout << "gtau from wrap:\n" << gtau << std::endl; 
-  std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
-  std::cout << "################################################ max diff:" <<  ((gtau- gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
+  //const Mat gtau = gf.gtau(); 
+  //std::cout << "gtau from wrap:\n" << gtau << std::endl; 
+  //std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
+  //std::cout << "################################################ max diff:" <<  ((gtau- gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
 
   site_type si = sites[0]; 
   site_type sj = sites[1]; 
@@ -26,13 +26,13 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
   }else{
 
         gf.update(si, sj, gij); 
-        std::cout << "gtau from fastupdate:\n"<< gf.gtau() << std::endl; 
+        //std::cout << "gtau from fastupdate:\n"<< gf.gtau() << std::endl; 
    
         //update the vertex configuration 
         tlist.insert(itau); 
         vlist[itau] = sites; 
    
-        std::cout << "gtau from scratch:\n"<<  gf.G(itau, tlist, vlist) << std::endl; 
+        //std::cout << "gtau from scratch:\n"<<  gf.G(itau, tlist, vlist) << std::endl; 
   }
 
   return ratio; 
@@ -49,10 +49,10 @@ double InteractionExpansion::remove_impl(const itime_type itau, const bool compu
 
  gf.wrap(itau, tlist, vlist); // reference to its private member, gtau is in eigen basis 
 
- const Mat& gtau = gf.gtau(); 
- std::cout << "gtau from wrap:\n" << gtau << std::endl; 
- std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
- std::cout << "################################################ max diff:" <<  (( gtau - gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
+ //const Mat gtau = gf.gtau(); 
+ //std::cout << "gtau from wrap:\n" << gtau << std::endl; 
+ //std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
+ //std::cout << "################################################ max diff:" <<  (( gtau - gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
 
  site_type si = vlist[itau][0]; 
  site_type sj = vlist[itau][1]; 
@@ -66,13 +66,12 @@ double InteractionExpansion::remove_impl(const itime_type itau, const bool compu
  }else{
 
      gf.update(si, sj, gij); 
-     std::cout << "gtau from fastupdate:\n"<< gf.gtau() << std::endl; 
+     //std::cout << "gtau from fastupdate:\n"<< gf.gtau() << std::endl; 
      
      //update the vertex configuration 
      tlist.erase(itau); 
      vlist.erase(itau); 
-     
-     std::cout << "gtau from scratch:\n"<< gf.G(itau, tlist, vlist) << std::endl; 
+     //std::cout << "gtau from scratch:\n"<< gf.G(itau, tlist, vlist) << std::endl; 
     
  }
      return ratio; 

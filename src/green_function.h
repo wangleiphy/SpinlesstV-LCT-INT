@@ -35,16 +35,17 @@ class Green_function{
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
 
-            Mat gtau = G(itau_, tlist, vlist); 
+            Mat gtau = G(itau_, tlist, vlist); // from scratch 
 
             double max_diff = ((gtau - U_*D_*V_).cwiseAbs()).maxCoeff(); 
             if(max_diff > 1.e-6)
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
-            
-            //gtau_ = gtau; 
-            //U_ = 
-            //D_ = 
-            //V_ = 
+           
+            Eigen::JacobiSVD<Mat> svd(gtau, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+
+            U_ = svd.matrixU(); 
+            D_ = svd.singularValues().asDiagonal(); 
+            V_ = svd.matrixV().adjoint();
         }
         
         /*
@@ -206,7 +207,7 @@ class Green_function{
                      //the last step by hand (it1 = lower, it2 point to tau2) 
                      itime_type itau = *lower; 
                      Vprop(vlist[itau][0], vlist[itau][1], side, A); 
-                     std::cout << "act vertex at " << itau  << std::endl; 
+                     //std::cout << "act vertex at " << itau  << std::endl; 
              
                      itime_type ditau = itau - itau2; 
                      Kprop(sign, ditau , side, A); 

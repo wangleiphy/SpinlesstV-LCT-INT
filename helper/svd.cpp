@@ -1,3 +1,4 @@
+//g++ svd.cpp -I/users/lewang/Libs/include/eigen3/
 #include <Eigen/Core>
 #include <Eigen/SVD>
 #include <iostream>
@@ -22,6 +23,10 @@ int main(){
    
     cout << "U*D*V^T"  << endl; 
     cout << svd.matrixU() * svd.singularValues().asDiagonal() * svd.matrixV().adjoint() << endl;  
+
+    cout << svd.matrixV() *  svd.matrixV().adjoint() << endl;  
+
+    cout << svd.matrixU() *  svd.matrixU().adjoint() << endl;  
 
     return 0; 
 }

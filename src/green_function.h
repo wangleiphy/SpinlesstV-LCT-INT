@@ -82,6 +82,12 @@ class Green_function{
              
              // * U^\dagger V U from right 
              V_ -= 2.* (V_* uKdag_.col(si)) * uK_.row(si) + 2.* (V_*uKdag_.col(sj)) * uK_.row(sj); // this thing is fixed 
+
+             Eigen::JacobiSVD<Mat> svd(D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+             
+             U_ = U_*svd.matrixU(); 
+             D_ = svd.singularValues().asDiagonal(); 
+             V_ = svd.matrixV().adjoint()*V_;
         }
         
         //wrap does not change D_  
@@ -107,15 +113,51 @@ class Green_function{
          //equal time Green's function at tau 
          Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
            //Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
+           //Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
+   
+          //B_tau_0 = U1*D1*V1
+          Mat U1 = Mat::Identity(ns_, ns_); 
+          Mat D1 = Mat::Identity(ns_, ns_); 
+          Mat V1 = Mat::Identity(ns_, ns_); 
+           
+          unsigned b = itau/blocksize; //block index 
+        
+           for (unsigned ib=0; ib< b; ++ib) {
+                propagator1(-1, (ib+1)*blocksize, ib*blocksize, tlist, vlist, U1);
+                U1 = U1*D1; 
+                Eigen::JacobiSVD<Mat> svd(U1, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+                U1 = svd.matrixU();
+                D1 = svd.singularValues().asDiagonal();
+                V1 = svd.matrixV()* V1;
+           }
+           propagator1(-1, itau, b*blocksize, tlist, vlist, U1);
 
-           Mat B_tau_0 = Mat::Identity(ns_, ns_); 
-           propagator1(-1, itau, 0, tlist, vlist, B_tau_0);
+          //B_beta_tau = U2*D2*V2
+          Mat U2 = Mat::Identity(ns_, ns_); 
+          Mat D2 = Mat::Identity(ns_, ns_); 
+          Mat V2 = Mat::Identity(ns_, ns_); 
 
-           Mat B_beta_tau =  Mat::Identity(ns_, ns_);
-           propagator1(-1, itime_max, itau, tlist, vlist, B_beta_tau);
+          for (unsigned ib=blocks; ib> b+1; --ib) {
+            propagator2(-1, b*blocksize, (b-1)*blocksize , tlist, vlist, V2);
+            V2 = D2*V2; 
+            Eigen::JacobiSVD<Mat> svd(V2, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+            U2 = U1*svd.matrixU();
+            D2 = svd.singularValues().asDiagonal();
+            V2 = svd.matrixV();
+          }
+           propagator2(-1, (b+1)*blocksize, itau, tlist, vlist, V2);
 
-           Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
-           return res.inverse(); 
+           Mat res= V2.adjoint() * U1.adjoint()+ D1.asDiagonal() * V1 * U2 * D2.asDiagonal(); 
+
+           Eigen::JacobiSVD<Mat> svd(res, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+           
+           Mat U, D, V;   
+           U = svd.matrixU(); 
+           Dinv = (1./svd.singularValues()).asDiagonal(); 
+           V = svd.matrixV().adjoint();
+
+           return V2.adjoint() * V.adjoint() * Dinv * U.adjoint() * U1.adjoint(); 
+
          }
         
          /*

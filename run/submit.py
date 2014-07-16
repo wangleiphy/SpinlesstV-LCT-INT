@@ -17,7 +17,6 @@ if __name__=='__main__':
     
     textoutput = 1 # 
     Maxorder = 1024
-
     
     #this import might overwrite the above default parameters 
     #########################################################
@@ -47,7 +46,10 @@ if __name__=='__main__':
                
                            inputfile = params(latticename, L , W,  
                                               V=V, T= T, 
-                                              Maxorder = Maxorder, Nscratch = Nscratch, 
+                                              Maxorder = Maxorder, 
+                                              RECALC_PERIOD = RECALC_PERIOD, 
+                                              UPDATE_REFRESH_PERIOD = UPDATE_REFRESH_PERIOD, 
+                                              WRAP_REFRESH_PERIOD = WRAP_REFRESH_PERIOD, 
                                               SWEEPS=SWEEPS, THERMALIZATION=THERMALIZATION , 
                                               NBLOCKS = NBLOCKS, STEPS_PER_BLOCK = STEPS_PER_BLOCK,
                                               folder=resfolder, textoutput=textoutput)

@@ -38,11 +38,9 @@ if __name__=='__main__':
     
 
     jobid = input.waitfor 
-    for L in Llist: 
+    for L, T in zip(Llist, Tlist): 
         W = L 
         for V in Vlist:
-            for T in Tlist:
-               
                
                            inputfile = params(latticename, L , W,  
                                               V=V, T= T, 

@@ -23,7 +23,7 @@ int main(){
     //generator for itime index 
     typedef boost::uniform_int<itime_type> dist_type;
     typedef boost::variate_generator<engine_type&, dist_type> rng_type;
-    rng_type itime_rng(eng,dist_type(0,std::numeric_limits<itime_type>::max()));
+    rng_type itime_rng(eng,dist_type(0,itime_max));
 
     tlist_type tlist; 
     vlist_type vlist; 
@@ -61,8 +61,8 @@ int main(){
     std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
     std::cout << std::endl; 
           
-    itime_type itau1 = 3143890026; //(2.5/beta)*std::numeric_limits<itime_type>::max(); 
-    itime_type itau2 = 787846414; //(0.513/beta)*std::numeric_limits<itime_type>::max();  
+    itime_type itau1 = 3143890026; //(2.5/beta)*itime_max; 
+    itime_type itau2 = 787846414; //(0.513/beta)*itime_max;  
 
     Mat B = Mat::Identity(nsite, nsite); 
     gf.propagator1(-1, itau1, itau2, tlist, vlist, B);

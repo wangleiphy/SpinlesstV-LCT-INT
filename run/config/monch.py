@@ -3,20 +3,25 @@ import time
 import re 
 from numpy import arange, array 
 
+#Divisors[2^32 - 1] = {1, 3, 5, 15, 17, 51, 85, 255, 257, 771, 1285, 3855, 4369, 13107, 21845, 65535, 65537, 196611, 327685, 983055, 1114129, 3342387, 5570645, 16711935, 16843009, 50529027, 84215045, 252645135, 286331153, 858993459, 1431655765, 4294967295}
+
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'stablization'
 
-Llist = array([12]) 
+Llist = array([6]) 
 Tlist = 0.75/Llist 
 
-Vlist = [1.2, 1.3, 1.4]
+Vlist = [1.3, 1.4]
 
-Nscratch = 10
-STEPS_PER_BLOCK = 5
-NBLOCKS = 51 
-THERMALIZATION = 10**3
-SWEEPS = 10**4 
+RECALC_PERIOD = 10
+UPDATE_REFRESH_PERIOD = 10
+WRAP_REFRESH_PERIOD = 10
+
+STEPS_PER_BLOCK = 1
+NBLOCKS = 256
+THERMALIZATION = 10**4
+SWEEPS = 10**6 
 
 ##############################
 wtime = '12:00:00'

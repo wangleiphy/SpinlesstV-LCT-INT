@@ -28,7 +28,7 @@ iblock(0),
 direction(nblock==1? 0:1),
 sweeps(0),
 sign(1.), 
-gf(K_, beta, nblock, blocksize)
+gf(K_, beta, nblock, blocksize, parms["UPDATE_REFRESH_PERIOD"] , parms["WRAP_REFRESH_PERIOD"])
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,std::numeric_limits<itime_type>::max())), 
 //bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))

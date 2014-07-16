@@ -44,17 +44,17 @@ class Green_function{
         //fill in storage
         //since initially there is no vertices U and V are all diagonal 
         for (unsigned ib=0; ib< nblock; ++ib) {
-            Eigen::VectorXd v(ns_); 
+            Vec v(ns_); 
             for (site_type l=0; l<ns_; ++l)
                 v(l) = exp(-(itime2time(ib*blocksize)) *wK_(l)); 
-            Rstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v.asDiagonal(), Mat::Identity(ns_, ns_)); 
+            Rstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v, Mat::Identity(ns_, ns_)); 
         }
 
         for (unsigned ib=0; ib< nblock; ++ib) {
-            Eigen::VectorXd v(ns_); 
+            Vec v(ns_); 
             for (site_type l=0; l<ns_; ++l)
                 v(l) = exp(-(beta -itime2time((ib+1)*blocksize)) *wK_(l)); 
-            Lstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v.asDiagonal(), Mat::Identity(ns_, ns_)); 
+            Lstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v, Mat::Identity(ns_, ns_)); 
         }
 
         }
@@ -192,14 +192,15 @@ class Green_function{
             if (b > b_){// move to a larger block on the left  
                 assert(b-b_ ==1) ; 
                     
-                Mat U,D,V;  
+                Mat U,V;  
+                Vec D; 
                 boost::tie(U, D, V) = Rstorage_[b_];
                 propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, U);
 
                 if (refresh){
-                   Eigen::JacobiSVD<Mat> svd(U*D, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+                   Eigen::JacobiSVD<Mat> svd(U*D.asDiagonal(), Eigen::ComputeThinU | Eigen::ComputeThinV); 
                    U = svd.matrixU();
-                   D = svd.singularValues().asDiagonal();
+                   D = svd.singularValues();
                    V = svd.matrixV().adjoint()*V;
                 }
 
@@ -208,14 +209,15 @@ class Green_function{
             }else if (b< b_){// move to smaller block 
                 assert(b_-b ==1); 
                 
-                Mat U, D, V;  
+                Mat U, V;  
+                Vec D; 
                 boost::tie(U, D, V) = Lstorage_[b_];
                 propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, V);
 
                 if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(D*V, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+                  Eigen::JacobiSVD<Mat> svd(D.asDiagonal()*V, Eigen::ComputeThinU | Eigen::ComputeThinV); 
                   U = U*svd.matrixU();
-                  D = svd.singularValues().asDiagonal();
+                  D = svd.singularValues();
                   V = svd.matrixV().adjoint();
                 }
 
@@ -246,17 +248,19 @@ class Green_function{
           //std::cout << "block: " << b << std::endl; 
 
            //B_tau_0 = U1*D1*V1
-           Mat U1, D1, V1;  
+           Mat U1, V1;  
+           Vec D1; 
            boost::tie(U1, D1, V1) = Rstorage_[b]; 
            propagator1(-1, itau, b*blocksize_, tlist, vlist, U1);
         
            //B_beta_tau = U2*D2*V2
-           Mat U2, D2, V2;  
+           Mat U2, V2;  
+           Vec D2;
            boost::tie(U2, D2, V2) = Lstorage_[b]; 
            propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, V2);
 
 
-           Mat res= U1.inverse()*V2.inverse() + D1 * V1 * U2 * D2;
+           Mat res= U1.inverse()*V2.inverse() + D1.asDiagonal() * V1 * U2 * D2.asDiagonal();
 
            Eigen::JacobiSVD<Mat> svd(res, Eigen::ComputeThinU | Eigen::ComputeThinV); 
            
@@ -440,8 +444,8 @@ class Green_function{
         unsigned wrap_refresh_period_; 
 
         //storage
-        std::vector<boost::tuple<Mat, Mat, Mat> > Lstorage_;
-        std::vector<boost::tuple<Mat, Mat, Mat> > Rstorage_;
+        std::vector<boost::tuple<Mat, Vec, Mat> > Lstorage_;
+        std::vector<boost::tuple<Mat, Vec, Mat> > Rstorage_;
 
 };
 

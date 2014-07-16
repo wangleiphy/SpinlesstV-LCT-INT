@@ -3,8 +3,8 @@
 
 void InteractionExpansion::print(std::ostream &os) const{
   os<<"***********************************************************************************************************"<<std::endl;
-  os<<"***                                      CTQMC for spinless fermions                                    ***"<<std::endl;
-  os<<"***                                      Lei Wang, ETH Zurich, 2013                                     ***"<<std::endl;
+  os<<"***                                      CTBSS for spinless fermions                                    ***"<<std::endl;
+  os<<"***                                      Lei Wang, ETH Zurich, 2014                                     ***"<<std::endl;
   os<<"***                                      lewang@phys.ethz.ch                                            ***"<<std::endl;
   os<<"***********************************************************************************************************"<<std::endl;
   os<<"n_bond: "<< n_bond << std::endl; 

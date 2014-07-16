@@ -227,7 +227,7 @@ class Green_function{
 
          //equal time Green's function at tau 
          //for test only 
-         Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
+        boost::tuple<Mat, Mat, Mat> G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
            //Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
            //Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
        
@@ -238,7 +238,10 @@ class Green_function{
             propagator2(-1, itime_max, itau, tlist, vlist, B_beta_tau);
             
             Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
-            return res.inverse(); 
+
+            Eigen::JacobiSVD<Mat> svd(res.inverse(), Eigen::ComputeThinU | Eigen::ComputeThinV); 
+
+            return boost::tie(svd.matrixU(), svd.singularValues().asDiagonal(), svd.matrixV().adjoint() ) ; 
          }
         
          //we return U,D,V but not G 
@@ -258,10 +261,30 @@ class Green_function{
            Vec D2;
            boost::tie(U2, D2, V2) = Lstorage_[b]; 
            propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, V2);
+        
+           /*(3)
+           Eigen::JacobiSVD<Mat> svd((D1.asDiagonal()*V1)*(U2*D2.asDiagonal()), Eigen::ComputeThinU | Eigen::ComputeThinV); 
+           Mat U, D, V;  
+           U = U1 * svd.matrixU(); 
+           D = svd.singularValues().asDiagonal(); 
+           V = svd.matrixV().adjoint()*V2;
 
+           Mat res= U.inverse()*V.inverse() + D;
 
-           Mat res= U1.inverse()*V2.inverse() + D1.asDiagonal() * V1 * U2 * D2.asDiagonal();
+           Eigen::JacobiSVD<Mat> svd2(res, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+           D =  svd2.singularValues().asDiagonal();
 
+           return boost::make_tuple((svd2.matrixV().adjoint()*V).inverse() ,  D.inverse() ,  (U*svd2.matrixU()).inverse()); 
+           */
+
+           /*(1)
+           Mat res = Mat::Identity(ns_, ns_) + (U1*D1.asDiagonal()*V1) * (U2*D2.asDiagonal()*V2); 
+           Eigen::JacobiSVD<Mat> svd(res.inverse(), Eigen::ComputeThinU | Eigen::ComputeThinV); 
+           return boost::tie(svd.matrixU(), svd.singularValues().asDiagonal(), svd.matrixV().adjoint()); 
+           */
+          
+           //(2)
+           Mat res= (V2*U1).inverse() + D1.asDiagonal() * (V1* U2) * D2.asDiagonal();
            Eigen::JacobiSVD<Mat> svd(res, Eigen::ComputeThinU | Eigen::ComputeThinV); 
            
            Mat U, D, V;   
@@ -270,6 +293,7 @@ class Green_function{
            V = svd.matrixV().adjoint();
 
            return boost::make_tuple((V*V2).inverse() ,  D.inverse() ,  (U1*U).inverse()); 
+
          }
         
          /*

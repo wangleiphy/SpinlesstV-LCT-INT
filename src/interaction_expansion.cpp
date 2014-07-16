@@ -49,6 +49,9 @@ void InteractionExpansion::update()// sweep in one block
 
       sweeps++; // one sweep means try go through a block (with steps_per_block updates)
       interaction_expansion_step();                
+
+      if(sweeps % recalc_period ==0)
+         gf.rebuild(tlist, vlist);
  
       iblock += direction; 
       //we jump to a new block and calculate gf at its time origin
@@ -58,8 +61,6 @@ void InteractionExpansion::update()// sweep in one block
       if (iblock == nblock-1 || iblock == 0)
           direction *= -1; 
  
-      if(sweeps % recalc_period ==0)
-         gf.rebuild(tlist, vlist);
 
     }
 }

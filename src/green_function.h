@@ -18,12 +18,13 @@ class Green_function{
         ,U_(Mat::Identity(ns_, ns_))
         ,D_(Mat::Zero(ns_, ns_))
         ,V_(Mat::Identity(ns_, ns_))
-        ,nblock_(nblock)// number of blocks 
         ,blocksize_(blocksize)
         ,update_refresh_counter_(0)
         ,update_refresh_period_(update_refresh_period)
         ,wrap_refresh_counter_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
+        ,Lstorage_(nblock)
+        ,Rstorage_(nblock)
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;
@@ -38,6 +39,24 @@ class Green_function{
          //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
          for(site_type l=0; l<ns_; ++l) 
             D_(l, l) = wK_(l)>0. ? 1./(1.+exp(-beta*wK_(l))) : exp(beta_*wK_(l))/(1.+exp(beta_*wK_(l))) ; // it is samething, to avoid overflow 
+
+
+        //fill in storage
+        //since initially there is no vertices U and V are all diagonal 
+        for (unsigned ib=0; ib< nblock; ++ib) {
+            Eigen::VectorXd v(ns_); 
+            for (site_type l=0; l<ns_; ++l)
+                v(l) = exp(-(itime2time(ib*blocksize)) *wK_(l)); 
+            Rstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v.asDiagonal(), Mat::Identity(ns_, ns_)); 
+        }
+
+        for (unsigned ib=0; ib< nblock; ++ib) {
+            Eigen::VectorXd v(ns_); 
+            for (site_type l=0; l<ns_; ++l)
+                v(l) = exp(-(beta -itime2time((ib+1)*blocksize)) *wK_(l)); 
+            Lstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v.asDiagonal(), Mat::Identity(ns_, ns_)); 
+        }
+
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
@@ -80,6 +99,7 @@ class Green_function{
         }
             
         //update changes D_ and V_ 
+        //but does not affect the storage 
         void update(const site_type si, const site_type sj, const double gij){
 
              //update D_
@@ -106,6 +126,9 @@ class Green_function{
         
         //wrap does not change D_  
         void wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
+
+             unsigned b = itau/blocksize_; //new block index 
+             unsigned b_ = itau_/blocksize_; //old nblock index 
 
              bool refresh = false; 
              if (wrap_refresh_counter_ < wrap_refresh_period_){
@@ -162,9 +185,41 @@ class Green_function{
 
                 itau_ = itau; 
             }
+
+            
+            //when we wrap to a new block we need to update storage 
+            if (b > b_){// move to a larger block on the left  
+                assert(b-b_ ==1) ; 
+                    
+                Mat U,D,V;  
+                boost::tie(U, D, V) = Rstorage_[b_];
+                propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, U);
+
+                Eigen::JacobiSVD<Mat> svd(U*D, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+
+                U = svd.matrixU();
+                D = svd.singularValues().asDiagonal();
+                V = svd.matrixV().adjoint()*V;
+
+                Rstorage_[b] = boost::make_tuple(U, D, V); 
+
+            }else if (b< b_){// move to smaller block 
+                assert(b_-b ==1); 
+                
+                Mat U, D, V;  
+                boost::tie(U, D, V) = Lstorage_[b_];
+                propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, V);
+
+                Eigen::JacobiSVD<Mat> svd(D*V, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+
+                U = U*svd.matrixU();
+                D = svd.singularValues().asDiagonal();
+                V = svd.matrixV().adjoint();
+
+                Lstorage_[b] = boost::make_tuple(U, D, V); 
+            }
         }
 
-        /*
          //equal time Green's function at tau 
          Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
            //Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
@@ -179,43 +234,23 @@ class Green_function{
             Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
             return res.inverse(); 
          }
-         */
         
          //we return U,D,V but not G 
          boost::tuple<Mat, Mat, Mat> Gstable(const itime_type itau, const tlist_type& tlist, vlist_type& vlist)  const {
-          //B_tau_0 = U1*D1*V1
-          Mat U1 = Mat::Identity(ns_, ns_); 
-          Mat D1 = Mat::Identity(ns_, ns_); 
-          Mat V1 = Mat::Identity(ns_, ns_); 
-           
+
           unsigned b = itau/blocksize_; //block index 
           //std::cout << "block: " << b << std::endl; 
 
-           for (unsigned ib=0; ib< b; ++ib) {
-                propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, U1);
-
-                Eigen::JacobiSVD<Mat> svd(U1*D1, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                U1 = svd.matrixU();
-                D1 = svd.singularValues().asDiagonal();
-                V1 = svd.matrixV().adjoint()* V1;
-           }
+           //B_tau_0 = U1*D1*V1
+           Mat U1, D1, V1;  
+           boost::tie(U1, D1, V1) = Lstorage_[b]; 
            propagator1(-1, itau, b*blocksize_, tlist, vlist, U1);
         
-          //B_beta_tau = U2*D2*V2
-          Mat U2 = Mat::Identity(ns_, ns_); 
-          Mat D2 = Mat::Identity(ns_, ns_); 
-          Mat V2 = Mat::Identity(ns_, ns_); 
-
-          for (unsigned ib=nblock_; ib> b+1; --ib) {
-            propagator2(-1, ib*blocksize_, (ib-1)*blocksize_, tlist, vlist, V2);
-
-            Eigen::JacobiSVD<Mat> svd(D2*V2, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-            U2 = U2*svd.matrixU();
-            D2 = svd.singularValues().asDiagonal();
-            V2 = svd.matrixV().adjoint();
-          }
-
+           //B_beta_tau = U2*D2*V2
+           Mat U2, D2, V2;  
+           boost::tie(U2, D2, V2) = Rstorage_[b]; 
            propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, V2);
+
 
            Mat res= U1.inverse()*V2.inverse() + D1 * V1 * U2 * D2;
 
@@ -390,8 +425,8 @@ class Green_function{
         //gtau = U_*D_*V_
         Mat U_, D_, V_; 
         
-        //blocks are used when calculating G from scratch 
-        unsigned nblock_, blocksize_; 
+        //blocksize is used in wrap,when determine the block index 
+        unsigned blocksize_;  
 
         //counter and period for refreshing 
         unsigned update_refresh_counter_; 
@@ -399,6 +434,10 @@ class Green_function{
 
         unsigned wrap_refresh_counter_; 
         unsigned wrap_refresh_period_; 
+
+        //storage
+        std::vector<boost::tuple<Mat, Mat, Mat> > Lstorage_;
+        std::vector<boost::tuple<Mat, Mat, Mat> > Rstorage_;
 
 };
 

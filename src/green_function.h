@@ -128,7 +128,7 @@ class Green_function{
         void wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
 
              unsigned b = itau/blocksize_; //new block index 
-             unsigned b_ = itau_/blocksize_; //old nblock index 
+             unsigned b_ = itau_/blocksize_; //old block index 
 
              bool refresh = false; 
              if (wrap_refresh_counter_ < wrap_refresh_period_){

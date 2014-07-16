@@ -15,7 +15,7 @@ int main(){
 
     unsigned nblock = 5; 
     unsigned blocksize = itime_max/nblock; 
-    Green_function gf(K, beta, nblock, blocksize); 
+    Green_function gf(K, beta, nblock, blocksize, 10, 10); 
 
     typedef boost::mt19937 engine_type;
     engine_type eng(42);

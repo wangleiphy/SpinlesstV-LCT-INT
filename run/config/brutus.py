@@ -10,11 +10,14 @@ Tlist = 0.75/Llist
 
 Vlist = [1.3, 1.4]
 
-Nscratch = 10
+RECALC_PERIOD = 20
+UPDATE_REFRESH_PERIOD = 20
+WRAP_REFRESH_PERIOD = 50
+
 STEPS_PER_BLOCK = 5
 NBLOCKS = 51 
 THERMALIZATION = 10**3
-SWEEPS = 10**4 
+SWEEPS = 10**5
 ##############################
 
 tmin = 60

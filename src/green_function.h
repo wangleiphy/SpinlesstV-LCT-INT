@@ -130,6 +130,8 @@ class Green_function{
              unsigned b = itau/blocksize_; //new block index 
              unsigned b_ = itau_/blocksize_; //old block index 
 
+             //std::cout << "b, b_, itau, itau_: "  << b << " " << b_ << " " << itau << " " << itau_ << std::endl; 
+
              bool refresh = false; 
              if (wrap_refresh_counter_ < wrap_refresh_period_){
                  ++wrap_refresh_counter_; 
@@ -187,6 +189,7 @@ class Green_function{
             }
 
             
+
             //when we wrap to a new block we need to update storage 
             if (b > b_){// move to a larger block on the left  
                 assert(b-b_ ==1) ; 
@@ -244,12 +247,12 @@ class Green_function{
 
            //B_tau_0 = U1*D1*V1
            Mat U1, D1, V1;  
-           boost::tie(U1, D1, V1) = Lstorage_[b]; 
+           boost::tie(U1, D1, V1) = Rstorage_[b]; 
            propagator1(-1, itau, b*blocksize_, tlist, vlist, U1);
         
            //B_beta_tau = U2*D2*V2
            Mat U2, D2, V2;  
-           boost::tie(U2, D2, V2) = Rstorage_[b]; 
+           boost::tie(U2, D2, V2) = Lstorage_[b]; 
            propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, V2);
 
 

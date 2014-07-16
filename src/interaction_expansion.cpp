@@ -53,8 +53,7 @@ void InteractionExpansion::update()// sweep in one block
  
       iblock += direction; 
       //we jump to a new block and calculate gf at its time origin
-      //gf.blockjump(iblock*blocksize, tlist, vlist); //from scratch 
-      //gf.wrap(iblock*blocksize, tlist, vlist); //fast wrap 
+      gf.wrap(iblock*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 
  
       //if hit the end, revert the sweep direction 
       if (iblock == nblock-1 || iblock == 0)

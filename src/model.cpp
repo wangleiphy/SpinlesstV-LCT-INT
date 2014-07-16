@@ -55,11 +55,19 @@ void InteractionExpansion::remove()
 
     unsigned num_vertices = std::distance(lower, upper); //number of vertices in this block
 
-    if(num_vertices < 1)
+    if(num_vertices < 1){
         return; 
+    }
+    
+    //std::cout << "iblock, bounds: " << iblock << " " << iblock*blocksize << " " << (iblock+1)*blocksize << std::endl; 
+    //std::cout << "vertices number " << num_vertices << std::endl; 
+    //std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
+    //std::cout << std::endl;  
 
     std::advance(lower, randomint(num_vertices)); //the vertex to remove 
     itime_type itau = *lower; 
+
+    //std::cout << "itau to remove " << itau << std::endl; 
 
     double metropolis_weight = 4.*num_vertices/(-(beta/nblock)*V*n_bond) * remove_impl(itau, true);
 

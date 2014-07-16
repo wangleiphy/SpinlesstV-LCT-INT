@@ -188,7 +188,6 @@ class Green_function{
                 itau_ = itau; 
             }
 
-            
 
             //when we wrap to a new block we need to update storage 
             if (b > b_){// move to a larger block on the left  
@@ -198,11 +197,12 @@ class Green_function{
                 boost::tie(U, D, V) = Rstorage_[b_];
                 propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, U);
 
-                Eigen::JacobiSVD<Mat> svd(U*D, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-
-                U = svd.matrixU();
-                D = svd.singularValues().asDiagonal();
-                V = svd.matrixV().adjoint()*V;
+                if (refresh){
+                   Eigen::JacobiSVD<Mat> svd(U*D, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+                   U = svd.matrixU();
+                   D = svd.singularValues().asDiagonal();
+                   V = svd.matrixV().adjoint()*V;
+                }
 
                 Rstorage_[b] = boost::make_tuple(U, D, V); 
 
@@ -213,11 +213,12 @@ class Green_function{
                 boost::tie(U, D, V) = Lstorage_[b_];
                 propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, V);
 
-                Eigen::JacobiSVD<Mat> svd(D*V, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-
-                U = U*svd.matrixU();
-                D = svd.singularValues().asDiagonal();
-                V = svd.matrixV().adjoint();
+                if (refresh){
+                  Eigen::JacobiSVD<Mat> svd(D*V, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+                  U = U*svd.matrixU();
+                  D = svd.singularValues().asDiagonal();
+                  V = svd.matrixV().adjoint();
+                }
 
                 Lstorage_[b] = boost::make_tuple(U, D, V); 
             }

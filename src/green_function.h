@@ -62,12 +62,7 @@ class Green_function{
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
             
             Mat U, D, V; 
-
-<<<<<<< HEAD
-            Mat gtau = Gstable(itau_, tlist, vlist); // from scratch 
-=======
             boost::tie(U, D, V) = Gstable(itau_, tlist, vlist); // from scratch 
->>>>>>> cb088dd6bbde7bdb82c1d1a49d12042d5a59c977
 
             double max_diff = ((U*D*V - U_*D_*V_).cwiseAbs()).maxCoeff(); 
             if(max_diff > 1.e-6)
@@ -248,13 +243,7 @@ class Green_function{
          boost::tuple<Mat, Mat, Mat> Gstable(const itime_type itau, const tlist_type& tlist, vlist_type& vlist)  const {
 
           unsigned b = itau/blocksize_; //block index 
-<<<<<<< HEAD
-
-           for (unsigned ib=0; ib< b; ++ib) {
-                propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, U1);
-=======
           //std::cout << "block: " << b << std::endl; 
->>>>>>> cb088dd6bbde7bdb82c1d1a49d12042d5a59c977
 
            //B_tau_0 = U1*D1*V1
            Mat U1, D1, V1;  

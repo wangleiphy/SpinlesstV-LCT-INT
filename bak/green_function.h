@@ -2,6 +2,7 @@
 #define GREEN_FUNCTION_H
 
 #include "types.h"
+#include "storage.hpp"
 #include <boost/tuple/tuple.hpp>
 #include <iterator>
 #include <iostream>
@@ -47,14 +48,18 @@ class Green_function{
             Eigen::VectorXd v(ns_); 
             for (site_type l=0; l<ns_; ++l)
                 v(l) = exp(-(itime2time(ib*blocksize)) *wK_(l)); 
-            Rstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v.asDiagonal(), Mat::Identity(ns_, ns_)); 
+            Rstorage_.U(ib) = Mat::Identity(ns_, ns_); 
+            Rstorage_.D(ib) = v.asDiagonal(); 
+            Rstorage_.V(ib) = Mat::Identity(ns_, ns_);
         }
 
         for (unsigned ib=0; ib< nblock; ++ib) {
             Eigen::VectorXd v(ns_); 
             for (site_type l=0; l<ns_; ++l)
                 v(l) = exp(-(beta -itime2time((ib+1)*blocksize)) *wK_(l)); 
-            Lstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v.asDiagonal(), Mat::Identity(ns_, ns_)); 
+            Lstorage_.U(ib) = Mat::Identity(ns_, ns_); 
+            Lstorage_.D(ib) = v.asDiagonal(); 
+            Lstorage_.V(ib) = Mat::Identity(ns_, ns_);
         }
 
         }
@@ -63,11 +68,7 @@ class Green_function{
             
             Mat U, D, V; 
 
-<<<<<<< HEAD
-            Mat gtau = Gstable(itau_, tlist, vlist); // from scratch 
-=======
             boost::tie(U, D, V) = Gstable(itau_, tlist, vlist); // from scratch 
->>>>>>> cb088dd6bbde7bdb82c1d1a49d12042d5a59c977
 
             double max_diff = ((U*D*V - U_*D_*V_).cwiseAbs()).maxCoeff(); 
             if(max_diff > 1.e-6)
@@ -198,32 +199,25 @@ class Green_function{
             if (b > b_){// move to a larger block on the left  
                 assert(b-b_ ==1) ; 
                     
-                Mat U,D,V;  
-                boost::tie(U, D, V) = Rstorage_[b_];
-                propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, U);
+                propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, Rstorage_.U(b_));
 
-                Eigen::JacobiSVD<Mat> svd(U*D, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+                Eigen::JacobiSVD<Mat> svd(Rstorage_.U(b_) * Rstorage_.D(b_), Eigen::ComputeThinU | Eigen::ComputeThinV); 
 
-                U = svd.matrixU();
-                D = svd.singularValues().asDiagonal();
-                V = svd.matrixV().adjoint()*V;
+                Rstorage_.U(b) = svd.matrixU();
+                Rstorage_.D(b) = svd.singularValues().asDiagonal();
+                Rstorage_.V(b) = svd.matrixV().adjoint() * Rstorage_.V(b_);
 
-                Rstorage_[b] = boost::make_tuple(U, D, V); 
 
             }else if (b< b_){// move to smaller block 
                 assert(b_-b ==1); 
                 
-                Mat U, D, V;  
-                boost::tie(U, D, V) = Lstorage_[b_];
-                propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, V);
+                propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, Lstorage_.V(b_));
 
-                Eigen::JacobiSVD<Mat> svd(D*V, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+                Eigen::JacobiSVD<Mat> svd(Lstorage_.D(b_)*Lstorage_.V(b_), Eigen::ComputeThinU | Eigen::ComputeThinV); 
 
-                U = U*svd.matrixU();
-                D = svd.singularValues().asDiagonal();
-                V = svd.matrixV().adjoint();
-
-                Lstorage_[b] = boost::make_tuple(U, D, V); 
+                Lstorage_.U(b) = Lstorage_.U(b_) * svd.matrixU();
+                Lstorage_.D(b) = svd.singularValues().asDiagonal();
+                Lstorage_.V(b) = svd.matrixV().adjoint();
             }
         }
 
@@ -247,24 +241,21 @@ class Green_function{
          boost::tuple<Mat, Mat, Mat> Gstable(const itime_type itau, const tlist_type& tlist, vlist_type& vlist)  const {
 
           unsigned b = itau/blocksize_; //block index 
-<<<<<<< HEAD
-
-           for (unsigned ib=0; ib< b; ++ib) {
-                propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, U1);
-=======
           //std::cout << "block: " << b << std::endl; 
->>>>>>> cb088dd6bbde7bdb82c1d1a49d12042d5a59c977
 
            //B_tau_0 = U1*D1*V1
-           Mat U1, D1, V1;  
-           boost::tie(U1, D1, V1) = Rstorage_[b]; 
+           Mat U1 = Rstorage_.U(b);
+           Mat D1 = Rstorage_.D(b);
+           Mat V1 = Rstorage_.V(b);
+
            propagator1(-1, itau, b*blocksize_, tlist, vlist, U1);
         
            //B_beta_tau = U2*D2*V2
-           Mat U2, D2, V2;  
-           boost::tie(U2, D2, V2) = Lstorage_[b]; 
-           propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, V2);
+           Mat U2 = Lstorage_.U(b);
+           Mat D2 = Lstorage_.D(b);
+           Mat V2 = Lstorage_.V(b);
 
+           propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, V2);
 
            Mat res= U1.inverse()*V2.inverse() + D1 * V1 * U2 * D2;
 
@@ -440,7 +431,7 @@ class Green_function{
         Mat U_, D_, V_; 
         
         //blocksize is used in wrap,when determine the block index 
-        itime_type blocksize_;
+        itime_type blocksize_;  
 
         //counter and period for refreshing 
         unsigned update_refresh_counter_; 
@@ -450,9 +441,8 @@ class Green_function{
         unsigned wrap_refresh_period_; 
 
         //storage
-        std::vector<boost::tuple<Mat, Mat, Mat> > Lstorage_;
-        std::vector<boost::tuple<Mat, Mat, Mat> > Rstorage_;
-
+        Storage Lstorage_;
+        Storage Rstorage_;
 };
 
 #endif

@@ -15,7 +15,7 @@ int main(){
 
     unsigned nblock = 5; 
     unsigned blocksize = itime_max/nblock; 
-    Green_function gf(K, beta, nblock, blocksize); 
+    Green_function gf(K, beta, nblock, blocksize, 10, 10); 
 
     typedef boost::mt19937 engine_type;
     engine_type eng(42);
@@ -49,9 +49,10 @@ int main(){
     itau = itime_rng(); 
     Mat G = gf.G(itau, tlist, vlist); 
     std::cout << "G:\n" << G << std::endl; 
-
-    Mat Gstable = gf.Gstable(itau, tlist, vlist); 
-    std::cout << "Gstable:\n" << Gstable << std::endl; 
+        
+    Mat U, D, V; 
+    boost::tie(U, D, V) = gf.Gstable(itau, tlist, vlist); 
+    std::cout << "Gstable:\n" << U*D*V << std::endl; 
 
     /*
     std::cout << "w: " << G.determinant() << std::endl; 

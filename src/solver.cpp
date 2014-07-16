@@ -13,7 +13,7 @@ void InteractionExpansion::interaction_expansion_step()
        }else{
            //std::cout << "before remove" << std::endl; 
            remove(); 
-           //std::cout << "before remove" << std::endl; 
+           //std::cout << "after remove" << std::endl; 
        }
    }
 }

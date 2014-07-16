@@ -25,7 +25,7 @@ def writeParameterFile(fname,parms):
 write parameters for main 
 '''
 
-def params(lattice, L, W, V= 1.0, T = 0.1, Maxorder = 2048, Nscratch=10, SWEEPS=1000000, THERMALIZATION=100000, NBLOCKS = 15, STEPS_PER_BLOCK=10, folder='../data/', textoutput=0):
+def params(lattice, L, W, V= 1.0, T = 0.1, Maxorder = 2048, RECALC_PERIOD=10, UPDATE_REFRESH_PERIOD= 10, WRAP_REFRESH_PERIOD=10, SWEEPS=1000000, THERMALIZATION=100000, NBLOCKS = 15, STEPS_PER_BLOCK=10, folder='../data/', textoutput=0):
     
     key = lattice.replace(' ','') 
     key += 'L' + str(L)\
@@ -35,9 +35,11 @@ def params(lattice, L, W, V= 1.0, T = 0.1, Maxorder = 2048, Nscratch=10, SWEEPS=
            +'MAXORDER'+ str(Maxorder)\
            +'Therm'+str(THERMALIZATION)\
            +'Sweeps'+str(SWEEPS) \
-           +'Nscratch'+str(Nscratch)\
            +'NBLOCKS'+ str(NBLOCKS)\
-           +'STEPSPERBLOCK'+str(STEPS_PER_BLOCK)
+           +'STEPSPERBLOCK'+str(STEPS_PER_BLOCK)\
+           +'WRAP'+str(WRAP_REFRESH_PERIOD)\
+           +'UPDATE'+str(UPDATE_REFRESH_PERIOD)\
+           +'RECALC'+str(RECALC_PERIOD)
 
 
     inputname = '../jobs/'+ key +'.in'
@@ -55,9 +57,12 @@ def params(lattice, L, W, V= 1.0, T = 0.1, Maxorder = 2048, Nscratch=10, SWEEPS=
             ,'MAX_ORDER' : Maxorder
             ,'V' : V
             ,'TEMPERATURE' : T
-            ,'RECALC_PERIOD' : Nscratch 
             ,'THERMALIZATION' : THERMALIZATION
             ,'SWEEPS' : SWEEPS 
+
+            ,'RECALC_PERIOD' : RECALC_PERIOD
+            ,'UPDATE_REFRESH_PERIOD' : UPDATE_REFRESH_PERIOD
+            ,'WRAP_REFRESH_PERIOD' : WRAP_REFRESH_PERIOD
 
             ,'NBLOCKS'  : NBLOCKS 
             ,'STEPS_PER_BLOCK'  : STEPS_PER_BLOCK

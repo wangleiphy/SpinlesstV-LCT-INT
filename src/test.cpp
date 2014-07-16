@@ -4,13 +4,13 @@
 
 void InteractionExpansion::test(){
     
-      unsigned Ntry = 100; 
+      unsigned Ntry = 1; 
 
       for (unsigned itry = 0; itry < Ntry ; ++itry) {
 
-            if (random() < 0.5 ) {//adds ONE vertex
+            //if (random() < 0.5 ) {//adds ONE vertex
             //if (itry%2==0 ) {//adds ONE vertex
-            //if ( true ) {//adds ONE vertex
+            if ( true ) {//adds ONE vertex
                 std::vector<site_type> sites;  
             
                 alps::graph_helper<>::bond_descriptor b = lattice.bond(randomint(n_bond));

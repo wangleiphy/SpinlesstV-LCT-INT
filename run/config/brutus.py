@@ -1,52 +1,32 @@
 import subprocess 
-from numpy import arange 
+from numpy import arange, array 
 
-Add  = 0.3
-Remove = 0.3
-
-ZtoW = 0.2
-WtoZ = 0.2
-
-latticename = 'open chain lattice'
-#latticename = 'honeycomb lattice'
-#latticename = 'open honeycomb lattice'
-#latticename = 'cylindrical honeycomb lattice'
-#latticename = 'square lattice'
-#latticename = 'piflux lattice'
+latticename = 'honeycomb lattice'
 ###############################
-nickname = 'AttractiveHubbard'
+nickname = 'firsttry'
 
-Llist = [6]
-Wlist = [1]
+Llist = array([6]) 
+Tlist = 0.75/Llist 
 
-NA0list = [0]
-NA1list = [3]
+Vlist = [1.3, 1.4]
 
-#NAstep = 4 
+RECALC_PERIOD = 20
+UPDATE_REFRESH_PERIOD = 20
+WRAP_REFRESH_PERIOD = 50
 
-#Tlist = [0.1]
-#Tlist = arange(0.6, 1.2, 0.2)
-Tlist = [0.2, 0.4]
-#Vlist = arange(0.1, 1.6, 0.2)
-#Vlist = arange(0.5, 10., 0.5)
-#Vlist = arange(1.7, 2.4, 0.1)
-Ulist = -arange(1., 11., 1.)
-Mulist = [1.0]
-
-Ntau = 1000
-NSKIP = 100 
-THERMALIZATION = 10**5
-SWEEPS = 10**6
-Nscratch = 1000
+STEPS_PER_BLOCK = 5
+NBLOCKS = 51 
+THERMALIZATION = 10**3
+SWEEPS = 10**5
 ##############################
 
 tmin = 60
 tmax = 300
 ncores = 16 
 wtime = '1:00'
-bin = '../bin/HubbardRenyiQMC'
+bin = '../bin/main'
 
-resfolder = '/cluster/work/scr6/lewang/renyidata/' + nickname  + '/'
+resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'
 #h, m = [int(i) for i in wtime.split(':')]
 #Tlimit = max(3600*h + 60*m - int(tmax*2) , 0)
 

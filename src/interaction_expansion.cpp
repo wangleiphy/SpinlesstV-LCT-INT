@@ -28,7 +28,7 @@ iblock(0),
 direction(nblock==1? 0:1),
 sweeps(0),
 sign(1.), 
-gf(K_, beta, nblock, blocksize)
+gf(K_, beta, nblock, blocksize, parms["UPDATE_REFRESH_PERIOD"] , parms["WRAP_REFRESH_PERIOD"])
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,std::numeric_limits<itime_type>::max())), 
 //bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))
@@ -53,8 +53,7 @@ void InteractionExpansion::update()// sweep in one block
  
       iblock += direction; 
       //we jump to a new block and calculate gf at its time origin
-      //gf.blockjump(iblock*blocksize, tlist, vlist); //from scratch 
-      //gf.wrap(iblock*blocksize, tlist, vlist); //fast wrap 
+      gf.wrap(iblock*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 
  
       //if hit the end, revert the sweep direction 
       if (iblock == nblock-1 || iblock == 0)

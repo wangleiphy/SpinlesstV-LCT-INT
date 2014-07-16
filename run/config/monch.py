@@ -5,14 +5,14 @@ from numpy import arange, array
 
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'firsttry'
+nickname = 'stablization'
 
 Llist = array([12]) 
 Tlist = 0.75/Llist 
 
 Vlist = [1.2, 1.3, 1.4]
 
-Nscratch = 1
+Nscratch = 10
 STEPS_PER_BLOCK = 5
 NBLOCKS = 51 
 THERMALIZATION = 10**3

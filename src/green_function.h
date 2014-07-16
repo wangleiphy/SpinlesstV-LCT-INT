@@ -221,6 +221,7 @@ class Green_function{
         }
 
          //equal time Green's function at tau 
+         //for test only 
          Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
            //Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
            //Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 

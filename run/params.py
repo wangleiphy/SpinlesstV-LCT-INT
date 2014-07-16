@@ -35,11 +35,11 @@ def params(lattice, L, W, V= 1.0, T = 0.1, Maxorder = 2048, RECALC_PERIOD=10, UP
            +'MAXORDER'+ str(Maxorder)\
            +'Therm'+str(THERMALIZATION)\
            +'Sweeps'+str(SWEEPS) \
-           +'RECALC_PERIOD'+str(RECALC_PERIOD)\
-           +'UPDATE_REFRESH_PERIOD'+str(UPDATE_REFRESH_PERIOD)\
-           +'WRAP_REFRESH_PERIOD'+str(WRAP_REFRESH_PERIOD)\
            +'NBLOCKS'+ str(NBLOCKS)\
-           +'STEPSPERBLOCK'+str(STEPS_PER_BLOCK)
+           +'STEPSPERBLOCK'+str(STEPS_PER_BLOCK)\
+           +'WRAP'+str(WRAP_REFRESH_PERIOD)\
+           +'UPDATE'+str(UPDATE_REFRESH_PERIOD)\
+           +'RECALC'+str(RECALC_PERIOD)
 
 
     inputname = '../jobs/'+ key +'.in'

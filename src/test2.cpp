@@ -22,7 +22,7 @@ void InteractionExpansion::test(){
                 std::cout << "tlist: "; 
                 std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
                 std::cout << std::endl; 
-                std::cout << "itry, add vertex with detratio: " << itry << " " << detratio<< std::endl; 
+                std::cout << "add vertex with detratio: " << detratio<< std::endl; 
                 std::cout << "number of vertices: " << tlist.size() << std::endl; 
      
 }

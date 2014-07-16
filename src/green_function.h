@@ -2,6 +2,7 @@
 #define GREEN_FUNCTION_H
 
 #include "types.h"
+#include <boost/tuple/tuple.hpp>
 #include <iterator>
 #include <iostream>
 
@@ -36,18 +37,18 @@ class Green_function{
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
+            
+            Mat U, D, V; 
 
-            Mat gtau = G(itau_, tlist, vlist); // from scratch 
+            boost::tie(U, D, V) = Gstable(itau_, tlist, vlist); // from scratch 
 
-            double max_diff = ((gtau - U_*D_*V_).cwiseAbs()).maxCoeff(); 
+            double max_diff = ((U*D*V - U_*D_*V_).cwiseAbs()).maxCoeff(); 
             if(max_diff > 1.e-6)
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
            
-            Eigen::JacobiSVD<Mat> svd(gtau, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-
-            U_ = svd.matrixU(); 
-            D_ = svd.singularValues().asDiagonal(); 
-            V_ = svd.matrixV().adjoint();
+            U_ = U;  
+            D_ = D; 
+            V_ = V;
         }
         
         /*
@@ -85,11 +86,10 @@ class Green_function{
              // * U^\dagger V U from right 
              V_ -= 2.* (V_* uKdag_.col(si)) * uK_.row(si) + 2.* (V_*uKdag_.col(sj)) * uK_.row(sj); // this thing is fixed 
 
-             Eigen::JacobiSVD<Mat> svd(D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-             
-             U_ = U_*svd.matrixU(); 
-             D_ = svd.singularValues().asDiagonal(); 
-             V_ = svd.matrixV().adjoint()*V_;
+             //Eigen::JacobiSVD<Mat> svd(D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
+             //U_ = U_*svd.matrixU(); 
+             //D_ = svd.singularValues().asDiagonal(); 
+             //V_ = svd.matrixV().adjoint()*V_;
         }
         
         //wrap does not change D_  
@@ -112,6 +112,7 @@ class Green_function{
             }
         }
 
+        /*
          //equal time Green's function at tau 
          Mat G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
            //Mat res = Mat::Identity(ns_, ns_) + B(itau, 0, tlist, vlist) * B(itime_max, itau, tlist, vlist); 
@@ -126,15 +127,17 @@ class Green_function{
             Mat res = Mat::Identity(ns_, ns_) + B_tau_0 * B_beta_tau; 
             return res.inverse(); 
          }
-
-        Mat Gstable(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
+         */
+        
+         //we return U,D,V but not G 
+         boost::tuple<Mat, Mat, Mat> Gstable(const itime_type itau, const tlist_type& tlist, vlist_type& vlist)  const {
           //B_tau_0 = U1*D1*V1
           Mat U1 = Mat::Identity(ns_, ns_); 
           Mat D1 = Mat::Identity(ns_, ns_); 
           Mat V1 = Mat::Identity(ns_, ns_); 
            
           unsigned b = itau/blocksize_; //block index 
-          std::cout << "block: " << b << std::endl; 
+          //std::cout << "block: " << b << std::endl; 
 
            for (unsigned ib=0; ib< b; ++ib) {
                 propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, U1);
@@ -171,7 +174,7 @@ class Green_function{
            D = svd.singularValues().asDiagonal(); 
            V = svd.matrixV().adjoint();
 
-           return (V*V2).inverse() * D.inverse() * (U1*U).inverse(); 
+           return boost::make_tuple((V*V2).inverse() ,  D.inverse() ,  (U1*U).inverse()); 
          }
         
          /*
@@ -188,7 +191,7 @@ class Green_function{
         
          // it can do  B(tau1)... B(tau2) * A  when sign = -1
          // or        A* B(tau2)^{-1} ... B(tau1)^{-1} when sign = 1 
-         void propagator1(const int sign, const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist, Mat& A) { 
+         void propagator1(const int sign, const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist, Mat& A)const  { 
      
              assert(itau1>=itau2); 
 
@@ -227,7 +230,7 @@ class Green_function{
 
          // it can do A* B(tau1)... B(tau2)  when sign = -1
          // or        B(tau2)^{-1} ... B(tau1)^{-1}* A when sign = 1 
-         void propagator2(const int sign, const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist, Mat& A) { 
+         void propagator2(const int sign, const itime_type itau1, const itime_type itau2, const tlist_type& tlist, vlist_type& vlist, Mat& A) const { 
      
              assert(itau1>=itau2); 
 

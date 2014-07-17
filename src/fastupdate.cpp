@@ -46,8 +46,8 @@ double InteractionExpansion::remove_impl(const itime_type itau, const bool compu
 
 
  //Mat gtau = gf.G(itau, tlist, vlist) ; 
-
  gf.wrap(itau, tlist, vlist); // reference to its private member, gtau is in eigen basis 
+
 
  //const Mat gtau = gf.gtau(); 
  //std::cout << "gtau from wrap:\n" << gtau << std::endl; 

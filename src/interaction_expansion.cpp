@@ -46,7 +46,7 @@ gf(K_, beta, nblock, blocksize, parms["UPDATE_REFRESH_PERIOD"] , parms["WRAP_REF
 void InteractionExpansion::update()// sweep in one block 
 {
 
-   for (unsigned i=0; i< nblock; ++i){
+   for (itime_type i=0; i< nblock; ++i){
 
       sweeps++; // one sweep means try go through a block (with steps_per_block updates)
       interaction_expansion_step();                

@@ -3,7 +3,7 @@
 
 int main () {
 
-  typedef unsigned T; 
+  typedef unsigned long T; 
 
   std::cout << std::boolalpha;
   std::cout << "Minimum value for int: " << std::numeric_limits<T>::min() << '\n';

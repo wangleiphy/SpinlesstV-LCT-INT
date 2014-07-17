@@ -11,7 +11,7 @@ class Green_function{
     public:
 
        ///constructor: how many time slices, how many sites
-        Green_function(const Mat& K, const time_type beta, const unsigned nblock, const unsigned blocksize, const unsigned update_refresh_period, const unsigned wrap_refresh_period)
+        Green_function(const Mat& K, const time_type beta, const unsigned nblock, const itime_type blocksize, const unsigned update_refresh_period, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,beta_(beta)
         ,itau_(0)
@@ -152,11 +152,11 @@ class Green_function{
         
         //wrap does not change D_  
         void wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
+            
+             itime_type b = itau/blocksize_; //new block index 
+             itime_type b_ = itau_/blocksize_; //old block index 
 
-             unsigned b = itau/blocksize_; //new block index 
-             unsigned b_ = itau_/blocksize_; //old block index 
-
-             //std::cout << "b, b_, itau, itau_: "  << b << " " << b_ << " " << itau << " " << itau_ << std::endl; 
+             //std::cout << "b, b_, itau, itau_, blocksize: "  << b << " " << b_ << " " << itau << " " << itau_ << " " << blocksize_ << std::endl; 
 
              bool refresh = false; 
              if (wrap_refresh_counter_ < wrap_refresh_period_){
@@ -484,7 +484,7 @@ class Green_function{
         }
 
         time_type itime2time(const itime_type itau) const{
-            return beta_*itau/itime_max; 
+            return beta_*boost::lexical_cast<double>(itau)/boost::lexical_cast<double>(itime_max); 
         }
 
     private:
@@ -502,7 +502,7 @@ class Green_function{
         Mat U_, D_, V_; 
         
         //blocksize is used in wrap,when determine the block index 
-        itime_type blocksize_;
+        const itime_type blocksize_;
 
         //counter and period for refreshing 
         unsigned update_refresh_counter_; 

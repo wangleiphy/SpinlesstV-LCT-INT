@@ -48,7 +48,7 @@ private:
   // in file update.cpp:
   // add or remove vertex in partition funciton sector  
   double add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight); 
-  double remove_impl(const unsigned vertex, const bool compute_only_weight);
+  double remove_impl(const itime_type itau, const bool compute_only_weight);
 
   /*measurement functions*/
   // in file observables.cpp
@@ -76,10 +76,10 @@ private:
   vlist_type vlist; //map from tau to sites 
   
   const unsigned recalc_period;                
-  const unsigned nblock; 
-  unsigned steps_per_block;        
+  const itime_type nblock; 
+  const unsigned steps_per_block;        
   const itime_type blocksize;
-  unsigned iblock; 
+  itime_type iblock; 
   int direction; 
   unsigned long sweeps;        
 

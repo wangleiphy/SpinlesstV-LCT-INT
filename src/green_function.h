@@ -13,7 +13,7 @@ class Green_function{
        ///constructor: how many time slices, how many sites
         Green_function(const Mat& K, const time_type beta, const unsigned nblock, const itime_type blocksize, const unsigned update_refresh_period, const unsigned wrap_refresh_period)
         :ns_(K.rows())
-        ,beta_(beta)
+        ,timestep_(beta/boost::lexical_cast<double>(itime_max))
         ,itau_(0)
         ,U_(Mat::Identity(ns_, ns_))
         ,D_(Mat::Zero(ns_, ns_))
@@ -42,7 +42,7 @@ class Green_function{
         
          //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
          for(site_type l=0; l<ns_; ++l) 
-            D_(l, l) = wK_(l)>0. ? 1./(1.+exp(-beta*wK_(l))) : exp(beta_*wK_(l))/(1.+exp(beta_*wK_(l))) ; // it is samething, to avoid overflow 
+            D_(l, l) = wK_(l)>0. ? 1./(1.+exp(-beta*wK_(l))) : exp(beta*wK_(l))/(1.+exp(beta*wK_(l))) ; // it is samething, to avoid overflow 
         
          //std::cout << "initially:" << std::endl; 
          //std::cout << "D_:\n" << D_<< std::endl; 
@@ -484,12 +484,12 @@ class Green_function{
         }
 
         time_type itime2time(const itime_type itau) const{
-            return beta_*boost::lexical_cast<double>(itau)/boost::lexical_cast<double>(itime_max); 
+            return timestep_*boost::lexical_cast<double>(itau);  
         }
 
     private:
         const site_type ns_; 
-        const time_type beta_; 
+        const double timestep_; 
 
         //eigen value and vectors of K 
         Vec wK_; 

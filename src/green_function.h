@@ -72,7 +72,7 @@ class Green_function{
 
             double max_diff = ((U*D*V - U_*D_*V_).cwiseAbs()).maxCoeff(); 
             if(max_diff > 1.e-6){
-              //std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
+              std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
 
               //std::cout << "in rebuild:" << std::endl; 
               //std::cout << "U_:\n" << U_ << std::endl; 

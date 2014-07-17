@@ -4,7 +4,7 @@
 
 void InteractionExpansion::test(){
     
-      for (unsigned iblock = 0; iblock < nblock; ++iblock ){// sweep through blocks 
+      for (unsigned iblock = 0; iblock < 1; ++iblock ){// sweep through blocks 
 
                 //we jump to a new block and calculate gf at its time origin
                 gf.wrap(iblock*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 

@@ -65,7 +65,6 @@ private:
     
   const unsigned n_site; 
   const unsigned n_bond; // number of *interaction* bond (fine when n.n. hopping and V )
-  Eigen::MatrixXd K_;    // the kinetic energy matrix 
 
   const boost::uint64_t mc_steps;                        
   const unsigned long therm_steps;                
@@ -86,6 +85,7 @@ private:
 
   double sign;
 
+  Mat K_;    // the kinetic energy matrix 
   Green_function gf; 
     
   template<typename T>
@@ -102,13 +102,13 @@ private:
   }
   */
 
-
   //random number generator 
   //typedef boost::mt19937 engine_type;
   //engine_type eng_;
+
   //mutable boost::variate_generator<engine_type&, boost::uniform_int<itime_type> >  itime_rng; 
   //mutable boost::variate_generator<engine_type&, boost::uniform_int<site_type> >  bond_rng; 
-  //mutable boost::variate_generator<engine_type&, boost::uniform_real<> > ratio_rng; 
+  //mutable boost::variate_generator<engine_type&, boost::uniform_real<> > random; 
     
 };
 

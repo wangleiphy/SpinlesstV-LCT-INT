@@ -10,7 +10,7 @@ class Green_function{
 
     public:
 
-        ///constructor: how many time slices, how many sites
+       ///constructor: how many time slices, how many sites
         Green_function(const Mat& K, const time_type beta, const unsigned nblock, const unsigned blocksize, const unsigned update_refresh_period, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,beta_(beta)
@@ -34,12 +34,18 @@ class Green_function{
          uK_ = ces.eigenvectors(); 
          uKdag_ = ces.eigenvectors().adjoint(); 
 
+         std::cout << "K:\n" << K << std::endl; 
+         std::cout << "wK_:\n" << wK_ << std::endl; 
+         std::cout << "uK_:\n" << uK_ << std::endl; 
+ 
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
         
          //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
          for(site_type l=0; l<ns_; ++l) 
             D_(l, l) = wK_(l)>0. ? 1./(1.+exp(-beta*wK_(l))) : exp(beta_*wK_(l))/(1.+exp(beta_*wK_(l))) ; // it is samething, to avoid overflow 
-
+        
+         std::cout << "initially:" << std::endl; 
+         std::cout << "D_:\n" << D_<< std::endl; 
 
         //fill in storage
         //since initially there is no vertices U and V are all diagonal 
@@ -65,8 +71,18 @@ class Green_function{
             boost::tie(U, D, V) = Gstable(itau_, tlist, vlist); // from scratch 
 
             double max_diff = ((U*D*V - U_*D_*V_).cwiseAbs()).maxCoeff(); 
-            if(max_diff > 1.e-6)
+            //if(max_diff > 1.e-6){
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
+
+              std::cout << "in rebuild:" << std::endl; 
+              std::cout << "U_:\n" << U_ << std::endl; 
+              std::cout << "D_:\n" << D_ << std::endl; 
+              std::cout << "V_:\n" << V_ << std::endl; 
+
+              std::cout << "U:\n" << U << std::endl; 
+              std::cout << "D:\n" << D << std::endl; 
+              std::cout << "V:\n" << V << std::endl; 
+            //}
            
             U_ = U;  
             D_ = D; 
@@ -101,6 +117,12 @@ class Green_function{
         //but does not affect the storage 
         void update(const site_type si, const site_type sj, const double gij){
 
+             std::cout << "si, sj, gij: "  << si << " " << sj << " " << gij << std::endl; 
+             std::cout << "uKdag_.col(si):\n" << uKdag_.col(si) << std::endl; 
+             std::cout << "uKdag_.col(sj):\n" << uKdag_.col(sj) << std::endl; 
+             std::cout << "uK_.row(si):\n" << uK_.row(si) << std::endl; 
+             std::cout << "uK_.row(sj):\n" << uK_.row(sj) << std::endl; 
+
              //update D_
              D_ -=  ( (D_* (V_* uKdag_.col(sj))) * ((uK_.row(si)*U_)*D_)
                     + (D_* (V_* uKdag_.col(si))) * ((uK_.row(sj)*U_)*D_)
@@ -109,7 +131,7 @@ class Green_function{
              // * U^\dagger V U from right 
              V_ -= 2.* (V_* uKdag_.col(si)) * uK_.row(si) + 2.* (V_*uKdag_.col(sj)) * uK_.row(sj); // this thing is fixed 
 
-
+             /*
              if (update_refresh_counter_ < update_refresh_period_){
                     ++update_refresh_counter_; 
              }else{
@@ -121,6 +143,13 @@ class Green_function{
                     
                     update_refresh_counter_ =0; 
              }
+             */
+
+              std::cout << "in update:" << std::endl; 
+              std::cout << "U_:\n" << U_ << std::endl; 
+              std::cout << "D_:\n" << D_ << std::endl; 
+              std::cout << "V_:\n" << V_ << std::endl; 
+
         }
         
         //wrap does not change D_  
@@ -261,6 +290,21 @@ class Green_function{
            Vec D2;
            boost::tie(U2, D2, V2) = Lstorage_[b]; 
            propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, V2);
+
+
+           std::cout << "in Gstable:" << std::endl; 
+
+           std::cout << "U1:\n" << U1 << std::endl; 
+           std::cout << "D1:\n" << D1 << std::endl; 
+           std::cout << "V1:\n" << V1 << std::endl; 
+
+           std::cout << "U2:\n" << U2 << std::endl; 
+           std::cout << "D2:\n" << D2 << std::endl; 
+           std::cout << "V2:\n" << V2 << std::endl; 
+
+
+
+
         
            /*(3)
            Eigen::JacobiSVD<Mat> svd((D1.asDiagonal()*V1)*(U2*D2.asDiagonal()), Eigen::ComputeThinU | Eigen::ComputeThinV); 
@@ -291,6 +335,12 @@ class Green_function{
            U = svd.matrixU(); 
            D = svd.singularValues().asDiagonal(); 
            V = svd.matrixV().adjoint();
+
+           std::cout << "in Gstable:" << std::endl; 
+
+           std::cout << "U:\n" << U << std::endl; 
+           std::cout << "D:\n" << D << std::endl; 
+           std::cout << "V:\n" << V << std::endl; 
 
            return boost::make_tuple((V*V2).inverse() ,  D.inverse() ,  (U1*U).inverse()); 
 
@@ -448,7 +498,7 @@ class Green_function{
         const time_type beta_; 
 
         //eigen value and vectors of K 
-        Eigen::VectorXd wK_; 
+        Vec wK_; 
         Mat uK_; 
         Mat uKdag_; 
 

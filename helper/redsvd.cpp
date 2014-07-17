@@ -1,23 +1,20 @@
-//g++ svd.cpp -I/users/lewang/Libs/include/eigen3/
+//g++ redsvd.cpp -I/users/lewang/Libs/include/eigen3/
 #include <Eigen/Core>
-#include <Eigen/SVD>
+#include "redsvd.hpp"
 #include <iostream>
 
 using Eigen::MatrixXd;
-using Eigen::VectorXd;
-
-using Eigen::JacobiSVD;
 
 using std::cout;
 using std::endl;
 
-
 int main(){
 
     MatrixXd m = MatrixXd::Random(500,500);
-
     //cout << "Here is the matrix m:" << endl << m << endl;
-    JacobiSVD<MatrixXd> svd(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
+
+    REDSVD::RedSVD svd;
+    svd.run(m, 500);
 
     return 0; 
 
@@ -27,7 +24,9 @@ int main(){
    
     cout << "U*D*V^T"  << endl; 
     cout << svd.matrixU() * svd.singularValues().asDiagonal() * svd.matrixV().adjoint() << endl;  
+
     cout << svd.matrixV() *  svd.matrixV().adjoint() << endl;  
+
     cout << svd.matrixU() *  svd.matrixU().adjoint() << endl;  
 
     return 0; 

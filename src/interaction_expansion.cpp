@@ -50,8 +50,8 @@ void InteractionExpansion::update()// sweep in one block
       sweeps++; // one sweep means try go through a block (with steps_per_block updates)
       interaction_expansion_step();                
 
-      if (tlist.size()== max_order)// freeze the vertex configuration just do sweep 
-          steps_per_block = 0; 
+      //if (tlist.size()== max_order)//TESTING: freeze the vertex configuration just do sweep 
+      //    steps_per_block = 0; 
 
       if(sweeps % recalc_period ==0)
          gf.rebuild(tlist, vlist);

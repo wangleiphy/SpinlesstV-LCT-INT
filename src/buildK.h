@@ -32,8 +32,7 @@ Mat buildK(const alps::graph_helper<>& lattice){
 
 
     BOOST_FOREACH(const alps::graph_helper<>::bond_descriptor& b, lattice.bonds()){
-         double hopping = -1.0 + 0.0001 * (random() -0.5); // added random noise to break degeneracy
-
+         double hopping = -1.0; // + 0.0001 * (random() -0.5); // added random noise to break degeneracy
          K(lattice.source(b), lattice.target(b)) = hopping; 
          K(lattice.target(b), lattice.source(b)) = hopping; 
     }

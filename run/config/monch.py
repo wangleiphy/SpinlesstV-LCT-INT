@@ -9,13 +9,13 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'stablization'
 
-Llist = array([12]) 
+Llist = array([6]) 
 Tlist = 0.75/Llist 
 
 Vlist = [1.3, 1.4]
 
-RECALC_PERIOD = 10
-UPDATE_REFRESH_PERIOD = 10
+RECALC_PERIOD = 5
+UPDATE_REFRESH_PERIOD = 5
 WRAP_REFRESH_PERIOD = 10
 
 STEPS_PER_BLOCK = 1

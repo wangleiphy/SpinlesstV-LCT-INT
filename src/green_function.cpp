@@ -47,10 +47,11 @@ int main(){
     //std::cout << "B:\n" << B << std::endl; 
 
     itau = itime_rng(); 
-    Mat G = gf.G(itau, tlist, vlist); 
-    std::cout << "G:\n" << G << std::endl; 
-        
+
     Mat U, D, V; 
+    boost::tie(U, D, V) = gf.G(itau, tlist, vlist); 
+    std::cout << "G:\n" << U*D*V << std::endl; 
+        
     boost::tie(U, D, V) = gf.Gstable(itau, tlist, vlist); 
     std::cout << "Gstable:\n" << U*D*V << std::endl; 
 

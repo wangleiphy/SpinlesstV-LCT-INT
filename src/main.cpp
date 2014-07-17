@@ -1,7 +1,7 @@
 #include "interaction_expansion.hpp"
 
 #include <alps/ngs.hpp>
-#include <alps/ngs/scheduler/parseargs.hpp>
+#include <alps/parseargs.hpp>
 #include <alps/stop_callback.hpp> 
 //#include <alps/check_schedule.hpp> 
 #include "mycheck_schedule.hpp"

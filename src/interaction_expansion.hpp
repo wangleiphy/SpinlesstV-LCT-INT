@@ -78,7 +78,7 @@ private:
   
   const unsigned recalc_period;                
   const unsigned nblock; 
-  const unsigned steps_per_block;        
+  unsigned steps_per_block;        
   const itime_type blocksize;
   unsigned iblock; 
   int direction; 

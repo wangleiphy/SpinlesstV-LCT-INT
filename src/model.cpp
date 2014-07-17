@@ -29,9 +29,7 @@ void InteractionExpansion::add()
 
   if(fabs(metropolis_weight) > random()){
 
-    std::stringstream obs_name;
     measurements["Add"] << 1.;
-
     add_impl(itau, sites, false);
 
     sign*=metropolis_weight<0.?-1.:1.;

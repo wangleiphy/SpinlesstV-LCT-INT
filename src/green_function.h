@@ -70,7 +70,7 @@ class Green_function{
             boost::tie(U, D, V) = Gstable(itau_, tlist, vlist); // from scratch 
 
             double max_diff = ((U*D*V - U_*D_*V_).cwiseAbs()).maxCoeff(); 
-            //if(max_diff > 1.e-6){
+            if(max_diff > 1.e-6){
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
 
               //std::cout << "in rebuild:" << std::endl; 
@@ -84,7 +84,7 @@ class Green_function{
               //std::cout << "U_*D_*V_:\n" << U_*D_*V_ << std::endl; 
               //std::cout << "U*D*V:\n" << U*D*V << std::endl; 
               //std::cout << "diff:\n" <<U_*D_*V_-U*D*V << std::endl; 
-            //}
+            }
            
             U_ = U;  
             D_ = D; 

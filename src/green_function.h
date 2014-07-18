@@ -12,11 +12,12 @@ class Green_function{
 
         Green_function(const Mat& K, const time_type beta, const time_type timestep, const unsigned nblock, const itime_type blocksize, const unsigned update_refresh_period, const unsigned wrap_refresh_period)
         :ns_(K.rows())
+        ,beta_(beta)
         ,timestep_(timestep)
         ,itau_(0)
-        ,U_(Mat::Identity(ns_, ns_))
-        ,D_(Mat::Zero(ns_, ns_))
-        ,V_(Mat::Identity(ns_, ns_))
+        ,U_()
+        ,D_()
+        ,V_()
         ,blocksize_(blocksize)
         ,update_refresh_counter_(0)
         ,update_refresh_period_(update_refresh_period)
@@ -39,29 +40,37 @@ class Green_function{
  
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
         
-         //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
-         for(site_type l=0; l<ns_; ++l) 
-            D_(l, l) = wK_(l)>0. ? 1./(1.+exp(-beta*wK_(l))) : exp(beta*wK_(l))/(1.+exp(beta*wK_(l))) ; // it is samething, to avoid overflow 
-        
-        //std::cout << "initially:" << std::endl; 
-        //std::cout << "D_:\n" << D_<< std::endl; 
-
-        //fill in storage
-        //since initially there is no vertices U and V are all diagonal 
-        for (unsigned ib=0; ib< nblock; ++ib) {
-            Vec v(ns_); 
-            for (site_type l=0; l<ns_; ++l)
-                v(l) = exp(-(itime2time(ib*blocksize)) *wK_(l)); 
-            Rstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v, Mat::Identity(ns_, ns_)); 
+         init_without_vertex(); 
         }
 
-        for (unsigned ib=0; ib< nblock; ++ib) {
-            Vec v(ns_); 
-            for (site_type l=0; l<ns_; ++l)
-                v(l) = exp(-(beta -itime2time((ib+1)*blocksize)) *wK_(l)); 
-            Lstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v, Mat::Identity(ns_, ns_)); 
-        }
+        void init_without_vertex(){
 
+           U_ = Mat::Identity(ns_, ns_); 
+           D_ = Mat::Zero(ns_, ns_); 
+           V_ = Mat::Identity(ns_, ns_);
+
+           //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
+           for(site_type l=0; l<ns_; ++l) 
+               D_(l, l) = wK_(l)>0. ? 1./(1.+exp(-beta_*wK_(l))) : exp(beta_*wK_(l))/(1.+exp(beta_*wK_(l))) ; // it is samething, to avoid overflow 
+           
+           //std::cout << "initially:" << std::endl; 
+           //std::cout << "D_:\n" << D_<< std::endl; 
+           
+           //fill in storage
+           //since initially there is no vertices U and V are all diagonal 
+           for (unsigned ib=0; ib< Rstorage_.size(); ++ib) {
+               Vec v(ns_); 
+               for (site_type l=0; l<ns_; ++l)
+                   v(l) = exp(-(itime2time(ib*blocksize_)) *wK_(l)); 
+               Rstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v, Mat::Identity(ns_, ns_)); 
+           }
+           
+           for (unsigned ib=0; ib< Lstorage_.size(); ++ib) {
+               Vec v(ns_); 
+               for (site_type l=0; l<ns_; ++l)
+                   v(l) = exp(-(beta_ -itime2time((ib+1)*blocksize_)) *wK_(l)); 
+               Lstorage_[ib] = boost::make_tuple(Mat::Identity(ns_, ns_), v, Mat::Identity(ns_, ns_)); 
+           }
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
@@ -508,6 +517,7 @@ class Green_function{
 
     private:
         const site_type ns_; 
+        const time_type beta_; 
         const time_type timestep_; 
 
         //eigen value and vectors of K 

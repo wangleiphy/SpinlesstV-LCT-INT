@@ -7,9 +7,9 @@ void InteractionExpansion::test(){
       for (itime_type sw = 0; sw < mc_steps; ++sw){// sweep through blocks 
           std::cout << "sw, iblock, direction: " << sw << " " << iblock << " " << direction << std::endl; 
 
-          //if (random() < 0.5){
+          if (random() < 0.5){
           //if (sw%2 ==0){
-          if (true){
+          //if (true){
 
                 std::cout << "####begin add###################"  << std::endl; 
 

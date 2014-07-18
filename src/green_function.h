@@ -33,9 +33,9 @@ class Green_function{
          uK_ = ces.eigenvectors(); 
          uKdag_ = ces.eigenvectors().adjoint(); 
 
-         std::cout << "K:\n" << K << std::endl; 
-         std::cout << "wK_:\n" << wK_ << std::endl; 
-         std::cout << "uK_:\n" << uK_ << std::endl; 
+         //std::cout << "K:\n" << K << std::endl; 
+         //std::cout << "wK_:\n" << wK_ << std::endl; 
+         //std::cout << "uK_:\n" << uK_ << std::endl; 
  
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
         
@@ -73,7 +73,7 @@ class Green_function{
             //if(max_diff > 1.e-6){
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
 
-              std::cout << "in rebuild:" << std::endl; 
+              //std::cout << "in rebuild:" << std::endl; 
               //std::cout << "U_:\n" << U_ << std::endl; 
               //std::cout << "D_:\n" << D_ << std::endl; 
               //std::cout << "V_:\n" << V_ << std::endl; 
@@ -81,9 +81,9 @@ class Green_function{
               //std::cout << "U:\n" << U << std::endl; 
               //std::cout << "D:\n" << D << std::endl; 
               //std::cout << "V:\n" << V << std::endl; 
-              std::cout << "U_*D_*V_:\n" << U_*D_*V_ << std::endl; 
-              std::cout << "U*D*V:\n" << U*D*V << std::endl; 
-              std::cout << "diff:\n" <<U_*D_*V_-U*D*V << std::endl; 
+              //std::cout << "U_*D_*V_:\n" << U_*D_*V_ << std::endl; 
+              //std::cout << "U*D*V:\n" << U*D*V << std::endl; 
+              //std::cout << "diff:\n" <<U_*D_*V_-U*D*V << std::endl; 
             //}
            
             U_ = U;  
@@ -227,8 +227,8 @@ class Green_function{
                 Vec D; 
                 boost::tie(U, D, V) = Rstorage_[b_];
 
-                if (tlist.count(b_*blocksize_)){ //special treatment when there is a vertex at block boundary 
-                    std::cout << "wrap: special treatment b, b_ " << b << " " << b_ << std::endl; 
+               if (tlist.find(b_*blocksize_) != tlist.end()){ //special treatment when there is a vertex at block boundary
+                    //std::cout << "wrap: special treatment b, b_ " << b << " " << b_ << std::endl; 
                     Vprop(vlist[b_*blocksize_][0], vlist[b_*blocksize_][1], "L", U);
                 }
 
@@ -262,6 +262,7 @@ class Green_function{
             }
         }
 
+         /*
          //equal time Green's function at tau 
          //for test only 
         boost::tuple<Mat, Mat, Mat> G(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {// this is very expansive because of inverse
@@ -280,6 +281,7 @@ class Green_function{
 
             return boost::tie(svd.matrixU(), svd.singularValues().asDiagonal(), svd.matrixV().adjoint() ) ; 
          }
+        */
         
          //we return U,D,V but not G 
          boost::tuple<Mat, Mat, Mat> Gstable(const itime_type itau, const tlist_type& tlist, vlist_type& vlist)  const {
@@ -376,9 +378,9 @@ class Green_function{
              lower = std::lower_bound (tlist.begin(), tlist.end(), itau2, std::less_equal<itime_type>()); //equal is exclude
              upper = std::upper_bound (tlist.begin(), tlist.end(), itau1); 
 
-             std::cout << "props1: itau1, itau2, vertices at " << itau1 << " " << itau2 << std::endl; 
-             std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
-             std::cout << std::endl;  
+             //std::cout << "props1: itau1, itau2, vertices at " << itau1 << " " << itau2 << std::endl; 
+             //std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
+             //std::cout << std::endl;  
 
              //upper > tau1 > lower > tau2 
              if (lower == upper ) {// there is no vertex in between tau1 and tau2 
@@ -387,16 +389,16 @@ class Green_function{
              }else{
 
                  Kprop(sign, *lower - itau2, side, A);
-                 std::cout << "prop1:Kprop " <<   *lower  << " " << itau2  << " " << *lower - itau2 << std::endl; 
+                 //std::cout << "prop1:Kprop " <<   *lower  << " " << itau2  << " " << *lower - itau2 << std::endl; 
                  for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {
                     
                      itime_type itau = *it1; 
                      Vprop(vlist[itau][0], vlist[itau][1], side, A); 
-                     std::cout << "prop1:act vertex at " << itau  << std::endl; 
+                     //std::cout << "prop1:act vertex at " << itau  << std::endl; 
                  
                      itime_type ditau = (it2 ==upper) ? itau1 - itau: *it2 - itau; 
                      Kprop(sign, ditau , side, A); 
-                     std::cout << "prop1:Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
+                     //std::cout << "prop1:Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
                  }
                  //std::cout << "##############" << std::endl; 
              }
@@ -414,9 +416,9 @@ class Green_function{
              lower = std::lower_bound (tlist.begin(), tlist.end(), itau2, std::less_equal<itime_type>()); //equal is exclude
              upper = std::upper_bound (tlist.begin(), tlist.end(), itau1);
                 
-             std::cout << "props2: itau1, itau2, vertices at " << itau1 << " " << itau2 << std::endl; 
-             std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
-             std::cout << std::endl;  
+             //std::cout << "props2: itau1, itau2, vertices at " << itau1 << " " << itau2 << std::endl; 
+             //std::copy(lower, upper, std::ostream_iterator<itime_type>(std::cout, " "));
+             //std::cout << std::endl;  
 
              //upper > tau1 > lower > tau2 
              if (lower == upper ) {// there is no vertex in between tau1 and tau2 
@@ -425,27 +427,27 @@ class Green_function{
              }else{
 
                  Kprop(sign, itau1 - *(--upper), side, A);
-                 std::cout << "prop2:Kprop " <<  itau1 << " " << *upper  << " " << itau1 - *upper << std::endl; 
+                 //std::cout << "prop2:Kprop " <<  itau1 << " " << *upper  << " " << itau1 - *upper << std::endl; 
 
                  for (tlist_type::const_iterator it1 =upper, it2 =--upper; it1!=lower; --it1, --it2) {
                     
                      itime_type itau = *it1; 
                      Vprop(vlist[itau][0], vlist[itau][1], side, A); 
-                     std::cout << "prop2:act vertex at " << itau  << std::endl; 
+                     //std::cout << "prop2:act vertex at " << itau  << std::endl; 
                  
                      itime_type ditau = itau - *it2; 
                      Kprop(sign, ditau , side, A); 
-                     std::cout << "prop2:Kprop " <<  itau << " " << *it2  << " " << ditau << std::endl; 
+                     //std::cout << "prop2:Kprop " <<  itau << " " << *it2  << " " << ditau << std::endl; 
                  }
                  {
                      //the last step by hand (it1 = lower, it2 point to tau2) 
                      itime_type itau = *lower; 
                      Vprop(vlist[itau][0], vlist[itau][1], side, A); 
-                     std::cout << "prop2:act vertex at " << itau  << std::endl; 
+                     //std::cout << "prop2:act vertex at " << itau  << std::endl; 
              
                      itime_type ditau = itau - itau2; 
                      Kprop(sign, ditau , side, A); 
-                     std::cout << "prop2:Kprop " <<  itau << " " <<  itau2 << " " << ditau << std::endl; 
+                     //std::cout << "prop2:Kprop " <<  itau << " " <<  itau2 << " " << ditau << std::endl; 
                  }
                  //std::cout << "##############" << std::endl; 
              }

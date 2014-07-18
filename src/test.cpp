@@ -4,41 +4,37 @@
 
 void InteractionExpansion::test(){
     
-      for (itime_type iblock = 0; iblock < 5; ++iblock ){// sweep through blocks 
+      for (itime_type sw = 0; sw < 100; ++sw){// sweep through blocks 
+
+          if (random() < 0.5){
+
+                std::cout << "####add###################"  << std::endl; 
 
                 std::vector<site_type> sites;  
-            
                 alps::graph_helper<>::bond_descriptor bond = lattice.bond(randomint(n_bond));
                 sites.push_back(lattice.source(bond));
                 sites.push_back(lattice.target(bond));
             
                 itime_type itau = iblock*blocksize + randomint(blocksize);// a random time inside this block 
+
+                if (tlist.find(itau) != tlist.end()) {//perform add only if there is no vertex at itau 
+
+                     //std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
+                     std::cout << "itau, iblock:"  << itau << " " << iblock << std::endl; 
+                     
+                     double detratio = add_impl(itau, sites, false);  
+
+                     //std::cout << "weight after: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
+                     //std::cout << "tlist: "; 
+                     //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+                     //std::cout << std::endl; 
+                     std::cout << "add vertex with detratio: " << std::setprecision(9)  << detratio<< std::endl; 
+                     std::cout << "number of vertices: " << tlist.size() << std::endl; 
+                }
+
+        } else {
             
-                //std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
-                std::cout << "itau, iblock:"  << itau << " " << iblock << std::endl; 
-
-                std::cout << "#############before add#################"  << std::endl; 
-                double detratio = add_impl(itau, sites, false);  
-                std::cout << "#############after add#################"  << std::endl; 
-
-                //std::cout << "weight after: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
-                //std::cout << "tlist: "; 
-                //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-                //std::cout << std::endl; 
-                std::cout << "add vertex with detratio: " << std::setprecision(9)  << detratio<< std::endl; 
-                std::cout << "number of vertices: " << tlist.size() << std::endl; 
-
-
-                std::cout << "#############before wrap#################"  << std::endl; 
-                //we jump to a new block and calculate gf at its time origin
-                gf.wrap((iblock+1)*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 
-                std::cout << "#############after wrap#################"  << std::endl; 
-
-                gf.rebuild(tlist, vlist);
-      }
-        /*
-      {
-            
+                std::cout << "####remove###################"  << std::endl; 
                 if (tlist.size()< 1) continue; 
 
                 tlist_type::const_iterator lower, upper; 
@@ -54,20 +50,33 @@ void InteractionExpansion::test(){
                 std::advance(lower, randomint(num_vertices)); //the vertex to remove 
                 itime_type itau = *lower; 
 
-                std::cout << "####remove###################"  << std::endl; 
-                std::cout << "itau, block:"  << itau << " " << b << std::endl; 
+                std::cout << "itau, block:"  << itau << " " << iblock << std::endl; 
                 //std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
 
                 double detratio = remove_impl(itau, false); 
                 
                 //std::cout << "weight after: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
-                std::cout << "tlist: "; 
-                std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-                std::cout << std::endl; 
-                std::cout << "itry, remove vertex with detratio: " << itry << " "<<  std::setprecision(9)  << detratio<< std::endl; 
+                //std::cout << "tlist: "; 
+                //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+                //std::cout << std::endl; 
+
+                std::cout << "remove vertex with detratio: " <<  std::setprecision(9)  << detratio<< std::endl; 
                 std::cout << "number of vertices: " << tlist.size() << std::endl; 
         }
-        */
+
+
+                iblock += direction; 
+                //we jump to a new block and calculate gf at its time origin
+                gf.wrap(iblock*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 
+                                                         //this should also before rebuild because it will update Rstorage so 
+                                                         //rebuild will give consistent result 
+                
+                //if hit the end, revert the sweep direction 
+                if (iblock == nblock-1 || iblock == 0)
+                    direction *= -1; 
+
+                gf.rebuild(tlist, vlist);
+      }
             
 }
 

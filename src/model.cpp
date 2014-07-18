@@ -17,7 +17,7 @@ void InteractionExpansion::add()
 
   itime_type itau = iblock*blocksize + randomint(blocksize);// a random time inside this block 
 
-  if (tlist.find(itau) != tlist.end()) // we can not have two vertex at the same tau 
+  if (tlist.find(itau) != tlist.end()) // there is already a vertex at itau, do nothing: we can not have two vertex at the same tau 
       return; 
 
   //std::cout << "1" << std::endl; 

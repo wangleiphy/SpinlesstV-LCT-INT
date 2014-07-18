@@ -7,19 +7,20 @@ from numpy import arange, array
 
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'timestep'
+nickname = 'discrete'
 
 Llist = array([6, 9, 12]) 
 Tlist = 0.75/Llist 
 
 Vlist = [1.3, 1.4]
 
-RECALC_PERIOD = 5
-UPDATE_REFRESH_PERIOD = 5
+itime_max = 1<<30 
+RECALC_PERIOD = 10
+UPDATE_REFRESH_PERIOD = 10
 WRAP_REFRESH_PERIOD = 10
 
 STEPS_PER_BLOCK = 1
-NBLOCKS = 256
+NBLOCKS = 512
 THERMALIZATION = 10**4
 SWEEPS = 10**6 
 

@@ -44,7 +44,7 @@ if __name__=='__main__':
                
                            inputfile = params(latticename, L , W,  
                                               V=V, T= T, 
-                                              Maxorder = Maxorder, 
+                                              Maxorder = Maxorder, itime_max = itime_max,  
                                               RECALC_PERIOD = RECALC_PERIOD, 
                                               UPDATE_REFRESH_PERIOD = UPDATE_REFRESH_PERIOD, 
                                               WRAP_REFRESH_PERIOD = WRAP_REFRESH_PERIOD, 

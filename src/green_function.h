@@ -10,9 +10,9 @@ class Green_function{
 
     public:
 
-        Green_function(const Mat& K, const time_type beta, const unsigned nblock, const itime_type blocksize, const unsigned update_refresh_period, const unsigned wrap_refresh_period)
+        Green_function(const Mat& K, const time_type beta, const time_type timestep, const unsigned nblock, const itime_type blocksize, const unsigned update_refresh_period, const unsigned wrap_refresh_period)
         :ns_(K.rows())
-        ,timestep_(beta/boost::lexical_cast<double>(itime_max))
+        ,timestep_(timestep)
         ,itau_(0)
         ,U_(Mat::Identity(ns_, ns_))
         ,D_(Mat::Zero(ns_, ns_))
@@ -501,7 +501,7 @@ class Green_function{
 
     private:
         const site_type ns_; 
-        const double timestep_; 
+        const time_type timestep_; 
 
         //eigen value and vectors of K 
         Vec wK_; 

@@ -19,6 +19,7 @@ V(boost::lexical_cast<double>(parms["V"])),
 tlist(), 
 vlist(), 
 recalc_period(parms["RECALC_PERIOD"] | 500),
+itime_max(boost::lexical_cast<itime_type>(parms["ITIME_MAX"])), 
 nblock(parms["NBLOCKS"] | 1),
 steps_per_block(parms["STEPS_PER_BLOCK"] | 100),
 blocksize(itime_max/nblock),
@@ -27,7 +28,7 @@ direction(nblock==1? 0:1),
 sweeps(0),
 sign(1.), 
 K_(buildK(lattice)),
-gf(K_, beta, nblock, blocksize, parms["UPDATE_REFRESH_PERIOD"] , parms["WRAP_REFRESH_PERIOD"])
+gf(K_, beta, beta/boost::lexical_cast<double>(itime_max), nblock, blocksize, parms["UPDATE_REFRESH_PERIOD"] , parms["WRAP_REFRESH_PERIOD"])
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,itime_max)), 
 //bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))

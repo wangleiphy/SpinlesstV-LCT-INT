@@ -81,9 +81,16 @@ class Green_function{
               //std::cout << "U:\n" << U << std::endl; 
               //std::cout << "D:\n" << D << std::endl; 
               //std::cout << "V:\n" << V << std::endl; 
-              //std::cout << "U_*D_*V_:\n" << U_*D_*V_ << std::endl; 
-              //std::cout << "U*D*V:\n" << U*D*V << std::endl; 
-              //std::cout << "diff:\n" <<U_*D_*V_-U*D*V << std::endl; 
+          
+              std::cout << "U_*D_*V_:\n" << U_*D_*V_ << std::endl; 
+              std::cout << "U*D*V:\n" << U*D*V << std::endl; 
+              std::cout << "diff:\n" <<U_*D_*V_-U*D*V << std::endl; 
+
+              std::cout << "tlist: "; 
+              std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+              std::cout << std::endl; 
+
+              abort(); 
             }
            
             U_ = U;  

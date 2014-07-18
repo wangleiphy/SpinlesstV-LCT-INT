@@ -7,9 +7,9 @@ from numpy import arange, array
 
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'stablization'
+nickname = 'timestep'
 
-Llist = array([6]) 
+Llist = array([6, 9, 12]) 
 Tlist = 0.75/Llist 
 
 Vlist = [1.3, 1.4]
@@ -19,7 +19,7 @@ UPDATE_REFRESH_PERIOD = 5
 WRAP_REFRESH_PERIOD = 10
 
 STEPS_PER_BLOCK = 1
-NBLOCKS = 256 
+NBLOCKS = 256
 THERMALIZATION = 10**4
 SWEEPS = 10**6 
 

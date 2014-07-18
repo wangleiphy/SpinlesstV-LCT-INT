@@ -4,10 +4,7 @@
 
 void InteractionExpansion::test(){
     
-      for (unsigned iblock = 0; iblock < 1; ++iblock ){// sweep through blocks 
-
-                //we jump to a new block and calculate gf at its time origin
-                gf.wrap(iblock*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 
+      for (itime_type iblock = 0; iblock < 5; ++iblock ){// sweep through blocks 
 
                 std::vector<site_type> sites;  
             
@@ -17,11 +14,12 @@ void InteractionExpansion::test(){
             
                 itime_type itau = iblock*blocksize + randomint(blocksize);// a random time inside this block 
             
-                std::cout << "######add#################"  << std::endl; 
                 //std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
                 std::cout << "itau, iblock:"  << itau << " " << iblock << std::endl; 
 
+                std::cout << "#############before add#################"  << std::endl; 
                 double detratio = add_impl(itau, sites, false);  
+                std::cout << "#############after add#################"  << std::endl; 
 
                 //std::cout << "weight after: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
                 //std::cout << "tlist: "; 
@@ -29,6 +27,13 @@ void InteractionExpansion::test(){
                 //std::cout << std::endl; 
                 std::cout << "add vertex with detratio: " << std::setprecision(9)  << detratio<< std::endl; 
                 std::cout << "number of vertices: " << tlist.size() << std::endl; 
+
+
+                std::cout << "#############before wrap#################"  << std::endl; 
+                //we jump to a new block and calculate gf at its time origin
+                gf.wrap((iblock+1)*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 
+                std::cout << "#############after wrap#################"  << std::endl; 
+
                 gf.rebuild(tlist, vlist);
       }
         /*

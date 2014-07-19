@@ -4,7 +4,7 @@ from math import sqrt , cos , sin , pi
 from numpy import arange 
 
 L = 4
-W = 4
+W = 2
 N = L*W
 Thop = 1.0
 
@@ -42,6 +42,6 @@ for p in parms:
 
     input_file = pyalps.writeInputFiles(parmname, [p])
     #pyalps.runApplication('sparsediag',input_file) #,writexml=True)#,MPI=2)
-    #check_call(['bsub',"-R", '"rusage[mem=1024]"', '-oo',input_file.replace('.in.xml','.log'),'-W','12:00','sparsediag',input_file])
-    check_call(['echo', 'bsub', "-R", '"rusage[mem=1024]"', '-oo',input_file.replace('.in.xml','.log'),'-W','1:00','sparsediag',input_file])
+    #check_call(['echo', 'bsub', "-R", '"rusage[mem=1024]"', '-oo',input_file.replace('.in.xml','.log'),'-W','1:00','sparsediag',input_file])
+    check_call(['bsub', '-oo',input_file.replace('.in.xml','.log'),'-W','1:00','sparsediag',input_file])
     #check_call(['bsub', '-n', '5','-oo',input_file.replace('.in.xml','.log'),'-W','08:00','mpirun', 'sparsediag', '--mpi', input_file])

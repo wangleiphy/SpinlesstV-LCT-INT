@@ -7,7 +7,8 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
 
-Llist = array([4]) 
+Llist = [4]
+Wlist = [2]
 Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31

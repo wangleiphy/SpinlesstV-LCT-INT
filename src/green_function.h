@@ -10,7 +10,7 @@ class Green_function{
 
     public:
 
-        Green_function(const Mat& K, const time_type timestep, const unsigned nblock, const itime_type blocksize, const unsigned update_refresh_period, const unsigned wrap_refresh_period)
+        Green_function(const Mat& K, const time_type timestep, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
@@ -32,8 +32,8 @@ class Green_function{
          uK_ = ces.eigenvectors(); 
          uKdag_ = ces.eigenvectors().adjoint(); 
 
-         std::cout << "K:\n" << K << std::endl; 
-         std::cout << "wK_:\n" << wK_ << std::endl; 
+         //std::cout << "K:\n" << K << std::endl; 
+         //std::cout << "wK_:\n" << wK_ << std::endl; 
          //std::cout << "uK_:\n" << uK_ << std::endl; 
  
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
@@ -68,19 +68,19 @@ class Green_function{
             Mat gtau = Gstable(itau_, tlist, vlist); // from scratch 
 
             double max_diff = ((gtau - gtau_).cwiseAbs()).maxCoeff(); 
-            //if(max_diff > 1.e-6){
+            if(max_diff > 1.e-6){
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
 
               //std::cout << "in rebuild:" << std::endl; 
          
-              std::cout << "gtau_:\n" << gtau_ << std::endl; 
-              std::cout << "gtau:\n" << gtau << std::endl; 
-              std::cout << "diff:\n" <<gtau_- gtau << std::endl; 
+              //std::cout << "gtau_:\n" << gtau_ << std::endl; 
+              //std::cout << "gtau:\n" << gtau << std::endl; 
+              //std::cout << "diff:\n" <<gtau_- gtau << std::endl; 
 
-              std::cout << "tlist: "; 
-              std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-              std::cout << std::endl; 
-            //}
+              //std::cout << "tlist: "; 
+              //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+              //std::cout << std::endl; 
+            }
            
             gtau_ = gtau;
         }

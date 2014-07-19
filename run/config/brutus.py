@@ -1,22 +1,22 @@
 import subprocess 
 from numpy import arange, array 
 
+BETA = 40 #projection time 
+
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'stablization'
+nickname = 'zeroT'
 
-Llist = array([9, 12]) 
-Tlist = 0.75/Llist 
+Llist = array([4]) 
+Vlist = arange(0.2, 1.6, 0.2)
 
-Vlist = [1.3, 1.4]
+itime_max = 1<<31
+RECALC_PERIOD = 5
+WRAP_REFRESH_PERIOD = 5
 
-RECALC_PERIOD = 10 
-UPDATE_REFRESH_PERIOD = 10
-WRAP_REFRESH_PERIOD = 10
-
-STEPS_PER_BLOCK = 10
-NBLOCKS = 128 
-THERMALIZATION = 10**3
+STEPS_PER_BLOCK = 1
+NBLOCKS = 1024
+THERMALIZATION = 5000
 SWEEPS = 10**4
 ##############################
 

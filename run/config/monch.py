@@ -7,9 +7,9 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
 
-BETA = 40 #projection time 
+BETA = 40. #projection time 
 
-Llist = array([2]) 
+Llist = array([4]) 
 Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31

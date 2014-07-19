@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="ALPS.xsl"?>
+<SIMULATION xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://xml.comp-phys.org/2003/8/QMCXML.xsd">
+  <PARAMETERS>
+<PARAMETER name="NUMBER_EIGENVALUES">1</PARAMETER>
+<PARAMETER name="L">4</PARAMETER>
+<PARAMETER name="TRANSLATION_SYMMETRY">false</PARAMETER>
+<PARAMETER name="LATTICE">honeycomb lattice</PARAMETER>
+<PARAMETER name="SEED">730609978</PARAMETER>
+<PARAMETER name="CONSERVED_QUANTUMNUMBERS">N</PARAMETER>
+<PARAMETER name="W">4</PARAMETER>
+<PARAMETER name="MODEL">spinless fermions</PARAMETER>
+<PARAMETER name="MODEL_LIBRARY">mymodels.xml</PARAMETER>
+<PARAMETER name="LATTICE_LIBRARY">mylattices.xml</PARAMETER>
+<PARAMETER name="t0">1.0</PARAMETER>
+<PARAMETER name="V0">1.2</PARAMETER>
+<PARAMETER name="BCx">periodic</PARAMETER>
+<PARAMETER name="BCy">periodic</PARAMETER>
+<PARAMETER name="N_total">16</PARAMETER>
+<PARAMETER name="MEASURE_CORRELATIONS[nncorr]">n:n</PARAMETER>
+  </PARAMETERS>
+</SIMULATION>

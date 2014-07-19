@@ -38,15 +38,14 @@ if __name__=='__main__':
     
 
     jobid = input.waitfor 
-    for L, T in zip(Llist, Tlist): 
+    for L in Llist:
         W = L 
         for V in Vlist:
                
                            inputfile = params(latticename, L , W,  
-                                              V=V, T= T, 
+                                              V=V, BETA= BETA,  
                                               Maxorder = Maxorder, itime_max = itime_max,  
                                               RECALC_PERIOD = RECALC_PERIOD, 
-                                              UPDATE_REFRESH_PERIOD = UPDATE_REFRESH_PERIOD, 
                                               WRAP_REFRESH_PERIOD = WRAP_REFRESH_PERIOD, 
                                               SWEEPS=SWEEPS, THERMALIZATION=THERMALIZATION , 
                                               NBLOCKS = NBLOCKS, STEPS_PER_BLOCK = STEPS_PER_BLOCK,

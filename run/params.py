@@ -25,13 +25,13 @@ def writeParameterFile(fname,parms):
 write parameters for main 
 '''
 
-def params(lattice, L, W, V= 1.0, T = 0.1, Maxorder = 2048, itime_max=1073741824, RECALC_PERIOD=10, UPDATE_REFRESH_PERIOD= 10, WRAP_REFRESH_PERIOD=10, SWEEPS=1000000, THERMALIZATION=100000, NBLOCKS = 15, STEPS_PER_BLOCK=10, folder='../data/', textoutput=0):
+def params(lattice, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime_max=1073741824, RECALC_PERIOD=10,  WRAP_REFRESH_PERIOD=10, SWEEPS=1000000, THERMALIZATION=100000, NBLOCKS = 15, STEPS_PER_BLOCK=10, folder='../data/', textoutput=0):
     
     key = lattice.replace(' ','') 
     key += 'L' + str(L)\
            +'W' + str(W)\
            +'V'+str(V)\
-           +'T' + str(T)\
+           +'BETA' + str(BETA)\
            +'MAXORDER'+ str(Maxorder)\
            +'ITIMEMAX'+ str(itime_max)\
            +'Therm'+str(THERMALIZATION)\
@@ -39,9 +39,7 @@ def params(lattice, L, W, V= 1.0, T = 0.1, Maxorder = 2048, itime_max=1073741824
            +'NBLOCKS'+ str(NBLOCKS)\
            +'STEPSPERBLOCK'+str(STEPS_PER_BLOCK)\
            +'WRAP'+str(WRAP_REFRESH_PERIOD)\
-           +'UPDATE'+str(UPDATE_REFRESH_PERIOD)\
            +'RECALC'+str(RECALC_PERIOD)
-
 
     inputname = '../jobs/'+ key +'.in'
     outputname = folder + key +'.dat'
@@ -58,12 +56,11 @@ def params(lattice, L, W, V= 1.0, T = 0.1, Maxorder = 2048, itime_max=1073741824
             ,'ITIME_MAX' : itime_max
             ,'MAX_ORDER' : Maxorder
             ,'V' : V
-            ,'TEMPERATURE' : T
+            ,'BETA' : BETA
             ,'THERMALIZATION' : THERMALIZATION
             ,'SWEEPS' : SWEEPS 
 
             ,'RECALC_PERIOD' : RECALC_PERIOD
-            ,'UPDATE_REFRESH_PERIOD' : UPDATE_REFRESH_PERIOD
             ,'WRAP_REFRESH_PERIOD' : WRAP_REFRESH_PERIOD
 
             ,'NBLOCKS'  : NBLOCKS 

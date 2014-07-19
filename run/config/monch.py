@@ -3,21 +3,18 @@ import time
 import re 
 from numpy import arange, array 
 
-#Divisors[2^32 - 1] = {1, 3, 5, 15, 17, 51, 85, 255, 257, 771, 1285, 3855, 4369, 13107, 21845, 65535, 65537, 196611, 327685, 983055, 1114129, 3342387, 5570645, 16711935, 16843009, 50529027, 84215045, 252645135, 286331153, 858993459, 1431655765, 4294967295}
-
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'discrete'
+nickname = 'zeroT'
 
-Llist = array([6, 9, 12]) 
-Tlist = 0.75/Llist 
+BETA = 40 #projection time 
 
-Vlist = [1.3, 1.4]
+Llist = array([2]) 
+Vlist = arange(0.2, 1.6, 0.2)
 
-itime_max = 1<<30 
-RECALC_PERIOD = 10
-UPDATE_REFRESH_PERIOD = 10
-WRAP_REFRESH_PERIOD = 10
+itime_max = 1<<31
+RECALC_PERIOD = 5
+WRAP_REFRESH_PERIOD = 5
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 512

@@ -2,14 +2,15 @@ import subprocess
 from numpy import arange, array 
 
 BETA = 40 #projection time 
+BCmodifier = "APBCX"
 
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
-BCmodifier = ""
-Llist = [4]
-Wlist = [2]
-Vlist = arange(0.2, 1.6, 0.2)
+
+Llist = [3,6,9]
+Wlist = Llist 
+Vlist = arange(1.2, 1.4, 0.02)
 
 itime_max = 1<<31
 RECALC_PERIOD = 5
@@ -17,15 +18,15 @@ WRAP_REFRESH_PERIOD = 5
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
-THERMALIZATION = 5000    # in unit of block 
-SWEEPS = 10**4           # in unit of the the whole system 
-MEASUREMENT_PERIOD = 10  # in unit of block
+THERMALIZATION = 5000          # in unit of block 
+SWEEPS = 10**4                 # in unit of the the whole system 
+MEASUREMENT_PERIOD = 10        # in unit of block
 ##############################
 
 tmin = 60
 tmax = 300
 ncores = 16 
-wtime = '1:00'
+wtime = '12:00'
 bin = '../bin/main'
 
 resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'

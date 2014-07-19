@@ -9,14 +9,15 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
 
-Llist = [12]
+Llist = [9]
 Wlist = Llist 
-Vlist = arange(1.2, 1.42, 0.02)
+Vlist = [1.2, 1.3, 1.4]
+#Vlist = arange(1.2, 1.42, 0.02)
 #Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
-RECALC_PERIOD = 5
-WRAP_REFRESH_PERIOD = 5
+RECALC_PERIOD = 10
+WRAP_REFRESH_PERIOD = 10
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
@@ -27,7 +28,7 @@ MEASUREMENT_PERIOD = 10        # in unit of block
 wtime = '12:00:00'
 tmin = 300
 tmax = 600
-ncores = 256 
+ncores = 128 
 prog = '../bin/main'
 #######################################
 

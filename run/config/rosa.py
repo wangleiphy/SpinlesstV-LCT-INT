@@ -3,13 +3,13 @@ import time
 from numpy import arange 
 
 BETA = 40. #projection time 
-BCmodifier = 'ABPCX' #only APBCX will have effect anything else will not affet the lattice 
+BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet the lattice 
 
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
 
-Llist = [9]
+Llist = [12]
 Wlist = Llist 
 Vlist = [1.2, 1.3, 1.4]
 #Vlist = arange(1.2, 1.42, 0.02)

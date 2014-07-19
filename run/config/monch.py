@@ -4,7 +4,7 @@ import re
 from numpy import arange, array 
 
 BETA = 50. #projection time 
-BCmodifier = 'ABPCX' #only APBCX will have effect anything else will not affet the lattice 
+BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet the lattice 
 
 latticename = 'honeycomb lattice'
 ###############################

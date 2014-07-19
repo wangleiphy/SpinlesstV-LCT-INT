@@ -1,5 +1,6 @@
 LATTICE_LIBRARY = "../input/mylattices.xml"
 LATTICE = "honeycomb lattice"
+BC = "PBC"
 BETA = 40.
 L = 6
 W = 6
@@ -14,4 +15,3 @@ NBLOCKS = 1024
 STEPS_PER_BLOCK= 1
 WRAP_REFRESH_PERIOD = 5
 RECALC_PERIOD = 5
-BC = "APBCX"

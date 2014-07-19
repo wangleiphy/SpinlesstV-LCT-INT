@@ -23,9 +23,9 @@ Mat buildK(const alps::graph_helper<>& lattice, const std::string BC){
         alps::graph_helper<>::boundary_crossing_type bc = get(alps::boundary_crossing_t(), lattice.graph(), *it);
         
         if (BC == "APBCX" )
-            K(si,sj) = bc.crosses(0)==0 ? -1.0 : 1.0 ;//anti-periodic condition along x direction: if cross x, we revert sign of hopping  
+          K(si,sj) = bc.crosses(0)==0 ? -1.0 : 1.0 ;//anti-periodic condition along x direction: if cross x, we revert sign of hopping  
         else
-            K(si,sj) = -1.0; 
+          K(si,sj) = -1.0; 
 
         K(sj,si) = K(si,sj);
     }

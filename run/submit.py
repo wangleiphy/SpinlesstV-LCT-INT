@@ -16,7 +16,6 @@ if __name__=='__main__':
     jobdir='../jobs/'
     
     textoutput = 1 # 
-    Maxorder = 1024
     
     #this import might overwrite the above default parameters 
     #########################################################

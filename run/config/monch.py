@@ -6,7 +6,7 @@ from numpy import arange, array
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
-
+BC = 'APBCX'
 BETA = 40. #projection time 
 
 Llist = array([4]) 

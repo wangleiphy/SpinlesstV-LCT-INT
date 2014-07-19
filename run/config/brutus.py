@@ -6,7 +6,7 @@ BETA = 40 #projection time
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
-
+BC = 'PBC'
 Llist = [4]
 Wlist = [2]
 Vlist = arange(0.2, 1.6, 0.2)

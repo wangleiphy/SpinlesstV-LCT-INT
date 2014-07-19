@@ -41,7 +41,7 @@ if __name__=='__main__':
     for L, W in zip(Llist, Wlist):
         for V in Vlist:
                
-                           inputfile = params(latticename, L , W,  
+                           inputfile = params(latticename, BC, L , W,  
                                               V=V, BETA= BETA,  
                                               Maxorder = Maxorder, itime_max = itime_max,  
                                               RECALC_PERIOD = RECALC_PERIOD, 

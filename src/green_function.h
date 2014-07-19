@@ -321,8 +321,11 @@ class Green_function{
            */
           
            //(2)
-           return  Mat::Identity(ns_, ns_) - UR * (VL*UR).inverse() * VL; 
+           Mat res =  -UR * ((VL*UR).inverse() * VL); 
+           for (site_type l =0; l< ns_; ++l)
+               res(l, l) += 1.0; 
 
+           return res; 
          }
                 
          // it can do  B(tau1)... B(tau2) * A  when sign = -1

@@ -52,7 +52,7 @@ def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime
             ,'filename' : outputname
             ,'textoutput' :textoutput 
 
-            ,'BC' : BCmodifier
+            ,'BCmodifier' : BCmodifier
             ,'L'  : L 
             ,'W'  : W
 

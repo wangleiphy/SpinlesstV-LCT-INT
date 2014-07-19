@@ -11,7 +11,7 @@ void InteractionExpansion::initialize_observables()
                << alps::ngs::RealObservable("M2")
                ; 
 
-  measurements << alps::ngs::RealVectorObservable("Vhist"); 
+  //measurements << alps::ngs::RealVectorObservable("Vhist"); 
 }
 
 
@@ -22,7 +22,7 @@ void InteractionExpansion::measure_observables()
   measurements["PertOrder"] << double(tlist.size());
 
   measure_M2();
-  measure_vhist(); 
+  //measure_vhist(); 
 
 }
 

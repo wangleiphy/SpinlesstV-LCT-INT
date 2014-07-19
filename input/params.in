@@ -1,8 +1,8 @@
 LATTICE_LIBRARY = "../input/mylattices.xml"
 LATTICE = "honeycomb lattice"
 BETA = 40.
-L = 10
-W = 10
+L = 2
+W = 2
 V = 1.4
 MAX_ORDER = 8192 
 THERMALIZATION = 1000

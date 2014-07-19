@@ -47,7 +47,7 @@ class Green_function{
            //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
            //on eigen basis it is diagonal 
            for(site_type l=0; l<ns_; ++l) 
-               gtau_(l, l) = wK_(l)>0. ? 1.: 0.;  
+               gtau_(l, l) = l< np_? 0.: 1.;  
            
            //std::cout << "initially:" << std::endl; 
            //std::cout << "D_:\n" << D_<< std::endl; 

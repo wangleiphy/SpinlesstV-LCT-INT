@@ -13,8 +13,7 @@ n_site(lattice.num_sites()),
 n_bond(lattice.num_bonds()),
 mc_steps((boost::uint64_t)parms["SWEEPS"]),
 therm_steps((unsigned long)parms["THERMALIZATION"]),        
-temperature(boost::lexical_cast<double>(parms["TEMPERATURE"])),                        
-beta(1./temperature),  
+beta(boost::lexical_cast<double>(parms["BETA"])), //total projection time 
 V(boost::lexical_cast<double>(parms["V"])),                        
 tlist(), 
 vlist(), 
@@ -28,7 +27,7 @@ direction(nblock==1? 0:1),
 sweeps(0),
 sign(1.), 
 K_(buildK(lattice)),
-gf(K_, beta, beta/boost::lexical_cast<double>(itime_max), nblock, blocksize, parms["UPDATE_REFRESH_PERIOD"] , parms["WRAP_REFRESH_PERIOD"])
+gf(K_, beta/boost::lexical_cast<double>(itime_max), nblock, blocksize, parms["UPDATE_REFRESH_PERIOD"] , parms["WRAP_REFRESH_PERIOD"])
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,itime_max)), 
 //bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))
@@ -44,11 +43,8 @@ gf(K_, beta, beta/boost::lexical_cast<double>(itime_max), nblock, blocksize, par
 }
 
 
-void InteractionExpansion::update()// sweep in one block 
+void InteractionExpansion::update()// sweep one block 
 {
-
-   for (itime_type i=0; i< nblock; ++i){
-
       sweeps++; // one sweep means try go through a block (with steps_per_block updates)
       interaction_expansion_step();                
 
@@ -67,7 +63,6 @@ void InteractionExpansion::update()// sweep in one block
       if(sweeps % recalc_period ==0)
          gf.rebuild(tlist, vlist);
 
-    }
 }
 
 
@@ -76,7 +71,9 @@ void InteractionExpansion::measure(){
    {
     //do nothing 
    }else{
-    measure_observables();
+     time_type tau = gf.tau(); 
+     if (tau >=0.4*beta && tau < 0.6*beta) //only measure when we are in the center
+        measure_observables();
    } 
 }
 

@@ -12,6 +12,6 @@ void InteractionExpansion::print(std::ostream &os) const{
   os<<"mc steps: "<<mc_steps << ",\ttherm steps: "<<therm_steps << std::endl;
   os<<"itime_max: " <<  itime_max << ",\tnblock: "<<nblock<<",\tsteps_per_block: "<< steps_per_block << std::endl; 
   os<<"recalc_period: "<< recalc_period<<",\tblocksize: "<< blocksize << std::endl; 
-  os<<"T: "<<temperature<<",\tV: "<<V<<std::endl;
+  os<<"beta: "<<beta<<",\tV: "<<V<<std::endl;
 }
 

@@ -69,7 +69,6 @@ private:
   const boost::uint64_t mc_steps;                        
   const unsigned long therm_steps;                
   
-  const time_type temperature;                               
   const time_type beta;  
   const double V;                        
   tlist_type tlist; //a list contains time where we have vertex 

@@ -4,7 +4,7 @@
 
 int main(){
     
-    time_type beta = 0.2; 
+    time_type beta = 16.; 
     site_type nsite = 8; 
     Mat K = Mat::Zero(nsite, nsite); 
 
@@ -48,12 +48,11 @@ int main(){
 
     itau = itime_rng(); 
 
-    Mat U, D, V; 
-    boost::tie(U, D, V) = gf.G(itau, tlist, vlist); 
-    std::cout << "G:\n" << U*D*V << std::endl; 
+    Mat G = gf.G(itau, tlist, vlist); 
+    std::cout << "G:\n" << G << std::endl; 
         
-    boost::tie(U, D, V) = gf.Gstable(itau, tlist, vlist); 
-    std::cout << "Gstable:\n" << U*D*V << std::endl; 
+    Mat Gstable = gf.Gstable(itau, tlist, vlist); 
+    std::cout << "Gstable:\n" << Gstable << std::endl; 
 
     /*
     std::cout << "w: " << G.determinant() << std::endl; 

@@ -5,9 +5,7 @@
 double InteractionExpansion::add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight)
 {
 
-  //Mat gtau = gf.G(itau, tlist, vlist) ; 
-
-  gf.wrap(itau, tlist, vlist); // reference to its private member 
+  gf.wrap(itau, tlist, vlist);  
     
   //const Mat gtau = gf.gtau(); 
   //std::cout << "gtau from wrap:\n" << gtau << std::endl; 

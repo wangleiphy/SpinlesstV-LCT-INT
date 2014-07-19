@@ -17,7 +17,8 @@ beta(boost::lexical_cast<double>(parms["BETA"])), //total projection time
 V(boost::lexical_cast<double>(parms["V"])),                        
 tlist(), 
 vlist(), 
-recalc_period(parms["RECALC_PERIOD"] | 500),
+recalc_period(parms["RECALC_PERIOD"]),
+measurement_period(parms["MEASUREMENT_PERIOD"]),
 itime_max(boost::lexical_cast<itime_type>(parms["ITIME_MAX"])), 
 nblock(boost::lexical_cast<itime_type>(parms["NBLOCKS"])),
 steps_per_block(parms["STEPS_PER_BLOCK"] | 100),
@@ -26,7 +27,7 @@ iblock(0),
 direction(nblock==1? 0:1),
 sweeps(0),
 sign(1.), 
-K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BC"]) )),
+K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BCmodifier"]) )),
 gf(K_, beta/boost::lexical_cast<double>(itime_max), nblock, blocksize,parms["WRAP_REFRESH_PERIOD"])
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,itime_max)), 
@@ -43,7 +44,7 @@ gf(K_, beta/boost::lexical_cast<double>(itime_max), nblock, blocksize,parms["WRA
 }
 
 
-void InteractionExpansion::update()// sweep one block 
+void InteractionExpansion::update()
 {
       sweeps++; // one sweep means try go through a block (with steps_per_block updates)
       interaction_expansion_step();                
@@ -67,10 +68,7 @@ void InteractionExpansion::update()// sweep one block
 
 
 void InteractionExpansion::measure(){
-  if (sweeps < therm_steps) 
-   {
-    //do nothing 
-   }else{
+  if (sweeps > therm_steps && sweeps%measurement_period ==0){
      time_type tau = gf.tau(); 
      if (tau >=0.4*beta && tau < 0.6*beta) //only measure when we are in the center
         measure_observables();

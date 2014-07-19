@@ -75,6 +75,7 @@ private:
   vlist_type vlist; //map from tau to sites 
   
   const unsigned recalc_period;                
+  const unsigned measurement_period; 
 
   const itime_type itime_max;  
   const itime_type nblock; 

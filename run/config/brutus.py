@@ -19,6 +19,7 @@ STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
 THERMALIZATION = 5000
 SWEEPS = 10**4
+MEASUREMENT_PERIOD = 10  # in unit of blocks 
 ##############################
 
 tmin = 60

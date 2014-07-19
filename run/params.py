@@ -25,21 +25,22 @@ def writeParameterFile(fname,parms):
 write parameters for main 
 '''
 
-def params(lattice, BC, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime_max=1073741824, RECALC_PERIOD=10,  WRAP_REFRESH_PERIOD=10, SWEEPS=1000000, THERMALIZATION=100000, NBLOCKS = 15, STEPS_PER_BLOCK=10, folder='../data/', textoutput=0):
+def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime_max=1073741824, MEASUREMENT_PERIOD = 10, RECALC_PERIOD=10,  WRAP_REFRESH_PERIOD=10, SWEEPS=1000000, THERMALIZATION=100000, NBLOCKS = 15, STEPS_PER_BLOCK=10, folder='../data/', textoutput=0):
     
-    key = lattice.replace(' ','') + BC  
+    key = lattice.replace(' ','') + BCmodifier  
     key += 'L' + str(L)\
            +'W' + str(W)\
            +'V'+str(V)\
-           +'BETA' + str(BETA)\
-           +'MAXORDER'+ str(Maxorder)\
            +'ITIMEMAX'+ str(itime_max)\
-           +'Therm'+str(THERMALIZATION)\
-           +'Sweeps'+str(SWEEPS) \
+           +'BETA' + str(BETA)\
            +'NBLOCKS'+ str(NBLOCKS)\
            +'STEPSPERBLOCK'+str(STEPS_PER_BLOCK)\
            +'WRAP'+str(WRAP_REFRESH_PERIOD)\
            +'RECALC'+str(RECALC_PERIOD)
+           +'MAXORDER'+ str(Maxorder)\
+           +'Therm'+str(THERMALIZATION)\
+           +'Sweeps'+str(SWEEPS) \
+           +'Nskip' + str(MEASUREMENT_PERIOD)
 
     inputname = '../jobs/'+ key +'.in'
     outputname = folder + key +'.dat'
@@ -51,7 +52,7 @@ def params(lattice, BC, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime_max=107
             ,'filename' : outputname
             ,'textoutput' :textoutput 
 
-            ,'BC' : BC 
+            ,'BC' : BCmodifier
             ,'L'  : L 
             ,'W'  : W
 
@@ -61,6 +62,7 @@ def params(lattice, BC, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime_max=107
             ,'BETA' : BETA
             ,'THERMALIZATION' : THERMALIZATION
             ,'SWEEPS' : SWEEPS 
+            ,'MEASUREMENT_PERIOD' : MEASUREMENT_PERIOD
 
             ,'RECALC_PERIOD' : RECALC_PERIOD
             ,'WRAP_REFRESH_PERIOD' : WRAP_REFRESH_PERIOD

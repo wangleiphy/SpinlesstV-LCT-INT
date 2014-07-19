@@ -5,7 +5,7 @@
 #include <boost/foreach.hpp>
 #include "types.h"
 
-Mat buildK(const alps::graph_helper<>& lattice, const std::string BC){
+Mat buildK(const alps::graph_helper<>& lattice, const std::string BCmodifier){
 
     //use my own random number generator because the one in class in not working right now 
     typedef boost::mt19937 engine_type;
@@ -22,7 +22,7 @@ Mat buildK(const alps::graph_helper<>& lattice, const std::string BC){
 
         alps::graph_helper<>::boundary_crossing_type bc = get(alps::boundary_crossing_t(), lattice.graph(), *it);
         
-        if (BC == "APBCX" )
+        if (BCmodifier == "APBCX" )
           K(si,sj) = bc.crosses(0)==0 ? -1.0 : 1.0 ;//anti-periodic condition along x direction: if cross x, we revert sign of hopping  
         else
           K(si,sj) = -1.0; 

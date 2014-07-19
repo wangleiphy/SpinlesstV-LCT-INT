@@ -41,9 +41,10 @@ if __name__=='__main__':
     for L, W in zip(Llist, Wlist):
         for V in Vlist:
                
-                           inputfile = params(latticename, BC, L , W,  
+                           inputfile = params(latticename, BCmodifier, L , W,  
                                               V=V, BETA= BETA,  
                                               Maxorder = Maxorder, itime_max = itime_max,  
+                                              MEASUREMENT_PERIOD = MEASUREMENT_PERIOD, 
                                               RECALC_PERIOD = RECALC_PERIOD, 
                                               WRAP_REFRESH_PERIOD = WRAP_REFRESH_PERIOD, 
                                               SWEEPS=SWEEPS, THERMALIZATION=THERMALIZATION , 

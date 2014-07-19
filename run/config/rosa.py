@@ -2,50 +2,36 @@ import subprocess
 import time 
 from numpy import arange 
 
-Add  = 0.15
-Remove = 0.15
+BETA = 40. #projection time 
+BCmodifier = 'ABPCX' #only APBCX will have effect anything else will not affet the lattice 
 
-ZtoW = 0.35
-WtoZ = 0.35
+latticename = 'honeycomb lattice'
+###############################
+nickname = 'zeroT'
 
-#latticename = 'open chain lattice'
-#latticename = 'open honeycomb lattice'
-#latticename = 'cylindrical honeycomb lattice'
-#latticename = 'honeycomb lattice'
-latticename = 'square lattice'
-#######################################
-nickname = 'tune_eta'
+Llist = [12]
+Wlist = Llist 
+Vlist = arange(1.2, 1.42, 0.02)
+#Vlist = arange(0.2, 1.6, 0.2)
 
-Llist = [8]
-Wlist = [8]
-NAstep = 8
+itime_max = 1<<31
+RECALC_PERIOD = 5
+WRAP_REFRESH_PERIOD = 5
 
-#NA0list = [108]
-#NA1list = [120]
+STEPS_PER_BLOCK = 1
+NBLOCKS = 1024
+THERMALIZATION = 10**4
+SWEEPS = 10**6 
+MEASUREMENT_PERIOD = 10        # in unit of block
 
-#Tlist = [0.5]
-Tlist =[0.9]
-#Tlist = arange(0.6, 2.1, 0.1)
-#Tlist = arange(0.2, 1.2, 0.2)
-#Vlist = arange(0.5, 3.0, 0.5)
-#Vlist = arange(1., 11., 1.)
-Vlist = [2.]
-#Vlist = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]
-
-NSKIP = 100
-THERMALIZATION = 10**5
-SWEEPS = 10**6
-Nscratch = 1000
-Ntau = 1000
-
-wtime = '24:00:00'
+wtime = '12:00:00'
 tmin = 300
 tmax = 600
 ncores = 256 
-prog = '../bin/ratiotrick'
+prog = '../bin/main'
 #######################################
 
-resfolder = '/scratch/rosa/lewang/renyidata/' + nickname  + '/'
+resfolder = '/scratch/rosa/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]
 
 Tlimit = max(3600*h + 60*m + s - int(tmax*2.) , 0)

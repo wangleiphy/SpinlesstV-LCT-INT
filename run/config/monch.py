@@ -10,7 +10,6 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
 
-
 Llist = array([4]) 
 Vlist = arange(0.2, 1.6, 0.2)
 

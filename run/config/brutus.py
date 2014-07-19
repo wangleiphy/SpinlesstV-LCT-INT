@@ -6,7 +6,7 @@ BETA = 40 #projection time
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
-BC = 'PBC'
+BCmodifier = ""
 Llist = [4]
 Wlist = [2]
 Vlist = arange(0.2, 1.6, 0.2)
@@ -17,9 +17,9 @@ WRAP_REFRESH_PERIOD = 5
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
-THERMALIZATION = 5000
-SWEEPS = 10**4
-MEASUREMENT_PERIOD = 10  # in unit of blocks 
+THERMALIZATION = 5000    # in unit of block 
+SWEEPS = 10**4           # in unit of the the whole system 
+MEASUREMENT_PERIOD = 10  # in unit of block
 ##############################
 
 tmin = 60

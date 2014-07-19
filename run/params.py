@@ -36,7 +36,7 @@ def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime
            +'NBLOCKS'+ str(NBLOCKS)\
            +'STEPSPERBLOCK'+str(STEPS_PER_BLOCK)\
            +'WRAP'+str(WRAP_REFRESH_PERIOD)\
-           +'RECALC'+str(RECALC_PERIOD)
+           +'RECALC'+str(RECALC_PERIOD)\
            +'MAXORDER'+ str(Maxorder)\
            +'Therm'+str(THERMALIZATION)\
            +'Sweeps'+str(SWEEPS) \

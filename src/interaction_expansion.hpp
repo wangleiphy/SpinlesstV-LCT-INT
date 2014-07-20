@@ -7,8 +7,8 @@
 #include <alps/alea.h>
 
 #include <cmath>
-#include "green_function_Nmat.h"
-//#include "green_function.h"
+//#include "green_function_Nmat.h"
+#include "green_function.h"
 
 class InteractionExpansion: public alps::mcbase
 {

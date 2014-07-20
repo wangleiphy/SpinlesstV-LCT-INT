@@ -21,7 +21,7 @@ class Green_function{
 //        ,update_refresh_period_(update_refresh_period)
         ,wrap_refresh_counter_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
-        ,Storage_(nblock)// it stores LLL...RRR 
+        ,Storage_(nblock+1)// it stores LLL...RRR 
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;

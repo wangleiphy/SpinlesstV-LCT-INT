@@ -83,7 +83,7 @@ class Green_function{
             gtau_ = gtau;
         }
         
-        const itime_type itau() const{
+        itime_type itau() const{
             return itau_; 
         }
 

@@ -53,10 +53,12 @@ class Green_function{
            
            //fill in storage LLLL...R 
            //since initially there is no vertices U and V are all diagonal 
-           Storage_[0] = Mat::Identity(ns_, np_);  //right 
-           for (unsigned ib=1; ib< Storage_.size(); ++ib) {
+           //note this can be called at any time, we are not necessaryly at itau =0
+           itime_type b = itau_/blocksize_; //current block 
+           for (unsigned ib=0; ib<=b; ++ib) 
+              Storage_[ib] = Mat::Identity(ns_, np_);  //right 
+           for (unsigned ib=b+1; ib< Storage_.size(); ++ib) 
               Storage_[ib] = Mat::Identity(np_, ns_); //left 
-           }
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
@@ -81,13 +83,9 @@ class Green_function{
             gtau_ = gtau;
         }
         
-        /*
-        //jump to a new time itau from scratch
-        void blockjump(const itime_type itau, const tlist_type& tlist, vlist_type& vlist){
-             gtau_ = G(itau, tlist, vlist);  
-             itau_ = itau; 
+        const itime_type itau() const{
+            return itau_; 
         }
-        */
 
         const Mat& gtau() const {
             return gtau_; 
@@ -163,25 +161,7 @@ class Green_function{
             if (itau >= itau_) {
                 // B G B^{-1}
                 propagator1(-1, itau, itau_, tlist, vlist, gtau_);  // B(tau1) ... B(tau2) *U_  
-
-                /*
-                if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(U_*D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                  U_ = svd.matrixU();
-                  D_ = svd.singularValues().asDiagonal();
-                  V_ = svd.matrixV().adjoint()*V_;
-                }
-                */
-
                 propagator1(1, itau, itau_, tlist, vlist, gtau_); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
-                /* 
-                if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(D_*V_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                  U_ = U_*svd.matrixU();
-                  D_ = svd.singularValues().asDiagonal();
-                  V_ = svd.matrixV().adjoint();
-                }
-                */
 
                 itau_ = itau; 
 
@@ -189,26 +169,7 @@ class Green_function{
 
                 // B^{-1} G B 
                 propagator2(1, itau_, itau, tlist, vlist, gtau_); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
-                   
-                /* 
-                if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(U_*D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                  U_ = svd.matrixU();
-                  D_ = svd.singularValues().asDiagonal();
-                  V_ = svd.matrixV().adjoint()*V_;
-                }
-                */
-
                 propagator2(-1, itau_, itau, tlist, vlist, gtau_);   //  V_ * B(tau1) ... B(tau2)
-
-                /*    
-                if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(D_*V_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                  U_ = U_*svd.matrixU();
-                  D_ = svd.singularValues().asDiagonal();
-                  V_ = svd.matrixV().adjoint();
-                }
-                */
 
                 itau_ = itau; 
             }
@@ -225,7 +186,7 @@ class Green_function{
             //when we wrap to a new block we need to update storage 
             if (b > b_){// move to a larger block on the left  
                 assert(b-b_ ==1) ; 
-                    
+
                 Mat UR= Storage_[b_];
                 propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, UR);
 
@@ -344,10 +305,12 @@ class Green_function{
 
              //upper > tau1 > lower > tau2 
              if (lower == upper ) {// there is no vertex in between tau1 and tau2 
+                 //std::cout << "lower==upper" << std::endl; 
+                 //std::cout <<  side << " " << A.rows() << " " << A.cols() << std::endl; 
                  Kprop(sign, itau1 - itau2, side, A); 
 
              }else{
-
+                 //std::cout << "lower!=upper" << std::endl; 
                  Kprop(sign, *lower - itau2, side, A);
                  //std::cout << "prop1:Kprop " <<   *lower  << " " << itau2  << " " << *lower - itau2 << std::endl; 
                  for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {

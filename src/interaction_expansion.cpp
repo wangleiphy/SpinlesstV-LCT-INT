@@ -58,8 +58,14 @@ void InteractionExpansion::update()
       if (iblock == nblock-1 || iblock == 0)
           direction *= -1; 
 
+      //std::cout << "iblock, itau : " << iblock << "  " << gf.itau() << std::endl; 
+      //std::cout << "tlist: "; 
+      //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+      //std::cout << std::endl; 
+
       //we jump to a new block and calculate gf at its time origin
       gf.wrap(iblock*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 
+
  
       if(sweeps % recalc_period ==0)
          gf.rebuild(tlist, vlist);

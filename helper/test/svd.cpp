@@ -14,10 +14,10 @@ using std::endl;
 
 int main(){
 
-    MatrixXd m = MatrixXd::Random(500,500);
+    MatrixXd m = MatrixXd::Random(648, 324);
 
     //cout << "Here is the matrix m:" << endl << m << endl;
-    JacobiSVD<MatrixXd> svd(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    JacobiSVD<MatrixXd> svd(m, Eigen::ComputeThinU);
 
     return 0; 
 

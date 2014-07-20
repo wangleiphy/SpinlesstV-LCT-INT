@@ -10,15 +10,15 @@ using std::endl;
 
 int main(){
 
-    MatrixXd m = MatrixXd::Random(500,500);
+    MatrixXd m = MatrixXd::Random(648,324);
     //cout << "Here is the matrix m:" << endl << m << endl;
 
     REDSVD::RedSVD svd;
-    svd.run(m, 500);
+    svd.run(m, 324);
 
     return 0; 
-
     cout << "Its singular values are:" << endl << svd.singularValues() << endl;
+
     cout << "Its left singular vectors are the columns of the thin U matrix:" << endl << svd.matrixU() << endl;
     cout << "Its right singular vectors are the columns of the thin V matrix:" << endl << svd.matrixV() << endl;
    

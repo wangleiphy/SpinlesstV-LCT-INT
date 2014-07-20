@@ -66,14 +66,14 @@ class Green_function{
 
               //std::cout << "in rebuild:" << std::endl; 
          
-              std::cout << "gtau:\n" << R*N*L << std::endl; 
-              std::cout << "gtau_:\n" << R_*N_*L_ << std::endl; 
-              std::cout << "diff:\n" << R*N*L - R_*N_*L_ << std::endl; 
+              //std::cout << "gtau:\n" << R*N*L << std::endl; 
+              //std::cout << "gtau_:\n" << R_*N_*L_ << std::endl; 
+              //std::cout << "diff:\n" << R*N*L - R_*N_*L_ << std::endl; 
 
-              std::cout << "tlist: "; 
-              std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-              std::cout << std::endl; 
-              abort(); 
+              //std::cout << "tlist: "; 
+              //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+              //std::cout << std::endl; 
+              //abort(); 
             }
 
             R_ = R;

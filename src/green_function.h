@@ -21,8 +21,7 @@ class Green_function{
 //        ,update_refresh_period_(update_refresh_period)
         ,wrap_refresh_counter_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
-        ,Lstorage_(nblock)
-        ,Rstorage_(nblock)
+        ,Storage_(nblock)// it stores LLL...RRR 
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;
@@ -52,14 +51,11 @@ class Green_function{
            //std::cout << "initially:" << std::endl; 
            //std::cout << "D_:\n" << D_<< std::endl; 
            
-           //fill in storage
+           //fill in storage LLLL...R 
            //since initially there is no vertices U and V are all diagonal 
-           for (unsigned ib=0; ib< Rstorage_.size(); ++ib) {
-               Rstorage_[ib] = Mat::Identity(ns_, np_); // U^{dagger} *P and assume P is the eigen state of K 
-           }
-           
-           for (unsigned ib=0; ib< Lstorage_.size(); ++ib) {
-               Lstorage_[ib] = Mat::Identity(np_, ns_); 
+           Storage_[0] = Mat::Identity(ns_, np_);  //right 
+           for (unsigned ib=1; ib< Storage_.size(); ++ib) {
+              Storage_[ib] = Mat::Identity(np_, ns_); //left 
            }
         }
 
@@ -111,8 +107,7 @@ class Green_function{
             return  uK_ *(gtau_ * uKdag_.col(si));  
         }
             
-        //update changes D_ and V_ 
-        //but does not affect the storage 
+        //update changes gtau_ 
         void update(const site_type si, const site_type sj, const double gij){
 
              //std::cout << "si, sj, gij: "  << si << " " << sj << " " << gij << std::endl; 
@@ -129,7 +124,7 @@ class Green_function{
 
              if (itau_%blocksize_==0){ //special treatment when update the block starting point 
                   //std::cout << "update: special treatment because update on the block boundary" << std::endl; 
-                  Vprop(si, sj, "L",  Rstorage_[itau_/blocksize_]);// update U in Rstorage 
+                  Vprop(si, sj, "L",  Storage_[itau_/blocksize_]);// update U in Storage 
              }
 
              /*
@@ -231,7 +226,7 @@ class Green_function{
             if (b > b_){// move to a larger block on the left  
                 assert(b-b_ ==1) ; 
                     
-                Mat UR= Rstorage_[b_];
+                Mat UR= Storage_[b_];
                 propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, UR);
 
                 if (refresh){
@@ -239,12 +234,12 @@ class Green_function{
                    UR = svd.matrixU();
                 }
 
-                Rstorage_[b] = UR; 
+                Storage_[b] = UR; 
 
             }else if (b< b_){// move to smaller block 
                 assert(b_-b ==1); 
                 
-                Mat VL = Lstorage_[b_];
+                Mat VL = Storage_[b_+1];
                 propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, VL);
 
                 if (refresh){
@@ -252,7 +247,7 @@ class Green_function{
                   VL = svd.matrixV().adjoint();
                 }
 
-                Lstorage_[b] = VL; 
+                Storage_[b+1] = VL; 
             }
         }
 
@@ -283,10 +278,10 @@ class Green_function{
            itime_type b = itau/blocksize_; //block index 
            //std::cout << "itau, block: " << itau << " " << b << std::endl; 
 
-           Mat UR = Rstorage_[b]; 
+           Mat UR = Storage_[b]; 
            propagator1(-1, itau, b*blocksize_, tlist, vlist, UR);
         
-           Mat VL = Lstorage_[b]; 
+           Mat VL = Storage_[b+1]; 
            propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, VL);
 
            //std::cout << "in Gstable:" << std::endl; 
@@ -491,8 +486,7 @@ class Green_function{
         unsigned wrap_refresh_period_; 
 
         //storage
-        std::vector<Mat> Lstorage_;
-        std::vector<Mat> Rstorage_;
+        std::vector<Mat> Storage_;
 
 };
 

@@ -14,14 +14,17 @@ import re
 parser = argparse.ArgumentParser(description='')
 parser.add_argument("-fileheaders", nargs='+', default="params", help="fileheaders")
 
-parser.add_argument("-x", default="L", help="variable")
+parser.add_argument("-x", default="V", help="variable")
 parser.add_argument("-y", default="M2", help="observable")
 parser.add_argument("-copydata", action='store_true',  help="copy data")
+
 
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument("-show", action='store_true',  help="show figure right now")
 group.add_argument("-outname", default="result.pdf",  help="output pdf file")
 
+group = parser.add_argument_group()
+group.add_argument("-b", type = float,  default=0., help="b")
 
 args = parser.parse_args()
 
@@ -50,17 +53,38 @@ print resultFiles
 data = pyalps.loadMeasurements(resultFiles, args.y)
 
 data = pyalps.flatten(data)
-print data 
+#print data 
 
 for d in data:
     d.props['observable'] =  args.y
 
-res = pyalps.collectXY(data, x='V', y=args.y, foreach = [args.x])
-
-print res 
+if args.x == 'V':
+    res = pyalps.collectXY(data, x='V', y=args.y, foreach = ['L'])
+    pyalps.propsort(res,'L')
+elif args.x == 'L':
+    res = pyalps.collectXY(data, x='L', y=args.y, foreach = ['V'])
+    pyalps.propsort(res,'V')
 
 print pyalps.plot.convertToText(res)
-pyalps.propsort(res,args.x)
+
+#scale data 
+if args.x =='V':
+    for d in res:
+        L = d.props['L']
+        d.y = [y*L**args.b for y in d.y]
+
+        d.props['ylabel'] = r'$M_2L^{b}$'
+        d.props['label'] = '$L=%g$' %(L)
+        d.props['line'] = '-o'
+
+elif args.x == 'L':
+    for d in res:
+        d.x = 1./d.x 
+        d.props['xlabel'] = '$1/L$'
+        d.props['line'] = '-o'
+
+plt.title('$b=%g$'%(args.b))
+
 pyalps.plot.plot(res)
 #plt.xlim([0,0.18])
 #plt.ylim([0,0.4])

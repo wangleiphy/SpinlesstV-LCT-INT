@@ -9,7 +9,7 @@ void InteractionExpansion::test(){
 
           if (random() < 0.5){
           //if (sw%2 ==0){
-          //if (true){
+          ///if (true){
 
                 //std::cout << "####begin add###################"  << std::endl; 
 
@@ -24,7 +24,7 @@ void InteractionExpansion::test(){
                 if (tlist.find(itau) == tlist.end()) {//perform add only if there is no vertex at itau 
 
                      //std::cout << "weight before: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 
-                     
+                    
                      double detratio = add_impl(itau, sites, false);  
 
                      //std::cout << "weight after: " << 1./gf.G(0, tlist, vlist).determinant() << std::endl; 

@@ -1,5 +1,5 @@
-#ifndef GREEN_FUNCTION_H
-#define GREEN_FUNCTION_H
+#ifndef GREEN_FUNCTION_NMAT_H
+#define GREEN_FUNCTION_NMAT_H
 
 #include "types.h"
 #include <boost/tuple/tuple.hpp>
@@ -15,11 +15,12 @@ class Green_function{
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
         ,itau_(0)
-        ,gtau_()
+        ,R_(Mat::Identity(ns_, np_))// these are the regularied version 
+        ,N_(Mat::Identity(np_, np_))
+        ,L_(Mat::Identity(np_, ns_))
         ,blocksize_(blocksize)
-//        ,update_refresh_counter_(0)
-//        ,update_refresh_period_(update_refresh_period)
-        ,wrap_refresh_counter_(0)
+        ,wrap_refresh_counter1_(0)
+        ,wrap_refresh_counter2_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
         ,Lstorage_(nblock)
         ,Rstorage_(nblock)
@@ -43,16 +44,7 @@ class Green_function{
 
         void init_without_vertex(){
 
-           gtau_ = Mat::Zero(ns_, ns_); 
-           //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
-           //on eigen basis it is diagonal 
-           for(site_type l=0; l<ns_; ++l) 
-               gtau_(l, l) = l< np_? 0.: 1.;  
-           
-           //std::cout << "initially:" << std::endl; 
-           //std::cout << "D_:\n" << D_<< std::endl; 
-           
-           //fill in storage
+          //fill in storage
            //since initially there is no vertices U and V are all diagonal 
            for (unsigned ib=0; ib< Rstorage_.size(); ++ib) {
                Rstorage_[ib] = Mat::Identity(ns_, np_); // U^{dagger} *P and assume P is the eigen state of K 
@@ -64,37 +56,33 @@ class Green_function{
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
-            
-            Mat gtau = Gstable(itau_, tlist, vlist); // from scratch 
 
-            double max_diff = ((gtau - gtau_).cwiseAbs()).maxCoeff(); 
+            Mat R, N, L; 
+            boost::tie(R, N, L) = stablization(itau_, tlist, vlist); // from scratch 
+
+            double max_diff = ((R*N*L - R_*N_*L_).cwiseAbs()).maxCoeff(); 
             if(max_diff > 1.e-6){
               std::cout<<"WARNING: roundoff errors " <<max_diff << std::endl;
 
               //std::cout << "in rebuild:" << std::endl; 
          
-              //std::cout << "gtau_:\n" << gtau_ << std::endl; 
-              //std::cout << "gtau:\n" << gtau << std::endl; 
-              //std::cout << "diff:\n" <<gtau_- gtau << std::endl; 
+              //std::cout << "gtau:\n" << R*N*L << std::endl; 
+              //std::cout << "gtau_:\n" << R_*N_*L_ << std::endl; 
+              //std::cout << "diff:\n" << R*N*L - R_*N_*L_ << std::endl; 
 
               //std::cout << "tlist: "; 
               //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
               //std::cout << std::endl; 
+              //abort(); 
             }
-           
-            gtau_ = gtau;
+
+            R_ = R;
+            N_ = N;
+            L_ = L; 
         }
         
-        /*
-        //jump to a new time itau from scratch
-        void blockjump(const itime_type itau, const tlist_type& tlist, vlist_type& vlist){
-             gtau_ = G(itau, tlist, vlist);  
-             itau_ = itau; 
-        }
-        */
-
-        const Mat& gtau() const {
-            return gtau_; 
+        Mat gtau() const {
+            return Mat::Identity(ns_, ns_) - R_*N_*L_; 
         }
 
         time_type tau() const {
@@ -102,13 +90,14 @@ class Green_function{
         }
 
         double gij(const site_type si, const site_type sj)const {
-            // (U gtau U^{dagger} )_ij 
-            return  (uK_.row(si) *gtau_) * uKdag_.col(sj);  
+            double delta = (si==sj)? 1.0 : 0.0; 
+            return delta -(uK_.row(si) *R_)*  N_ * (L_*uKdag_.col(sj));  
         }
 
-        Eigen::VectorXd denmat(const site_type si)const {
-            // (U gtau U^{dagger} )_ij 
-            return  uK_ *(gtau_ * uKdag_.col(si));  
+        Vec denmat(const site_type si)const {
+            Vec res = Vec::Zero(ns_); 
+            res(si) = 1.0; 
+            return res  -  uK_ *( R_* (N_*  (L_ * uKdag_.col(si))));
         }
             
         //update changes D_ and V_ 
@@ -121,110 +110,97 @@ class Green_function{
              //std::cout << "uK_.row(si):\n" << uK_.row(si) << std::endl; 
              //std::cout << "uK_.row(sj):\n" << uK_.row(sj) << std::endl; 
 
-             //update gtau_
-             Eigen::RowVectorXd ri = uK_.row(si)* gtau_- uK_.row(si); 
-             Eigen::RowVectorXd rj = uK_.row(sj)* gtau_- uK_.row(sj); 
+             //std::cout << "Lshape: " << L_.rows() << " " << L_.cols() << std::endl;  
+             //std::cout << "Nshape: " << N_.rows() << " " << N_.cols() << std::endl;  
+             //std::cout << "Rshape: " << R_.rows() << " " << R_.cols() << std::endl;  
 
-             gtau_ -= ((gtau_*uKdag_.col(sj)) * ri + (gtau_*uKdag_.col(si)) * rj )/gij; 
+             //update N_
+             N_ +=  ((N_* (L_* uKdag_.col(sj))) * ((uK_.row(si)*R_)*N_)
+                     +(N_* (L_* uKdag_.col(si))) * ((uK_.row(sj)*R_)*N_)
+                    )/gij; 
+
+             //update R_
+             Vprop(si, sj, "L",  R_);
 
              if (itau_%blocksize_==0){ //special treatment when update the block starting point 
                   //std::cout << "update: special treatment because update on the block boundary" << std::endl; 
-                  Vprop(si, sj, "L",  Rstorage_[itau_/blocksize_]);// update U in Rstorage 
+                  Rstorage_[itau_/blocksize_] = R_; 
              }
-
-             /*
-             if (update_refresh_counter_ < update_refresh_period_){
-                    ++update_refresh_counter_; 
-             }else{
-
-                    Eigen::JacobiSVD<Mat> svd(D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                    U_ = U_*svd.matrixU(); 
-                    D_ = svd.singularValues().asDiagonal(); 
-                    V_ = svd.matrixV().adjoint()*V_;
-                    
-                    update_refresh_counter_ =0; 
-             }
-             */
 
              //std::cout << "in update:" << std::endl; 
              //std::cout << "U_:\n" << U_ << std::endl; 
              //std::cout << "D_:\n" << D_ << std::endl; 
              //std::cout << "V_:\n" << V_ << std::endl; 
-
         }
         
-        //wrap does not change D_  
+        //wrap does not change N_ 
         void wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
             if (itau == itau_) 
                 return; 
+
             
              itime_type b = itau/blocksize_; //new block index 
              itime_type b_ = itau_/blocksize_; //old block index 
 
              //std::cout << "b, b_, itau, itau_, blocksize: "  << b << " " << b_ << " " << itau << " " << itau_ << " " << blocksize_ << std::endl; 
 
+            //refresh every wrap_refresh_period_ steps 
+             bool refresh = false; 
+             if (wrap_refresh_counter1_ < wrap_refresh_period_){
+                 ++wrap_refresh_counter1_; 
+             }else{
+                 refresh = true; 
+                 wrap_refresh_counter1_ = 0; 
+             }
 
             //wrap Green's function 
             if (itau >= itau_) {
                 // B G B^{-1}
-                propagator1(-1, itau, itau_, tlist, vlist, gtau_);  // B(tau1) ... B(tau2) *U_  
-
-                /*
+                propagator1(-1, itau, itau_, tlist, vlist, R_);  // B(tau1) ... B(tau2) *R_  
+                
                 if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(U_*D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                  U_ = svd.matrixU();
-                  D_ = svd.singularValues().asDiagonal();
-                  V_ = svd.matrixV().adjoint()*V_;
+                  Eigen::JacobiSVD<Mat> svd(R_, Eigen::ComputeThinU); 
+                  R_ = svd.matrixU();
                 }
-                */
 
-                propagator1(1, itau, itau_, tlist, vlist, gtau_); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
-                /* 
+                propagator1(1, itau, itau_, tlist, vlist, L_); // L_ * B^{-1}(tau2) ... B^{-1}(tau1)
+
                 if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(D_*V_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                  U_ = U_*svd.matrixU();
-                  D_ = svd.singularValues().asDiagonal();
-                  V_ = svd.matrixV().adjoint();
+                  Eigen::JacobiSVD<Mat> svd(L_, Eigen::ComputeThinV); 
+                  L_ = svd.matrixV().adjoint();
+                  N_ = (L_*R_).inverse();   // since we have changed L_ and R_, we need to change N_ as well 
                 }
-                */
 
                 itau_ = itau; 
 
             }else{
 
                 // B^{-1} G B 
-                propagator2(1, itau_, itau, tlist, vlist, gtau_); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(1, itau_, itau, tlist, vlist, R_); //  B^{-1}(tau2) ... B^{-1}(tau1) * R_
                    
-                /* 
                 if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(U_*D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                  U_ = svd.matrixU();
-                  D_ = svd.singularValues().asDiagonal();
-                  V_ = svd.matrixV().adjoint()*V_;
+                  Eigen::JacobiSVD<Mat> svd(R_, Eigen::ComputeThinU); 
+                  R_ = svd.matrixU();
                 }
-                */
 
-                propagator2(-1, itau_, itau, tlist, vlist, gtau_);   //  V_ * B(tau1) ... B(tau2)
+                propagator2(-1, itau_, itau, tlist, vlist, L_);   //  L_ * B(tau1) ... B(tau2)
 
-                /*    
                 if (refresh){
-                  Eigen::JacobiSVD<Mat> svd(D_*V_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                  U_ = U_*svd.matrixU();
-                  D_ = svd.singularValues().asDiagonal();
-                  V_ = svd.matrixV().adjoint();
+                  Eigen::JacobiSVD<Mat> svd(L_, Eigen::ComputeThinV); 
+                  L_ = svd.matrixV().adjoint();
+                  N_ = (L_*R_).inverse();
                 }
-                */
 
                 itau_ = itau; 
             }
-
-             bool refresh = false; 
-             if (wrap_refresh_counter_ < wrap_refresh_period_){
-                 ++wrap_refresh_counter_; 
+            
+            //refresh every wrap_refresh_period_ blocks  
+             refresh = false; 
+             if (wrap_refresh_counter2_ < wrap_refresh_period_){
+                 ++wrap_refresh_counter2_; 
              }else{
-
                  refresh = true; 
-                 wrap_refresh_counter_ = 0; 
+                 wrap_refresh_counter2_ = 0; 
              }
 
             //when we wrap to a new block we need to update storage 
@@ -277,55 +253,19 @@ class Green_function{
          }
         */
         
-         //we return U,D,V but not G 
-         Mat Gstable(const itime_type itau, const tlist_type& tlist, vlist_type& vlist)  const {
+         
+        boost::tuple<Mat, Mat, Mat> stablization(const itime_type itau, const tlist_type& tlist, vlist_type& vlist)  const {
 
            itime_type b = itau/blocksize_; //block index 
            //std::cout << "itau, block: " << itau << " " << b << std::endl; 
 
-           Mat UR = Rstorage_[b]; 
-           propagator1(-1, itau, b*blocksize_, tlist, vlist, UR);
+           Mat R = Rstorage_[b]; 
+           propagator1(-1, itau, b*blocksize_, tlist, vlist, R);
         
-           Mat VL = Lstorage_[b]; 
-           propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, VL);
+           Mat L = Lstorage_[b]; 
+           propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, L);
 
-           //std::cout << "in Gstable:" << std::endl; 
-
-           //std::cout << "U1:\n" << U1 << std::endl; 
-           //std::cout << "D1:\n" << D1 << std::endl; 
-           //std::cout << "V1:\n" << V1 << std::endl; 
-
-           //std::cout << "U2:\n" << U2 << std::endl; 
-           //std::cout << "D2:\n" << D2 << std::endl; 
-           //std::cout << "V2:\n" << V2 << std::endl; 
-        
-           /*(3)
-           Eigen::JacobiSVD<Mat> svd((D1.asDiagonal()*V1)*(U2*D2.asDiagonal()), Eigen::ComputeThinU | Eigen::ComputeThinV); 
-           Mat U, D, V;  
-           U = U1 * svd.matrixU(); 
-           D = svd.singularValues().asDiagonal(); 
-           V = svd.matrixV().adjoint()*V2;
-
-           Mat res= U.inverse()*V.inverse() + D;
-
-           Eigen::JacobiSVD<Mat> svd2(res, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-           D =  svd2.singularValues().asDiagonal();
-
-           return boost::make_tuple((svd2.matrixV().adjoint()*V).inverse() ,  D.inverse() ,  (U*svd2.matrixU()).inverse()); 
-           */
-
-           /*(1)
-           Mat res = Mat::Identity(ns_, ns_) + (U1*D1.asDiagonal()*V1) * (U2*D2.asDiagonal()*V2); 
-           Eigen::JacobiSVD<Mat> svd(res.inverse(), Eigen::ComputeThinU | Eigen::ComputeThinV); 
-           return boost::tie(svd.matrixU(), svd.singularValues().asDiagonal(), svd.matrixV().adjoint()); 
-           */
-          
-           //(2)
-           Mat res =  -UR * ((VL*UR).inverse() * VL); 
-           for (site_type l =0; l< ns_; ++l)
-               res(l, l) += 1.0; 
-
-           return res; 
+           return boost::make_tuple(R, (L*R).inverse(), L); 
          }
                 
          // it can do  B(tau1)... B(tau2) * A  when sign = -1
@@ -477,8 +417,10 @@ class Green_function{
         Mat uKdag_; 
 
         itime_type itau_; 
-
-        Mat gtau_; 
+        
+        //gtau = 1- R_ * N_ * L_; 
+        //N_ = (L_*R_)^{-1}
+        Mat R_, N_, L_; 
         
         //blocksize is used in wrap,when determine the block index 
         const itime_type blocksize_;
@@ -487,7 +429,9 @@ class Green_function{
         //unsigned update_refresh_counter_; 
         //unsigned update_refresh_period_; 
 
-        unsigned wrap_refresh_counter_; 
+        unsigned wrap_refresh_counter1_; 
+        unsigned wrap_refresh_counter2_; 
+
         unsigned wrap_refresh_period_; 
 
         //storage

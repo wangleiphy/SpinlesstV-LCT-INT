@@ -4,13 +4,8 @@
 /*implement add vertex*/
 double InteractionExpansion::add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight)
 {
-
-  gf.wrap(itau, tlist, vlist);  
     
-  //const Mat gtau = gf.gtau(); 
-  //std::cout << "gtau from wrap:\n" << gtau << std::endl; 
-  //std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
-  //std::cout << "################################################ max diff:" <<  ((gtau- gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
+  gf.wrap(itau, tlist, vlist);  
 
   site_type si = sites[0]; 
   site_type sj = sites[1]; 
@@ -40,17 +35,8 @@ double InteractionExpansion::add_impl(const itime_type itau, const std::vector<s
 /*implement remove vertex at time itau*/
 double InteractionExpansion::remove_impl(const itime_type itau, const bool compute_only_weight)
 {// this will only get call when there is a vertex 
- // vertices contains from small to large indices 
 
-
- //Mat gtau = gf.G(itau, tlist, vlist) ; 
- gf.wrap(itau, tlist, vlist); // reference to its private member, gtau is in eigen basis 
-
-
- //const Mat gtau = gf.gtau(); 
- //std::cout << "gtau from wrap:\n" << gtau << std::endl; 
- //std::cout << "gtau from scratch :\n"<< gf.G(itau, tlist, vlist)<< std::endl; 
- //std::cout << "################################################ max diff:" <<  (( gtau - gf.G(itau, tlist, vlist)).cwiseAbs()).maxCoeff() << std::endl;
+ gf.wrap(itau, tlist, vlist);  
 
  site_type si = vlist[itau][0]; 
  site_type sj = vlist[itau][1]; 

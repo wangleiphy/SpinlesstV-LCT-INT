@@ -137,7 +137,6 @@ class Green_function{
         void wrap(const itime_type itau, const tlist_type& tlist, vlist_type& vlist) {
             if (itau == itau_) 
                 return; 
-
             
              itime_type b = itau/blocksize_; //new block index 
              itime_type b_ = itau_/blocksize_; //old block index 

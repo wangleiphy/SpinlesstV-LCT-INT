@@ -3,7 +3,8 @@ import time
 import re 
 from numpy import arange, array 
 
-BETA = 50. #projection time 
+Maxorder = 8192
+BETA = 40. #projection time 
 BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet the lattice 
 
 latticename = 'honeycomb lattice'
@@ -12,12 +13,12 @@ nickname = 'zeroT'
 
 Llist = [12]
 Wlist = Llist 
-Vlist = arange(1.2, 1.4, 0.02)
+Vlist = arange(1.2, 1.42, 0.02)
 #Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
-RECALC_PERIOD = 5
-WRAP_REFRESH_PERIOD = 5
+RECALC_PERIOD = 10
+WRAP_REFRESH_PERIOD = 10
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024

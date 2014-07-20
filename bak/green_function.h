@@ -17,8 +17,6 @@ class Green_function{
         ,itau_(0)
         ,gtau_()
         ,blocksize_(blocksize)
-//        ,update_refresh_counter_(0)
-//        ,update_refresh_period_(update_refresh_period)
         ,wrap_refresh_counter_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
         ,Storage_(nblock+1)// it stores LLL...RRR 
@@ -34,29 +32,35 @@ class Green_function{
          //std::cout << "K:\n" << K << std::endl; 
          //std::cout << "wK_:\n" << wK_ << std::endl; 
          //std::cout << "uK_:\n" << uK_ << std::endl; 
- 
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
         
+         //generate the trial wave function
+         uKdagP_ = Mat::Identity(ns_, np_); // if the trial Ham is K 
+        
+         //haven't implemented this 
+         //Mat Ktrial = K; 
+         //for (site_type l = 0; l< ns_; ++l)
+         //    Ktrial(l, l) += (l%2==0) ? 0.05: -0.05; 
+         //ces.compute(Ktrial);
+         //uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
+        
+         //initialize Storage and gtau
          init_without_vertex(); 
+
         }
 
         void init_without_vertex(){
 
-           gtau_ = Mat::Zero(ns_, ns_); 
-           //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
-           //on eigen basis it is diagonal 
-           for(site_type l=0; l<ns_; ++l) 
-               gtau_(l, l) = l< np_? 0.: 1.;  
-           
-           //std::cout << "initially:" << std::endl; 
-           //std::cout << "D_:\n" << D_<< std::endl; 
-           
            //fill in storage LLLL...R 
-           //since initially there is no vertices U and V are all diagonal 
-           Storage_[0] = Mat::Identity(ns_, np_);  //right 
-           for (unsigned ib=1; ib< Storage_.size(); ++ib) {
-              Storage_[ib] = Mat::Identity(np_, ns_); //left 
-           }
+           //note this can be called at any time, we are not necessaryly at itau =0
+           itime_type b = itau_/blocksize_; //current block 
+           for (unsigned ib=0; ib<=b; ++ib) 
+              Storage_[ib] = uKdagP_;  //right 
+           for (unsigned ib=b+1; ib< Storage_.size(); ++ib) 
+              Storage_[ib] = uKdagP_.adjoint(); //left 
+        
+           //
+           gtau_ = Mat::Identity(ns_, ns_) - uKdagP_ * uKdagP_.adjoint(); 
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
@@ -69,13 +73,14 @@ class Green_function{
 
               //std::cout << "in rebuild:" << std::endl; 
          
-              //std::cout << "gtau_:\n" << gtau_ << std::endl; 
-              //std::cout << "gtau:\n" << gtau << std::endl; 
-              //std::cout << "diff:\n" <<gtau_- gtau << std::endl; 
+              std::cout << "gtau_:\n" << uK_* gtau_ *uKdag_ << std::endl; 
+              std::cout << "gtau:\n" << uK_* gtau * uKdag_  << std::endl; 
+              std::cout << "diff:\n" <<gtau_- gtau << std::endl; 
 
-              //std::cout << "tlist: "; 
-              //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-              //std::cout << std::endl; 
+              std::cout << "tlist: "; 
+              std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+              std::cout << std::endl; 
+              abort(); 
             }
            
             gtau_ = gtau;
@@ -122,20 +127,6 @@ class Green_function{
                   //std::cout << "update: special treatment because update on the block boundary" << std::endl; 
                   Vprop(si, sj, "L",  Storage_[itau_/blocksize_]);// update U in Storage 
              }
-
-             /*
-             if (update_refresh_counter_ < update_refresh_period_){
-                    ++update_refresh_counter_; 
-             }else{
-
-                    Eigen::JacobiSVD<Mat> svd(D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                    U_ = U_*svd.matrixU(); 
-                    D_ = svd.singularValues().asDiagonal(); 
-                    V_ = svd.matrixV().adjoint()*V_;
-                    
-                    update_refresh_counter_ =0; 
-             }
-             */
 
              //std::cout << "in update:" << std::endl; 
              //std::cout << "U_:\n" << U_ << std::endl; 
@@ -184,11 +175,8 @@ class Green_function{
             //when we wrap to a new block we need to update storage 
             if (b > b_){// move to a larger block on the left  
                 assert(b-b_ ==1) ; 
-                std::cout << "b_, b: " << b_ << " " << b << std::endl; 
 
                 Mat UR= Storage_[b_];
-
-                std::cout << "read from b: " << b_ << "  size " << UR.rows() << " " << UR.cols() << std::endl;  
                 propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, UR);
 
                 if (refresh){
@@ -196,7 +184,6 @@ class Green_function{
                    UR = svd.matrixU();
                 }
 
-                std::cout << "store into b: " << b << " size " << UR.rows() << " " << UR.cols() << std::endl; 
                 Storage_[b] = UR; 
 
             }else if (b< b_){// move to smaller block 
@@ -435,6 +422,8 @@ class Green_function{
         Vec wK_; 
         Mat uK_; 
         Mat uKdag_; 
+
+        Mat uKdagP_; 
 
         itime_type itau_; 
 

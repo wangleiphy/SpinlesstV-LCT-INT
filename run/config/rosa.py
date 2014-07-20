@@ -2,6 +2,7 @@ import subprocess
 import time 
 from numpy import arange 
 
+Maxorder = 8192
 BETA = 40. #projection time 
 BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet the lattice 
 
@@ -9,10 +10,9 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
 
-Llist = [12]
+Llist = [15]
 Wlist = Llist 
-Vlist = [1.2, 1.3, 1.4]
-#Vlist = arange(1.2, 1.42, 0.02)
+Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
@@ -25,10 +25,10 @@ THERMALIZATION = 10**4
 SWEEPS = 10**6 
 MEASUREMENT_PERIOD = 10        # in unit of block
 
-wtime = '12:00:00'
+wtime = '24:00:00'
 tmin = 300
 tmax = 600
-ncores = 128 
+ncores = 640 
 prog = '../bin/main'
 #######################################
 

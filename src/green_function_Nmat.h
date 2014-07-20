@@ -19,9 +19,8 @@ class Green_function{
         ,N_(Mat::Identity(np_, np_))
         ,L_(Mat::Identity(np_, ns_))
         ,blocksize_(blocksize)
-//        ,update_refresh_counter_(0)
-//        ,update_refresh_period_(update_refresh_period)
-        ,wrap_refresh_counter_(0)
+        ,wrap_refresh_counter1_(0)
+        ,wrap_refresh_counter2_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
         ,Lstorage_(nblock)
         ,Rstorage_(nblock)
@@ -67,13 +66,14 @@ class Green_function{
 
               //std::cout << "in rebuild:" << std::endl; 
          
-              //std::cout << "gtau_:\n" << gtau_ << std::endl; 
-              //std::cout << "gtau:\n" << gtau << std::endl; 
-              //std::cout << "diff:\n" <<gtau_- gtau << std::endl; 
+              std::cout << "gtau:\n" << R*N*L << std::endl; 
+              std::cout << "gtau_:\n" << R_*N_*L_ << std::endl; 
+              std::cout << "diff:\n" << R*N*L - R_*N_*L_ << std::endl; 
 
-              //std::cout << "tlist: "; 
-              //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-              //std::cout << std::endl; 
+              std::cout << "tlist: "; 
+              std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+              std::cout << std::endl; 
+              abort(); 
             }
 
             R_ = R;
@@ -127,25 +127,10 @@ class Green_function{
                   Rstorage_[itau_/blocksize_] = R_; 
              }
 
-             /*
-             if (update_refresh_counter_ < update_refresh_period_){
-                    ++update_refresh_counter_; 
-             }else{
-
-                    Eigen::JacobiSVD<Mat> svd(D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                    U_ = U_*svd.matrixU(); 
-                    D_ = svd.singularValues().asDiagonal(); 
-                    V_ = svd.matrixV().adjoint()*V_;
-                    
-                    update_refresh_counter_ =0; 
-             }
-             */
-
              //std::cout << "in update:" << std::endl; 
              //std::cout << "U_:\n" << U_ << std::endl; 
              //std::cout << "D_:\n" << D_ << std::endl; 
              //std::cout << "V_:\n" << V_ << std::endl; 
-
         }
         
         //wrap does not change N_ 
@@ -153,25 +138,26 @@ class Green_function{
             if (itau == itau_) 
                 return; 
 
-             bool refresh = false; 
-             if (wrap_refresh_counter_ < wrap_refresh_period_){
-                 ++wrap_refresh_counter_; 
-             }else{
-
-                 refresh = true; 
-                 wrap_refresh_counter_ = 0; 
-             }
             
              itime_type b = itau/blocksize_; //new block index 
              itime_type b_ = itau_/blocksize_; //old block index 
 
              //std::cout << "b, b_, itau, itau_, blocksize: "  << b << " " << b_ << " " << itau << " " << itau_ << " " << blocksize_ << std::endl; 
 
+            //refresh every wrap_refresh_period_ steps 
+             bool refresh = false; 
+             if (wrap_refresh_counter1_ < wrap_refresh_period_){
+                 ++wrap_refresh_counter1_; 
+             }else{
+                 refresh = true; 
+                 wrap_refresh_counter1_ = 0; 
+             }
+
             //wrap Green's function 
             if (itau >= itau_) {
                 // B G B^{-1}
                 propagator1(-1, itau, itau_, tlist, vlist, R_);  // B(tau1) ... B(tau2) *R_  
-
+                
                 if (refresh){
                   Eigen::JacobiSVD<Mat> svd(R_, Eigen::ComputeThinU); 
                   R_ = svd.matrixU();
@@ -182,6 +168,7 @@ class Green_function{
                 if (refresh){
                   Eigen::JacobiSVD<Mat> svd(L_, Eigen::ComputeThinV); 
                   L_ = svd.matrixV().adjoint();
+                  N_ = (L_*R_).inverse();   // since we have changed L_ and R_, we need to change N_ as well 
                 }
 
                 itau_ = itau; 
@@ -201,10 +188,20 @@ class Green_function{
                 if (refresh){
                   Eigen::JacobiSVD<Mat> svd(L_, Eigen::ComputeThinV); 
                   L_ = svd.matrixV().adjoint();
+                  N_ = (L_*R_).inverse();
                 }
 
                 itau_ = itau; 
             }
+            
+            //refresh every wrap_refresh_period_ blocks  
+             refresh = false; 
+             if (wrap_refresh_counter2_ < wrap_refresh_period_){
+                 ++wrap_refresh_counter2_; 
+             }else{
+                 refresh = true; 
+                 wrap_refresh_counter2_ = 0; 
+             }
 
             //when we wrap to a new block we need to update storage 
             if (b > b_){// move to a larger block on the left  
@@ -432,7 +429,9 @@ class Green_function{
         //unsigned update_refresh_counter_; 
         //unsigned update_refresh_period_; 
 
-        unsigned wrap_refresh_counter_; 
+        unsigned wrap_refresh_counter1_; 
+        unsigned wrap_refresh_counter2_; 
+
         unsigned wrap_refresh_period_; 
 
         //storage

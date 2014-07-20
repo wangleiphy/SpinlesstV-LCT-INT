@@ -9,7 +9,7 @@ void InteractionExpansion::test(){
 
           if (random() < 0.5){
           //if (sw%2 ==0){
-          //if (true){
+          ///if (true){
 
                 //std::cout << "####begin add###################"  << std::endl; 
 

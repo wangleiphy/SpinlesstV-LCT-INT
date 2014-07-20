@@ -9,11 +9,11 @@ BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet t
 
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'zeroT'
+nickname = 'zeroTfine'
 
-Llist = [12]
+Llist = [3, 6, 9]
 Wlist = Llist 
-Vlist = arange(1.2, 1.42, 0.02)
+Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31

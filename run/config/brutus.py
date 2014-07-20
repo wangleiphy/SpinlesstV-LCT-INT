@@ -2,27 +2,27 @@ import subprocess
 from numpy import arange, array 
 
 Maxorder = 8192
-BETA = 40 #projection time 
-BCmodifier = "APBCX"
+BETA = 50 #projection time 
+BCmodifier = "" #"APBCX"
 
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT'
 
-Llist = [9]
-Wlist = Llist 
-Vlist = arange(1.2, 1.42, 0.02)
-#Vlist = arange(1.2, 1.4, 0.02)
+Llist = [4]
+Wlist = [2] #Llist 
+#Vlist = arange(1.2, 1.42, 0.02)
+Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 10
-WRAP_REFRESH_PERIOD = 5
+WRAP_REFRESH_PERIOD = 10
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
-THERMALIZATION = 10000          # in unit of block 
-SWEEPS = 10**5                  # in unit of the the whole system 
-MEASUREMENT_PERIOD = 10         # in unit of block
+THERMALIZATION = 10**4          # in unit of block 
+SWEEPS = 10**6                  # in unit of the the whole system 
+MEASUREMENT_PERIOD = 13         # in unit of block
 ##############################
 
 tmin = 60

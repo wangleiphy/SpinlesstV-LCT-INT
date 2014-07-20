@@ -18,9 +18,13 @@ parser.add_argument("-x", default="L", help="variable")
 parser.add_argument("-y", default="M2", help="observable")
 parser.add_argument("-copydata", action='store_true',  help="copy data")
 
+
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument("-show", action='store_true',  help="show figure right now")
 group.add_argument("-outname", default="result.pdf",  help="output pdf file")
+
+group = parser.add_argument_group()
+group.add_argument("-b", type = float,  default=0., help="b")
 
 
 args = parser.parse_args()
@@ -61,6 +65,18 @@ print res
 
 print pyalps.plot.convertToText(res)
 pyalps.propsort(res,args.x)
+
+#scale data 
+for d in res:
+    L = d.props['L']
+    d.y = [y*L**args.b for y in d.y]
+
+    d.props['ylabel'] = r'$M_2L^{b}$'
+    d.props['label'] = '$L=%g$' %(L)
+    d.props['line'] = '-o'
+
+plt.title('$b=%g$'%(args.b))
+
 pyalps.plot.plot(res)
 #plt.xlim([0,0.18])
 #plt.ylim([0,0.4])

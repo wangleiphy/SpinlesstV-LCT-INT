@@ -88,6 +88,7 @@ class Green_function{
         }
 
         const Mat& gtau() const {
+            //on eigen basis 
             return gtau_; 
         }
 

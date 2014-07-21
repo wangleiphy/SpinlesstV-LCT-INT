@@ -1,10 +1,10 @@
 LATTICE_LIBRARY = "../input/mylattices.xml"
 LATTICE = "honeycomb lattice"
-BCmodifier = "APBCX"
+BCmodifier = ""
 BETA = 40.
-L = 3
-W = 3
-V = 1.36
+L = 2
+W = 2
+V = 1.4
 MAX_ORDER = 8192 
 THERMALIZATION = 10000
 SWEEPS = 100000

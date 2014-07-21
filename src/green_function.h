@@ -87,9 +87,8 @@ class Green_function{
             return itau_; 
         }
 
-        const Mat& gtau() const {
-            //on eigen basis 
-            return gtau_; 
+        Mat gtau() const {// gtau in site basis 
+            return uK_*gtau_*uKdag_; 
         }
 
         time_type tau() const {

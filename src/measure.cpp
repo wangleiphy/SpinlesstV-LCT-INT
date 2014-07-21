@@ -1,5 +1,33 @@
 #include "interaction_expansion.hpp"
 
+/*
+void InteractionExpansion::measure_M2()
+{
+
+     Mat gtau= gf.gtau(); 
+
+     double M2 = 0.0 ;  
+      for (site_type si=0; si< n_site; ++si){
+        for (site_type sj=0; sj< n_site; ++sj){
+            double delta = (si==sj)? 1.0: 0.0; 
+            M2 += (delta-gtau(si, sj)) * gtau(sj, si) * lattice.parity(si) * lattice.parity(sj);  
+        }
+      }
+     measurements["M2"] << M2/(n_site*n_site);   
+
+     double IntE = 0.0; 
+     for (unsigned b =0; b< n_bond; ++b){ // loop over bonds to calculate interacion energy 
+            alps::graph_helper<>::bond_descriptor bond= lattice.bond(b);
+            site_type si = lattice.source(bond);
+            site_type sj = lattice.target(bond); 
+
+            IntE += -gtau(sj, si) * gtau(si, sj); 
+       }
+       measurements["IntE"] << V*IntE/n_site;// interaction energy per site : -IntE * n_site * Theta = PertOrder 
+
+}
+*/
+
 void InteractionExpansion::measure_M2()
 {
    site_type si = randomint(n_site); // we only do it for fixed si becaues of translational invarance 
@@ -27,7 +55,6 @@ void InteractionExpansion::measure_M2()
         IntE += -denmat(sj)* denmat(sj) ; 
    }
    measurements["IntE"] << 0.5*V * IntE;// interaction energy per site : -IntE * n_site * Theta = PertOrder 
-
 }
 
 void InteractionExpansion::measure_vhist(){

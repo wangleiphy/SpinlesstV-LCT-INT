@@ -9,8 +9,8 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'IntE'
 
-Llist = [6]
-Wlist = [6] #Llist 
+Llist = [9]
+Wlist = [9] #Llist 
 Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 1.6, 0.2)
 

@@ -20,8 +20,6 @@
 #include <fstream>
 #include <stdexcept>
 
-#include <time.h>
-
 class MpiSimulation : public InteractionExpansion
 {
 
@@ -42,6 +40,7 @@ class MpiSimulation : public InteractionExpansion
 
         bool run(boost::function<bool ()> const & stop_callback) 
         {
+
             bool done = false, stopped = false;
             while( !done ) 
             {
@@ -68,6 +67,9 @@ class MpiSimulation : public InteractionExpansion
                 }
             }
             std::cout << "Rank " << communicator.rank() << " stopping after doing " << 100*Base::fraction_completed() << "% of the work." << std::endl;
+
+            measurements["Walltime"] << schedule_checker.timespend(); //wall time in unit of seconds 
+
             return !stopped;
         }
 
@@ -89,8 +91,7 @@ class MpiSimulation : public InteractionExpansion
 int main(int argc, char** argv){
 
     try {
-        time_t start,end;
-        time(&start);
+
 
         // Init MPI environment
         boost::mpi::environment env(argc, argv);
@@ -110,10 +111,7 @@ int main(int argc, char** argv){
 
       // Run simulation
       MpiSimulation sim(params, comm, check_schedule(options.tmin, options.tmax));
-      sim.run(alps::stop_callback(options.timelimit)); //check stop time in each thread 
-
-      time(&end);
-      double elapsed_time = difftime(end,start);
+      sim.run(alps::stop_callback(options.timelimit));  
 
       //Collect results  
       MpiSimulation::results_type results = alps::collect_results(sim);
@@ -145,7 +143,6 @@ int main(int argc, char** argv){
                         outfile << obsname << ", "; 
                     }
                }
-               outfile  << "time: " <<  elapsed_time << std::endl; 
 
                //the actual content    
                outfile <<  boost::lexical_cast<std::string>(params["V"]); 
@@ -162,7 +159,6 @@ int main(int argc, char** argv){
                      
                     }
                }
-               std::cout << "time: " << elapsed_time << std::endl;
                outfile << std::endl; 
                outfile.close();
       }

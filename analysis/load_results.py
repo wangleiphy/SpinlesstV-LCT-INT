@@ -50,13 +50,15 @@ for fileheader in args.fileheaders:
 data = []
 print resultFiles 
 
-data = pyalps.loadMeasurements(resultFiles, args.y)
-
-data = pyalps.flatten(data)
+if args.x == 'V' or args.x =='L':
+    data = pyalps.loadMeasurements(resultFiles, args.y)
+else:
+    data = pyalps.loadMeasurements(resultFiles, [args.x, args.y])
+#data = pyalps.flatten(data)
 #print data 
 
-for d in data:
-    d.props['observable'] =  args.y
+#for d in data:
+#    d.props['observable'] =  args.y
 
 if args.x == 'V':
     res = pyalps.collectXY(data, x='V', y=args.y, foreach = ['L'])
@@ -64,6 +66,8 @@ if args.x == 'V':
 elif args.x == 'L':
     res = pyalps.collectXY(data, x='L', y=args.y, foreach = ['V'])
     pyalps.propsort(res,'V')
+else:
+    res = pyalps.ResultsToXY(data, args.x, args.y, foreach = ['V']) 
 
 print pyalps.plot.convertToText(res)
 
@@ -82,6 +86,9 @@ elif args.x == 'L':
         d.x = 1./d.x 
         d.props['xlabel'] = '$1/L$'
         d.props['line'] = '-o'
+else:
+    pass 
+
 
 plt.title('$b=%g$'%(args.b))
 

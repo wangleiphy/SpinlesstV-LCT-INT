@@ -2,17 +2,17 @@ import subprocess
 from numpy import arange, array 
 
 Maxorder = 8192
-BETA = 50 #projection time 
-BCmodifier = "" #"APBCX"
+BETA = 40 #projection time 
+BCmodifier = "APBCX" #"APBCX"
 
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'zeroT'
+nickname = 'IntE'
 
-Llist = [4]
-Wlist = [2] #Llist 
-#Vlist = arange(1.2, 1.42, 0.02)
-Vlist = arange(0.2, 1.6, 0.2)
+Llist = [6]
+Wlist = [6] #Llist 
+Vlist = arange(1.3, 1.41, 0.01)
+#Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 10

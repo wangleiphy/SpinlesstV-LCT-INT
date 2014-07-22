@@ -14,7 +14,7 @@ class Green_function{
         :ns_(K.rows())
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
-        ,ihalfTheta_(itime_max/2)
+        ,ihalfTheta_(itime_max/2)// index for tau = Theta/2 
         ,itau_(0)
         ,gtau_()
         ,blocksize_(blocksize)
@@ -97,7 +97,7 @@ class Green_function{
         }
         */
 
-        double gij(const site_type si, const site_type sj)const {
+        double gij(const site_type si, const site_type sj)const {// current g in the site basis 
             // (U gtau U^{dagger} )_ij 
             return  (uK_.row(si) *gtau_) * uKdag_.col(sj);  
         }
@@ -121,7 +121,6 @@ class Green_function{
 
             return  (uK_.row(si) *gtau) * uKdag_.col(sj);  
         }
-        */
 
         Vec denmathalfTheta(const site_type si, const tlist_type& tlist, vlist_type& vlist)const {
             //wrap Green's function to halfTheta  
@@ -138,6 +137,11 @@ class Green_function{
                 propagator2(-1, itau_, ihalfTheta_, tlist, vlist, gtau);   //  V_ * B(tau1) ... B(tau2)
             }
             return  uK_ *(gtau * uKdag_.col(si));  
+        }
+        */
+
+        Vec denmat(const site_type si)const {
+           return  uK_ *(gtau_ * uKdag_.col(si));  
         }
             
         //update changes gtau_ 

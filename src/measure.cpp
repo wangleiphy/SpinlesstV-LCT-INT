@@ -32,13 +32,8 @@ void InteractionExpansion::measure_M2()
 {
    site_type si = randomint(n_site); // we only do it for fixed si becaues of translational invarance 
     
-   //itime_type itau = randomint(itime_max);
-   //itime_type itau = iblock*blocksize + randomint(blocksize);// a random time inside this block 
-
-   //Mat gtau = gf.G(itau, tlist, vlist);
-   //Mat gtau = gf.wrap(itau, tlist, vlist); 
-    
-   Vec denmat = gf.denmathalfTheta(si, tlist, vlist); //g_{ij}(Theta/2) for fixed i 
+   Vec denmat = gf.denmat(si); 
+   //Vec denmat = gf.denmathalfTheta(si, tlist, vlist); //g_{ij}(Theta/2) for fixed i 
 
    //g_ji = delta_ij - eta_i eta_j * g_ij 
 

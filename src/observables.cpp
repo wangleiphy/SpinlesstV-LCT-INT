@@ -10,6 +10,8 @@ void InteractionExpansion::initialize_observables()
                << alps::ngs::RealObservable("Removal")
                << alps::ngs::RealObservable("M2")
                << alps::ngs::RealObservable("IntE")
+               << alps::ngs::RealObservable("KinE")
+               << alps::ngs::RealObservable("Energy")
                ; 
 
   //measurements << alps::ngs::RealVectorObservable("Vhist"); 

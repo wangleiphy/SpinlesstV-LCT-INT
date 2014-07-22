@@ -121,23 +121,10 @@ class Green_function{
              gtau_ -= ((gtau_*uKdag_.col(sj)) * ri + (gtau_*uKdag_.col(si)) * rj )/gij; 
 
              if (itau_%blocksize_==0){ //special treatment when update the block starting point 
+                                       //otherwise this vertex will be untreated in stablization 
                   //std::cout << "update: special treatment because update on the block boundary" << std::endl; 
                   Vprop(si, sj, "L",  Storage_[itau_/blocksize_]);// update U in Storage 
              }
-
-             /*
-             if (update_refresh_counter_ < update_refresh_period_){
-                    ++update_refresh_counter_; 
-             }else{
-
-                    Eigen::JacobiSVD<Mat> svd(D_, Eigen::ComputeThinU | Eigen::ComputeThinV); 
-                    U_ = U_*svd.matrixU(); 
-                    D_ = svd.singularValues().asDiagonal(); 
-                    V_ = svd.matrixV().adjoint()*V_;
-                    
-                    update_refresh_counter_ =0; 
-             }
-             */
 
              //std::cout << "in update:" << std::endl; 
              //std::cout << "U_:\n" << U_ << std::endl; 

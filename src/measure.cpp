@@ -48,13 +48,18 @@ void InteractionExpansion::measure_M2()
     
    double M2 =denmat.adjoint()* denmat; // g_ij * g_ji
    measurements["M2"] << M2/n_site;   
+
     
    double IntE = 0.0; 
+   double KinE = 0.0; 
    for (unsigned j=0 ; j< lattice.num_neighbors(si); ++j){
         site_type sj = lattice.neighbor(si, j);
         IntE += -denmat(sj)* denmat(sj) ; 
+        KinE += -K_(si, sj)* denmat(sj) ; 
    }
    measurements["IntE"] << 0.5*V * IntE;// interaction energy per site : -IntE * n_site * Theta = PertOrder 
+   measurements["KinE"] << KinE; //kinetic energy per site , no 0.5 because we have <c_i^\dagger c_j > + <c_j^\dagger c_i>
+   measurements["Energy"]  <<  0.5*V *IntE + KinE; // total enegy per site  
 }
 
 void InteractionExpansion::measure_vhist(){

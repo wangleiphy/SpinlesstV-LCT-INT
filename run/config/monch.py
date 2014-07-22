@@ -11,9 +11,9 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroTfine'
 
-Llist = [3, 6, 9]
+Llist = [12]
 Wlist = Llist 
-Vlist = arange(1.3, 1.41, 0.01)
+Vlist = arange(1.31, 1.41, 0.02)
 #Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
@@ -22,9 +22,9 @@ WRAP_REFRESH_PERIOD = 10
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
-THERMALIZATION = 10**4
+THERMALIZATION = 5*10**4
 SWEEPS = 10**6 
-MEASUREMENT_PERIOD = 10        # in unit of block
+MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################
 wtime = '12:00:00'

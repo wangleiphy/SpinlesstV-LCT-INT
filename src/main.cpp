@@ -66,7 +66,7 @@ class MpiSimulation : public InteractionExpansion
 
                 }
             }
-            std::cout << "Rank " << communicator.rank() << " stopping after doing " << 100*Base::fraction_completed() << "% of the work." << std::endl;
+            std::cout << "Rank " << communicator.rank() << " stopping after doing " << 100*Base::fraction_completed() << "% of the work in " << schedule_checker.timespend() << "s." << std::endl;
 
             measurements["Walltime"] << schedule_checker.timespend(); //wall time in unit of seconds 
 

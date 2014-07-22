@@ -10,15 +10,14 @@ class Green_function{
 
     public:
 
-        Green_function(const Mat& K, const time_type timestep, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
+        Green_function(const Mat& K, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
+        ,ihalfTheta_(itime_max/2)
         ,itau_(0)
         ,gtau_()
         ,blocksize_(blocksize)
-//        ,update_refresh_counter_(0)
-//        ,update_refresh_period_(update_refresh_period)
         ,wrap_refresh_counter_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
         ,Storage_(nblock+1)// it stores LLL...RRR 
@@ -87,22 +86,58 @@ class Green_function{
             return itau_; 
         }
 
-        Mat gtau() const {// gtau in site basis 
-            return uK_*gtau_*uKdag_; 
-        }
-
         time_type tau() const {
             return itime2time(itau_); 
         }
+
+
+        /*
+        Mat gtau() const {// gtau in site basis 
+            return uK_*gtau_*uKdag_; 
+        }
+        */
 
         double gij(const site_type si, const site_type sj)const {
             // (U gtau U^{dagger} )_ij 
             return  (uK_.row(si) *gtau_) * uKdag_.col(sj);  
         }
+        
+        /*
+        double gijhalfTheta(const site_type si, const site_type sj, const tlist_type& tlist, vlist_type& vlist)const {
+            
+            //wrap Green's function to halfTheta  
+            Mat gtau = gtau_; 
+            if (ihalfTheta_ >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, ihalfTheta_, itau_, tlist, vlist, gtau);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, ihalfTheta_, itau_, tlist, vlist, gtau); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
 
-        Eigen::VectorXd denmat(const site_type si)const {
-            // (U gtau U^{dagger} )_ij 
-            return  uK_ *(gtau_ * uKdag_.col(si));  
+            }else{
+
+                // B^{-1} G B 
+                propagator2(1, itau_, ihalfTheta_, tlist, vlist, gtau); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, ihalfTheta_, tlist, vlist, gtau);   //  V_ * B(tau1) ... B(tau2)
+            }
+
+            return  (uK_.row(si) *gtau) * uKdag_.col(sj);  
+        }
+        */
+
+        Vec denmathalfTheta(const site_type si, const tlist_type& tlist, vlist_type& vlist)const {
+            //wrap Green's function to halfTheta  
+            Mat gtau = gtau_; 
+            if (ihalfTheta_ >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, ihalfTheta_, itau_, tlist, vlist, gtau);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, ihalfTheta_, itau_, tlist, vlist, gtau); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
+
+            }else{
+
+                // B^{-1} G B 
+                propagator2(1, itau_, ihalfTheta_, tlist, vlist, gtau); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, ihalfTheta_, tlist, vlist, gtau);   //  V_ * B(tau1) ... B(tau2)
+            }
+            return  uK_ *(gtau * uKdag_.col(si));  
         }
             
         //update changes gtau_ 
@@ -420,7 +455,8 @@ class Green_function{
         Vec wK_; 
         Mat uK_; 
         Mat uKdag_; 
-
+        
+        itime_type ihalfTheta_; 
         itime_type itau_; 
 
         Mat gtau_; 

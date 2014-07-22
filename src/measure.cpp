@@ -32,13 +32,8 @@ void InteractionExpansion::measure_M2()
 {
    site_type si = randomint(n_site); // we only do it for fixed si becaues of translational invarance 
     
-   //itime_type itau = randomint(itime_max);
-   //itime_type itau = iblock*blocksize + randomint(blocksize);// a random time inside this block 
-
-   //Mat gtau = gf.G(itau, tlist, vlist);
-   //Mat gtau = gf.wrap(itau, tlist, vlist); 
-
-   Eigen::VectorXd denmat = gf.denmat(si); //g_{ij} for fixed i 
+   Vec denmat = gf.denmat(si); 
+   //Vec denmat = gf.denmathalfTheta(si, tlist, vlist); //g_{ij}(Theta/2) for fixed i 
 
    //g_ji = delta_ij - eta_i eta_j * g_ij 
 
@@ -48,13 +43,18 @@ void InteractionExpansion::measure_M2()
     
    double M2 =denmat.adjoint()* denmat; // g_ij * g_ji
    measurements["M2"] << M2/n_site;   
+
     
    double IntE = 0.0; 
+   double KinE = 0.0; 
    for (unsigned j=0 ; j< lattice.num_neighbors(si); ++j){
         site_type sj = lattice.neighbor(si, j);
         IntE += -denmat(sj)* denmat(sj) ; 
+        KinE += -K_(si, sj)* denmat(sj) ; 
    }
    measurements["IntE"] << 0.5*V * IntE;// interaction energy per site : -IntE * n_site * Theta = PertOrder 
+   measurements["KinE"] << KinE; //kinetic energy per site , no 0.5 because we have <c_i^\dagger c_j > + <c_j^\dagger c_i>
+   measurements["Energy"]  <<  0.5*V *IntE + KinE; // total enegy per site  
 }
 
 void InteractionExpansion::measure_vhist(){

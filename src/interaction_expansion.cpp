@@ -28,7 +28,7 @@ direction(nblock==1? 0:1),
 sweeps(0),
 sign(1.), 
 K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BCmodifier"]) )),
-gf(K_, beta/boost::lexical_cast<double>(itime_max), nblock, blocksize,parms["WRAP_REFRESH_PERIOD"])
+gf(K_, beta/boost::lexical_cast<double>(itime_max), itime_max, nblock, blocksize,parms["WRAP_REFRESH_PERIOD"])
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,itime_max)), 
 //bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))

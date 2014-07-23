@@ -24,9 +24,16 @@ print resfiles
 data = pyalps.loadEigenstateMeasurements(resfiles,'nncorr')
 data = pyalps.flatten(data)
 
+en = pyalps.loadEigenstateMeasurements(resfiles,'Energy')
+en = pyalps.flatten(en)
+
 #print data,len(data)
-for d in data:
+
+print '#V, M2, interaction energy per site, energy per site '
+for d, e in zip(data, en):
     V = d.props['V0']
-    print V, M2(d.y[0][::2]), 1.5*V*(d.y[0][1] - 0.25) # energy per site
+    L = d.props['L']
+    W = d.props['W']
+    print V, M2(d.y[0][::2]), 1.5*V*(d.y[0][1] - 0.25), e.y[0]/(2.*L*W) - 1.5*V * 0.25 
     #for x, y in zip(d.x, d.y):
     #    print  '(', x, ') : ', y

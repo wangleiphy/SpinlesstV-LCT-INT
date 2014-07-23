@@ -60,6 +60,29 @@ class Green_function{
               Storage_[ib] = Mat::Identity(np_, ns_); //left 
         }
 
+        void init_with_vertex(const tlist_type& tlist, vlist_type& vlist){
+
+          itau_ = 0; 
+
+          Storage_[0] = Mat::Identity(ns_, np_);  //right 
+          if (tlist.find(0) != tlist.end()){ //special treatment when we have a vertex at itau_ = 0 
+               Vprop(vlist[0][0], vlist[0][1], "L",  Storage_[0]);// update U in Storage 
+          }
+        
+          unsigned nblock = Storage_.size()-1; 
+          Storage_[nblock] = Mat::Identity(np_, ns_);  //left
+          for (unsigned ib=nblock-1; ib>0; --ib) {
+             Mat VL = Storage_[ib+1];
+             propagator2(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, VL);
+
+             Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
+             VL = svd.matrixV().adjoint();
+             Storage_[ib] = VL; 
+          }
+
+            gtau_ = Gstable(itau_, tlist, vlist); // from scratch 
+        }
+
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
             
             Mat gtau = Gstable(itau_, tlist, vlist); // from scratch 

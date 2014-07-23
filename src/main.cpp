@@ -100,6 +100,7 @@ int main(int argc, char** argv){
         // Parse command line options
         alps::parseargs options(argc, argv);
 
+
         //params file from input 
         alps::params params; 
         if (comm.rank()== 0){
@@ -109,15 +110,25 @@ int main(int argc, char** argv){
         }
         broadcast(comm, params);
 
+        std::string filename = boost::lexical_cast<std::string>(params["filename"]);  
+        std::string h5output_file = filename.substr(0, filename.find_last_of('.')) + ".out.h5"; // hdf5 output file 
+        std::string checkpoint_file = filename.substr(0, filename.find_last_of('.')) 
+                                  +  ".clone" + boost::lexical_cast<std::string>(comm.rank()) + ".h5";
+
       // Run simulation
       MpiSimulation sim(params, comm, check_schedule(options.tmin, options.tmax));
+
+      if (options.resume)
+          sim.load(checkpoint_file);
+
       sim.run(alps::stop_callback(options.timelimit));  
+
+      sim.save(checkpoint_file);
 
       //Collect results  
       MpiSimulation::results_type results = alps::collect_results(sim);
  
-      std::string filename = boost::lexical_cast<std::string>(params["filename"]);  
-      std::string h5output_file = filename.substr(0, filename.find_last_of('.')) + ".out.h5"; // hdf5 output file 
+
      
       if (comm.rank() ==0) 
       {

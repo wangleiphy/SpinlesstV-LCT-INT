@@ -33,8 +33,12 @@ jlist = array(h5['/simulation/realizations/0/clones/0/checkpoint/vj'][()])
 tlist = vt/itime_max *Theta 
 print tlist 
 
-plt.scatter(tlist,ilist,color='b')
-plt.scatter(tlist,jlist,color='b')
+#plt.scatter(tlist,ilist,color='b')
+#plt.scatter(tlist,jlist,color='b')
+
+for t, i, j in zip(tlist, ilist, jlist):
+    plt.plot([t, t], [i, j], c='b', lw=2)
+    
 
 h5.close()
 

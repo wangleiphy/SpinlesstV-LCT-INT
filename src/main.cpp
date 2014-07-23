@@ -117,9 +117,10 @@ int main(int argc, char** argv){
 
       // Run simulation
       MpiSimulation sim(params, comm, check_schedule(options.tmin, options.tmax));
-
-      if (options.resume)
-          sim.load(checkpoint_file);
+    
+     //if (options.resume && boost::filesystem::exists(checkpoint_file))
+     if (options.resume)
+         sim.load(checkpoint_file);
 
       sim.run(alps::stop_callback(options.timelimit));  
 

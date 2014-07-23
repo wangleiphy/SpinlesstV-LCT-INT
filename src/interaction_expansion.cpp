@@ -98,7 +98,8 @@ void InteractionExpansion::save(alps::hdf5::archive & ar) const {
           vi.push_back(it->second[0]);
           vj.push_back(it->second[1]); 
     }
-
+    
+    ar["sweeps"] << sweeps;
     ar["vt"] << vt;
     ar["vi"] << vi;
     ar["vj"] << vj;
@@ -115,7 +116,8 @@ void InteractionExpansion::load(alps::hdf5::archive & ar) {
     
     std::vector<itime_type> vt; 
     std::vector<site_type> vi, vj; 
-
+    
+    ar["sweeps"] >> sweeps;
     ar["vt"] >> vt;
     ar["vi"] >> vi;  
     ar["vj"] >> vj;

@@ -8,27 +8,28 @@ BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet t
 
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'zeroT'
+nickname = 'zeroT_checkpoint'
 
-Llist = [15]
+Llist = [18]
 Wlist = Llist 
-Vlist = arange(1.3, 1.41, 0.01)
+Vlist = [1.36, 1.37, 1.38]
+#Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 10
 WRAP_REFRESH_PERIOD = 10
 
-STEPS_PER_BLOCK = 1
+STEPS_PER_BLOCK = 4
 NBLOCKS = 1024
-THERMALIZATION = 10**4
-SWEEPS = 10**6 
-MEASUREMENT_PERIOD = 10        # in unit of block
+THERMALIZATION = 2*10**4
+SWEEPS = 10**6  
+MEASUREMENT_PERIOD = 13        # in unit of block
 
 wtime = '24:00:00'
 tmin = 300
 tmax = 600
-ncores = 640 
+ncores = 320
 prog = '../bin/main'
 #######################################
 
@@ -36,7 +37,7 @@ resfolder = '/scratch/rosa/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]
 
 Tlimit = max(3600*h + 60*m + s - int(tmax*2.) , 0)
-prog += ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -T ' + str(Tlimit) 
+prog += ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -T ' + str(Tlimit)
 
 def submitJob(bin,args,jobname,wtime,run=False,ncores=None, wait = None):
 
@@ -44,6 +45,7 @@ def submitJob(bin,args,jobname,wtime,run=False,ncores=None, wait = None):
 #SBATCH --mem=2048
             #prepare the job file 
             job='''#!/bin/bash
+#SBATCH --ntasks-per-node=16
 #SBATCH --ntasks=%g
 #SBATCH --time=%s
 #SBATCH --account=s395

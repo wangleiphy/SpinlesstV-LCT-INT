@@ -24,6 +24,8 @@ group.add_argument("-show", action='store_true',  help="show figure right now")
 group.add_argument("-outname", default="result.pdf",  help="output pdf file")
 
 group = parser.add_argument_group()
+group.add_argument("-xc", type = float,  default=0., help="xc")
+group.add_argument("-a", type = float,  default=0., help="a")
 group.add_argument("-b", type = float,  default=0., help="b")
 
 args = parser.parse_args()
@@ -33,19 +35,17 @@ for fileheader in args.fileheaders:
     resultFiles += pyalps.getResultFiles(prefix=fileheader)
 
 #filter resultFilies
-#for f in list(resultFiles):
+for f in list(resultFiles):
 #    L = int(re.search('L([0-9]*)W',f).group(1)) 
 #    W = int(re.search('W([0-9]*)N',f).group(1)) 
 #    N = int(re.search('N([0-9]*)U',f).group(1)) 
-#    V= float(re.search('latticeV([0-9]*\.?[0-9]*)T',f).group(1)) 
+    V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
 #    if (N!= L*W):  
 #        resultFiles.remove(f)
+    
+    if V< 1.3 or V>1.4:
+        resultFiles.remove(f)
 
-#    elif ('L3' in f) or ('L9' in f) or ('L15' in f):
-#    elif ('Theta155' in f):
-#        resultFiles.remove(f)
-#    if V not in [ 1.24,  1.26,  1.28,  1.3 ,  1.32,  1.34,  1.36,  1.38,  1.4 , 1.42]:
-#        resultFiles.remove(f)
 
 data = []
 print resultFiles 
@@ -75,8 +75,10 @@ print pyalps.plot.convertToText(res)
 if args.x =='V':
     for d in res:
         L = d.props['L']
+        d.x = (d.x- args.xc) * L ** args.a 
         d.y = [y*L**args.b for y in d.y]
 
+        d.props['xlabel'] = r'$(V-V_c)L^{a}$'
         d.props['ylabel'] = r'$M_2L^{b}$'
         d.props['label'] = '$L=%g$' %(L)
         d.props['line'] = '-o'
@@ -90,10 +92,10 @@ else:
     pass 
 
 
-plt.title('$b=%g$'%(args.b))
+plt.title('$V_c, a, b = %g, %g, %g$'%(args.xc, args.a, args.b))
 
 pyalps.plot.plot(res)
-#plt.xlim([0,0.18])
+#plt.xlim([1.28,1.42])
 #plt.ylim([0,0.4])
 
 plt.legend(loc='upper left')

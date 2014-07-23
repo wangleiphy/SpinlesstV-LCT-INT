@@ -76,8 +76,7 @@ class Green_function{
              propagator2(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, VL);
 
              Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
-             VL = svd.matrixV().adjoint();
-             Storage_[ib] = VL; 
+             Storage_[ib] = svd.matrixV().adjoint();
           }
 
             gtau_ = Gstable(itau_, tlist, vlist); // from scratch 

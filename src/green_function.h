@@ -121,6 +121,7 @@ class Green_function{
 
             return  (uK_.row(si) *gtau) * uKdag_.col(sj);  
         }
+        */
 
         Vec denmathalfTheta(const site_type si, const tlist_type& tlist, vlist_type& vlist)const {
             //wrap Green's function to halfTheta  
@@ -138,7 +139,6 @@ class Green_function{
             }
             return  uK_ *(gtau * uKdag_.col(si));  
         }
-        */
 
         Vec denmat(const site_type si)const {
            return  uK_ *(gtau_ * uKdag_.col(si));  

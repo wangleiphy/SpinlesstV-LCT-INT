@@ -4,7 +4,7 @@ import re
 from numpy import arange, array 
 
 Maxorder = 8192
-BETA = 50. #projection time 
+BETA = 40. #projection time 
 BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet the lattice 
 
 latticename = 'honeycomb lattice'
@@ -13,7 +13,7 @@ nickname = 'zeroTfine'
 
 Llist = [15]
 Wlist = Llist 
-Vlist = [1.36]
+Vlist = [1.33, 1.37, 1.38]
 #Vlist = arange(1.31, 1.41, 0.02)
 #Vlist = arange(0.2, 1.6, 0.2)
 
@@ -21,14 +21,14 @@ itime_max = 1<<31
 RECALC_PERIOD = 10
 WRAP_REFRESH_PERIOD = 10
 
-STEPS_PER_BLOCK = 2
-NBLOCKS = 2048
+STEPS_PER_BLOCK = 4
+NBLOCKS = 1024
 THERMALIZATION = 2*10**4
 SWEEPS = 10**6 
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################
-wtime = '12:00:00'
+wtime = '24:00:00'
 tmin = 60
 tmax = 600
 ncores = 400  # a multiply of ntasks_per_node 

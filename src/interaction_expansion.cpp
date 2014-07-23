@@ -84,3 +84,53 @@ void InteractionExpansion::measure(){
 double InteractionExpansion::fraction_completed() const {
     return (sweeps < therm_steps ? 0. : (sweeps - therm_steps)/double(nblock)/double(mc_steps));
 }
+
+void InteractionExpansion::save(alps::hdf5::archive & ar) const {
+    mcbase::save(ar);
+
+    std::string context = ar.get_context();
+    ar.set_context("/simulation/realizations/0/clones/0/checkpoint");
+    
+    //copy tlist and vlist to vectors 
+    std::vector<itime_type> vt(tlist.begin(), tlist.end());
+    std::vector<site_type> vi, vj; 
+    for (vlist_type::const_iterator it=vlist.begin(); it!=vlist.end(); ++it) {
+          vi.push_back(it->second[0]);
+          vj.push_back(it->second[1]); 
+    }
+
+    ar["vt"] << vt;
+    ar["vi"] << vi;
+    ar["vj"] << vj;
+
+    ar.set_context(context);
+
+}
+
+void InteractionExpansion::load(alps::hdf5::archive & ar) {
+    mcbase::load(ar);
+
+    std::string context = ar.get_context();
+    ar.set_context("/simulation/realizations/0/clones/0/checkpoint");
+    
+    std::vector<itime_type> vt; 
+    std::vector<site_type> vi, vj; 
+
+    ar["vt"] >> vt;
+    ar["vi"] >> vi;  
+    ar["vj"] >> vj;
+    ar.set_context(context);
+
+    //copy vectors to tlist and vlist
+    for (unsigned i=0; i< vt.size(); ++i){
+        itime_type itau = vt[i]; 
+        tlist.insert(itau); 
+
+        std::vector<site_type> sites; 
+        sites.push_back(vi[i]);  
+        sites.push_back(vj[i]);  
+        vlist[itau] = sites;
+    }
+
+    gf.init_with_vertex(tlist, vlist); 
+}

@@ -322,6 +322,7 @@
   </BONDTERM>
 </GLOBALOPERATOR>
 
+
 <HAMILTONIAN name="spin">
   <PARAMETER name="J0" default="0"/>
   <PARAMETER name="J" default="J0"/>

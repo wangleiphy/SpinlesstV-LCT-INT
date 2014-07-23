@@ -9,7 +9,8 @@ N = L*W
 Thop = 1.0
 
 parms = []
-for V in arange(1.6, 2.2, 0.2):
+for V in [0.2]:
+#for V in arange(1.6, 2.2, 0.2):
     parms.append({
           'LATTICE_LIBRARY'           : 'mylattices.xml',
           'MODEL_LIBRARY'             : 'mymodels.xml',
@@ -26,7 +27,8 @@ for V in arange(1.6, 2.2, 0.2):
           'BCx'                       : "periodic",
           'BCy'                       : "periodic", 
 #          'MEASURE_CORRELATIONS[corr]': 'cdag:c',
-          'MEASURE_CORRELATIONS[nncorr]': 'n:n'
+          'MEASURE_CORRELATIONS[nncorr]': 'n:n',
+          'MEASURE_AVERAGE[KinE]': 'spinless_fermion_kinetic_energy'
 #          'MEASURE_LOCAL[Nloc]'       : 'n',
 #          'INITIAL_SITE'              : 0
           #"PRINT_EIGENVECTORS"        : 1
@@ -41,7 +43,7 @@ for p in parms:
     parmname = folder + str(p['LATTICE']).replace(" ", "")+'L'+str(p['L'])+'_W'+str(p['W'])+'_N'+str(p['N_total'])+'_V'+str(p['V0']) 
 
     input_file = pyalps.writeInputFiles(parmname, [p])
-    #pyalps.runApplication('sparsediag',input_file) #,writexml=True)#,MPI=2)
+    pyalps.runApplication('sparsediag',input_file) #,writexml=True)#,MPI=2)
     #check_call(['echo', 'bsub', "-R", '"rusage[mem=1024]"', '-oo',input_file.replace('.in.xml','.log'),'-W','1:00','sparsediag',input_file])
-    check_call(['bsub', '-oo',input_file.replace('.in.xml','.log'),'-W','1:00','sparsediag',input_file])
+    #check_call(['bsub', '-oo',input_file.replace('.in.xml','.log'),'-W','1:00','sparsediag',input_file])
     #check_call(['bsub', '-n', '5','-oo',input_file.replace('.in.xml','.log'),'-W','08:00','mpirun', 'sparsediag', '--mpi', input_file])

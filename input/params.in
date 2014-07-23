@@ -1,9 +1,9 @@
 LATTICE_LIBRARY = "../input/mylattices.xml"
-LATTICE = "open chain lattice"
+LATTICE = "honeycomb lattice"
 BCmodifier = ""
 BETA = 40.
-L = 32
-W = 1
+L = 4
+W = 2
 V = 2.0
 MAX_ORDER = 8192 
 THERMALIZATION = 1000

@@ -25,79 +25,67 @@ resultFiles = []
 for fileheader in args.fileheaders:
     resultFiles += pyalps.getResultFiles(prefix=fileheader)
 
-#filter resultFilies
-#for f in list(resultFiles):
-#    L = int(re.search('L([0-9]*)W',f).group(1)) 
-#    W = int(re.search('W([0-9]*)N',f).group(1)) 
-#    N = int(re.search('N([0-9]*)U',f).group(1)) 
-#    V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
-#    if (N!= L*W):  
-#        resultFiles.remove(f)
-    
-#    if V< 1.3 or V>1.4:
-#        resultFiles.remove(f)
-
-
 print resultFiles 
 
-data = pyalps.loadMeasurements(resultFiles, ['PertOrder','Walltime', 'IntE'])
+data = pyalps.loadMeasurements(resultFiles, ['PertOrder','M2', 'IntE', 'Energy'])
 #print data 
 #res = pyalps.ResultsToXY(data, 'PertOrder', 'Walltime', foreach = ['V']) 
 
 res1 = pyalps.collectXY(data, x='V', y='PertOrder', foreach = ['L'])
 res2 = pyalps.collectXY(data, x='V', y='IntE', foreach = ['L'])
 
-res3 = pyalps.collectXY(data, x='V', y='Walltime', foreach = ['L'])
+res3 = pyalps.collectXY(data, x='V', y='Energy', foreach = ['L'])
+res4 = pyalps.collectXY(data, x='V', y='M2', foreach = ['L'])
 
 #print pyalps.plot.convertToText(res)
 
+
+V, M2, IntE, Energy = loadtxt('../data/ed/V_M2_honeycombL4W2.dat', unpack = True, comments= '#', usecols= (0,1,2,3))
+
+
 icolor = 0
-for d in res1:
-    d.props['label'] = r'$\langle k \rangle$'
-    d.props['ylabel'] = ''
-    d.props['line'] = '-o'
-    d.props['color'] = colors[icolor]
-    icolor = (icolor +1)%len(colors)
+#for d in res1:
+#    d.props['label'] = r'$\langle k \rangle$'
+#    d.props['ylabel'] = ''
+#    d.props['line'] = 'o'
+#    d.props['color'] = colors[icolor]
+#    icolor = (icolor +1)%len(colors)
+
 
 for d in res2:
-    L = d.props['L']
-    W = d.props['W']
-    Theta = d.props['BETA']
 
-    d.y *= -(2*L*W)*Theta 
-    d.props['line'] = '-o'
-    d.props['label'] = r'$-\langle\hat{V}\rangle$'
-    d.props['ylabel'] = ''
+    d.props['line'] = 'o'
+    d.props['label'] = r'IntE'
     d.props['color'] = colors[icolor]
+    plt.plot(V, IntE, '-',  c = colors[icolor] )
     icolor = (icolor +1)%len(colors)
 
-########################################################
+
 for d in res3:
     #L = d.props['L']
 
-    d.props['label'] = 'Wall time'
-    d.props['ylabel'] = 'Wall time (s)'
-    d.props['line'] = '-o'
+    d.props['label'] = 'Energy'
+    d.props['line'] = 'o'
     d.props['color'] = colors[icolor]
+    plt.plot(V, Energy, '-', c = colors[icolor] )
+    icolor = (icolor +1)%len(colors)
+
+for d in res4:
+    #L = d.props['L']
+
+    d.props['label'] = '$M_2$'
+    d.props['line'] = 'o'
+    d.props['color'] = colors[icolor]
+    plt.plot(V, M2, '-', c = colors[icolor])
     icolor = (icolor +1)%len(colors)
 
 
-
-fig = plt.figure()
-ax1 = fig.add_subplot(111)
-
-pyalps.plot.plot(res1)
+#pyalps.plot.plot(res1)
 pyalps.plot.plot(res2)
-
-V, IntE = loadtxt('../data/ed/V_M2_honeycombL4W2.dat', unpack = True, comments= '#', usecols= (0,2))
-plt.plot(V, -IntE * 16. * 40.)
+pyalps.plot.plot(res3)
+pyalps.plot.plot(res4)
 
 plt.legend(loc='upper left')
-
-ax2 = ax1.twinx()
-pyalps.plot.plot(res3)
-
-plt.legend(loc='lower right')
 
 #plt.xlim([1.28,1.42])
 #plt.ylim([0,0.4])

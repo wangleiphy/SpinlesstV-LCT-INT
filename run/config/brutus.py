@@ -3,14 +3,15 @@ from numpy import arange, array
 
 Maxorder = 8192
 BETA = 40 #projection time 
-BCmodifier = "APBCX" #"APBCX"
+#BCmodifier = "APBCX"
+BCmodifier = ""
 
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'walltime'
 
-Llist = [6]
-Wlist = [6] #Llist 
+Llist = [4]
+Wlist = [2] #Llist 
 #Vlist = [1.34]
 #Vlist = arange(1.3, 1.41, 0.01)
 Vlist = arange(0.2, 2.2, 0.2)
@@ -29,7 +30,7 @@ MEASUREMENT_PERIOD = 13           # in unit of block
 tmin = 60
 tmax = 300
 ncores = 16 
-wtime = '36:00'
+wtime = '12:00'
 bin = '../bin/main'
 
 resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'

@@ -3,15 +3,15 @@ from numpy import arange, array
 
 Maxorder = 8192
 BETA = 40 #projection time 
-#BCmodifier = "APBCX"
-BCmodifier = ""
+BCmodifier = "APBCX"
+#BCmodifier = ""
 
 latticename = 'honeycomb lattice'
 ###############################
 nickname = 'walltime'
 
-Llist = [4]
-Wlist = [2] #Llist 
+Llist = [3]
+Wlist = [3] #Llist 
 #Vlist = [1.34]
 #Vlist = arange(1.3, 1.41, 0.01)
 Vlist = arange(0.2, 2.2, 0.2)

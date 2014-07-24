@@ -45,6 +45,13 @@ print data
 
 res = pyalps.ResultsToXY(data, 'PertOrder', 'Walltime') 
 
+icolor = 0
+for d in res:
+    d.props['xlabel'] = r'$\langle k \rangle$'
+    d.props['line'] = '-o'
+    d.props['color'] = colors[icolor]
+    icolor = (icolor+1)%len(colors)
+
 pyalps.plot.plot(res)
 
 #plt.legend(loc='lower right')

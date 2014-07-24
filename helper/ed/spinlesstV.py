@@ -9,7 +9,7 @@ N = L*W
 Thop = 1.0
 
 parms = []
-#for V in arange(0.0, 2.2, 0.2):
+for V in arange(0.0, 2.2, 0.05):
     parms.append({
           'LATTICE_LIBRARY'           : 'mylattices.xml',
           'MODEL_LIBRARY'             : 'mymodels.xml',

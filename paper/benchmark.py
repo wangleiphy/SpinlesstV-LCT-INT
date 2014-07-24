@@ -9,6 +9,7 @@ import subprocess
 import socket
 import argparse
 from numpy import array , linspace , sqrt , arange , loadtxt 
+from matplotlib.ticker import MaxNLocator
 import re 
 from config import * 
 
@@ -52,8 +53,10 @@ icolor = 0
 #    icolor = (icolor +1)%len(colors)
 
 
-for d in res2:
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
 
+for d in res2:
     d.props['line'] = 'o'
     d.props['ylabel'] = ''
     d.props['label'] = r'$\langle\hat{V}\rangle$'
@@ -64,35 +67,64 @@ for d in res2:
 
 for d in res3:
     #L = d.props['L']
-
-    d.props['line'] = 'o'
-    d.props['ylabel'] = ''
+    d.props['line'] = 's'
+    d.props['xlabel'] = '$V/t$'
+    d.props['ylabel'] = 'Energy'
     d.props['label'] = r'$\langle\hat{H}\rangle$'
     d.props['color'] = colors[icolor]
     plt.plot(V, Energy, '-', c = colors[icolor] )
     icolor = (icolor +1)%len(colors)
 
+#pyalps.plot.plot(res1)
+pyalps.plot.plot(res2)
+pyalps.plot.plot(res3)
+plt.legend(loc='upper left')
+
+plt.ylim([-1.2,0.3])
+
+ax2 = ax1.twinx()
+
 for d in res4:
     #L = d.props['L']
-
-    d.props['line'] = 'o'
-    d.props['ylabel'] = ''
-    d.props['xlabel'] = '$V/t$'
+    d.props['line'] = '^'
+    d.props['ylabel'] = 'CDW Structure Factor'
     d.props['label'] = '$\chi$'
     d.props['color'] = colors[icolor]
     plt.plot(V, M2, '-', c = colors[icolor])
     icolor = (icolor +1)%len(colors)
 
-
-#pyalps.plot.plot(res1)
-pyalps.plot.plot(res2)
-pyalps.plot.plot(res3)
 pyalps.plot.plot(res4)
 
-plt.legend(loc='best')
+#for tl in ax2.get_yticklabels():
+#    tl.set_color(colors[icolor-1])
+#ax2.yaxis.label.set_color(colors[icolor-1])
 
-#plt.xlim([1.28,1.42])
-#plt.ylim([0,0.4])
+plt.legend(loc='upper right')
+
+plt.xlim([0.0, 2.0])
+
+plt.subplots_adjust(right=0.88)
+
+################inset###################
+inset = plt.axes([0.24, 0.38, 0.3, 0.25])
+data = pyalps.loadMeasurements(resultFiles, ['PertOrder','Walltime'])
+res = pyalps.ResultsToXY(data, 'PertOrder', 'Walltime') 
+
+for d in res:
+    d.y /= 3600. 
+    d.props['xlabel'] = r'$\langle k \rangle$'
+    d.props['ylabel'] = r'Wall time (h)'
+    d.props['line'] = '-o'
+    d.props['color'] = colors[icolor]
+    icolor = (icolor+1)%len(colors)
+
+pyalps.plot.plot(res)
+plt.xlabel( r'$\langle k \rangle$', fontsize=14)
+plt.ylabel(r'Wall time (h)', fontsize=14)
+inset.xaxis.set_major_locator(MaxNLocator(4))
+inset.yaxis.set_major_locator(MaxNLocator(4))
+################inset###################
+
 
 
 if args.show:

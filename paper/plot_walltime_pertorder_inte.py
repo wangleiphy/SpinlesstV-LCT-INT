@@ -66,7 +66,7 @@ for d in res2:
 
     d.y *= -(2*L*W)*Theta 
     d.props['line'] = '-o'
-    d.props['label'] = r'$-\langle\hat{V}\rangle$'
+    d.props['label'] = r'$-\Theta\langle\hat{V}\rangle$'
     d.props['ylabel'] = ''
     d.props['color'] = colors[icolor]
     icolor = (icolor +1)%len(colors)

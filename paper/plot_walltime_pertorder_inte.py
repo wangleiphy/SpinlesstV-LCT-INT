@@ -89,8 +89,8 @@ ax1 = fig.add_subplot(111)
 pyalps.plot.plot(res1)
 pyalps.plot.plot(res2)
 
-V, IntE = loadtxt('../data/ed/V_M2_honeycombL4W2.dat', unpack = True, comments= '#', usecols= (0,2))
-plt.plot(V, -IntE * 16. * 40.)
+V, IntE = loadtxt('../data/ed/V_M2_honeycombL3W3APBC.dat', unpack = True, comments= '#', usecols= (0,2))
+plt.plot(V, -IntE * 18. * 40.)
 
 plt.legend(loc='upper left')
 

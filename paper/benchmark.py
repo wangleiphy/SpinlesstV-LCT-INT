@@ -40,7 +40,7 @@ res4 = pyalps.collectXY(data, x='V', y='M2', foreach = ['L'])
 #print pyalps.plot.convertToText(res)
 
 
-V, M2, IntE, Energy = loadtxt('../data/ed/V_M2_honeycombL4W2.dat', unpack = True, comments= '#', usecols= (0,1,2,3))
+V, M2, IntE, Energy = loadtxt('../data/ed/V_M2_honeycombL3W3APBC.dat', unpack = True, comments= '#', usecols= (0,1,2,3))
 
 
 icolor = 0
@@ -55,7 +55,8 @@ icolor = 0
 for d in res2:
 
     d.props['line'] = 'o'
-    d.props['label'] = r'IntE'
+    d.props['ylabel'] = ''
+    d.props['label'] = r'$\langle\hat{V}\rangle$'
     d.props['color'] = colors[icolor]
     plt.plot(V, IntE, '-',  c = colors[icolor] )
     icolor = (icolor +1)%len(colors)
@@ -64,8 +65,9 @@ for d in res2:
 for d in res3:
     #L = d.props['L']
 
-    d.props['label'] = 'Energy'
     d.props['line'] = 'o'
+    d.props['ylabel'] = ''
+    d.props['label'] = r'$\langle\hat{H}\rangle$'
     d.props['color'] = colors[icolor]
     plt.plot(V, Energy, '-', c = colors[icolor] )
     icolor = (icolor +1)%len(colors)
@@ -73,8 +75,10 @@ for d in res3:
 for d in res4:
     #L = d.props['L']
 
-    d.props['label'] = '$M_2$'
     d.props['line'] = 'o'
+    d.props['ylabel'] = ''
+    d.props['xlabel'] = '$V/t$'
+    d.props['label'] = '$\chi$'
     d.props['color'] = colors[icolor]
     plt.plot(V, M2, '-', c = colors[icolor])
     icolor = (icolor +1)%len(colors)
@@ -85,7 +89,7 @@ pyalps.plot.plot(res2)
 pyalps.plot.plot(res3)
 pyalps.plot.plot(res4)
 
-plt.legend(loc='upper left')
+plt.legend(loc='best')
 
 #plt.xlim([1.28,1.42])
 #plt.ylim([0,0.4])

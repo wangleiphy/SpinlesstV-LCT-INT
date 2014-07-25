@@ -9,11 +9,11 @@ BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet t
 
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'zeroTfine'
+nickname = 'zeroTfine_checkpoint'
 
-Llist = [15]
+Llist = [3, 6, 9 , 12]
 Wlist = Llist 
-Vlist = [1.33, 1.37, 1.38]
+Vlist = [1.0]
 #Vlist = arange(1.31, 1.41, 0.02)
 #Vlist = arange(0.2, 1.6, 0.2)
 
@@ -28,16 +28,16 @@ SWEEPS = 10**6
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################
-wtime = '24:00:00'
+wtime = '12:00:00'
 tmin = 60
 tmax = 600
-ncores = 400  # a multiply of ntasks_per_node 
+ncores = 320  # a multiply of ntasks_per_node 
 prog = '../bin/main'
 
 resfolder = '/mnt/lnec/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]
 Tlimit = max(3600*h + 60*m + s - int(tmax*2) , 0)
-prog += ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -T ' + str(Tlimit) 
+prog += ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -T ' + str(Tlimit) + ' -c '
 
 def submitJob(bin,args,jobname,wtime,run=False,ncores=20, wait=None):
 
@@ -48,7 +48,7 @@ def submitJob(bin,args,jobname,wtime,run=False,ncores=20, wait=None):
 #SBATCH --exclusive
 #SBATCH --nodes=%g
 #SBATCH --time=%s
-#SBATCH --partition=dphys_compute
+#SBATCH --partition=dphys_largemem
 #SBATCH --ntasks-per-node=20
 #SBATCH --ntasks-per-socket=10
 #SBATCH --cpus-per-task=1

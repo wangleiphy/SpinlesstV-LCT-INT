@@ -46,7 +46,6 @@ res = pyalps.flatten(res)
 
 for d in res:
     V = d.props['V']
-    T = d.props['TEMPERATURE']
     d.props['xlabel'] = r'$R$'
 
     if args.logscale:
@@ -55,7 +54,7 @@ for d in res:
     else:
         d.props['ylabel'] = r'$C(R)$'
 
-    d.props['label'] =  r'$V=%g,T=%g$'%(V,T)
+    d.props['label'] =  r'$V=%g$'%(V)
 
 if args.copydata:
     for resultFile in resultFiles:

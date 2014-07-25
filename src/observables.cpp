@@ -15,7 +15,8 @@ void InteractionExpansion::initialize_observables()
                ; 
 
   //measurements << alps::ngs::RealVectorObservable("Vhist"); 
-   
+
+  measurements << alps::ngs::RealVectorObservable("nncorr"); 
   measurements << alps::ngs::RealObservable("Walltime"); 
 }
 

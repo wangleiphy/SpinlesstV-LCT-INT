@@ -55,6 +55,15 @@ void InteractionExpansion::measure_M2()
    measurements["IntE"] << 0.5*V * IntE;// interaction energy per site : -IntE * n_site * Theta = PertOrder 
    measurements["KinE"] << KinE; //kinetic energy per site , no 0.5 because we have <c_i^\dagger c_j > + <c_j^\dagger c_i>
    measurements["Energy"]  <<  0.5*V *IntE + KinE; // total enegy per site  
+
+  //C(R) = <(n_{i}-0.5) (n_{i+R}-0.5)> , average over site i and sites within each R shell 
+  std::vector<double> nncorr(shellsize.size()); 
+   for (site_type sj=0 ; sj< n_site; ++sj){
+    unsigned dist = disttable(si,sj); 
+    double parity = lattice.parity(si) * lattice.parity(sj); 
+    nncorr[dist] +=  parity * denmat(sj) * denmat(sj) /shellsize[dist]; // normalize by number of sites in this shell 
+   }
+   measurements["nncorr"]  << nncorr; 
 }
 
 void InteractionExpansion::measure_vhist(){

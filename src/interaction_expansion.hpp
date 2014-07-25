@@ -97,10 +97,15 @@ private:
 
   Mat K_;    // the kinetic energy matrix 
   Green_function gf; 
+
+  //graph stuff 
+  std::vector<DistanceMap> distmap;            //  vector<map from dist to vector<sites> >
+  Eigen::MatrixXi          disttable;          //  table(si, sj) = dist  
+  std::vector<unsigned>    shellsize;          //  number of sites in dist steps 
+
     
   template<typename T>
   T randomint(const T i) {return random() * i;}//random int [0, i) 
-
   
   /*
   std::pair<tlist_type::const_iterator> vertices(const  unsigned ib) const {//pointer to vertices of inside the block ib 

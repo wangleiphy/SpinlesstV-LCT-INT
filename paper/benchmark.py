@@ -59,7 +59,7 @@ ax1 = fig.add_subplot(111)
 for d in res2:
     d.props['line'] = 'o'
     d.props['ylabel'] = ''
-    d.props['label'] = r'$\langle\hat{V}\rangle$'
+    d.props['label'] = r'$\langle\hat{V}\rangle/N$'
     d.props['color'] = colors[icolor]
     plt.plot(V, IntE, '-',  c = colors[icolor] )
     icolor = (icolor +1)%len(colors)
@@ -69,8 +69,8 @@ for d in res3:
     #L = d.props['L']
     d.props['line'] = 's'
     d.props['xlabel'] = '$V/t$'
-    d.props['ylabel'] = 'Energy'
-    d.props['label'] = r'$\langle\hat{H}\rangle$'
+    d.props['ylabel'] = 'Energy per Site'
+    d.props['label'] = r'$\langle\hat{H}\rangle/N$'
     d.props['color'] = colors[icolor]
     plt.plot(V, Energy, '-', c = colors[icolor] )
     icolor = (icolor +1)%len(colors)
@@ -88,7 +88,7 @@ for d in res4:
     #L = d.props['L']
     d.props['line'] = '^'
     d.props['ylabel'] = 'CDW Structure Factor'
-    d.props['label'] = '$\chi$'
+    d.props['label'] = '$M_2$'
     d.props['color'] = colors[icolor]
     plt.plot(V, M2, '-', c = colors[icolor])
     icolor = (icolor +1)%len(colors)

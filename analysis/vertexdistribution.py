@@ -21,7 +21,7 @@ data = pyalps.flatten(data)
 
 pyalps.plot.plot(data)
 
-plt.ylim([0, 10])
+#plt.ylim([0, 10])
 
 #n, bins, patches = plt.hist(timeseries, range=(timeseries.min(), timeseries.max()), bins =20)
 

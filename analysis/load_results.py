@@ -43,8 +43,8 @@ for f in list(resultFiles):
 #    if (N!= L*W):  
 #        resultFiles.remove(f)
     
-    if V< 1.3 or V>1.4:
-        resultFiles.remove(f)
+#    if V< 1.3 or V>1.4:
+#        resultFiles.remove(f)
 
 
 data = []
@@ -98,7 +98,7 @@ pyalps.plot.plot(res)
 #plt.xlim([1.28,1.42])
 #plt.ylim([0,0.4])
 
-plt.legend(loc='upper left')
+plt.legend(loc='best')
 
 
 if args.copydata:

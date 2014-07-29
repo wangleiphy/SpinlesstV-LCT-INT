@@ -48,6 +48,8 @@ res = pyalps.loadMeasurements(resultFiles, args.y)
 res = pyalps.flatten(res)
 #pyalps.propsort(res,'V') 
 
+print res 
+
 icolor = 0
 for d in res:
     V = d.props['V']
@@ -59,7 +61,7 @@ for d in res:
     else:
         d.props['ylabel'] = r'$C(R)$'
 
-    d.props['label'] =  r'$V=%g$'%(V)
+    d.props['label'] =  r'$V/t=%g$'%(V)
 
     d.props['line'] = 'o'
     d.props['color'] = colors[icolor]

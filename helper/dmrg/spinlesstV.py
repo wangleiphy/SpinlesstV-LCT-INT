@@ -8,7 +8,7 @@ W = 1
 N = L*W/2 
 
 Thop = 1.0
-M = 3200
+M = 1600 
 
 parms = []
 #for V in arange(0.0, 2.2, 0.05):

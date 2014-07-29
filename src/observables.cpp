@@ -28,6 +28,7 @@ void InteractionExpansion::measure_observables()
   measurements["PertOrder"] << double(tlist.size());
 
   measure_M2();
+
   //measure_vhist(); 
 
 }

@@ -10,11 +10,11 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'walltime'
 
-Llist = [3]
-Wlist = [3] #Llist 
-#Vlist = [1.34]
+Llist = [12]
+Wlist = [12] #Llist 
+Vlist = [1.2, 1.3, 1.4, 1.5]
 #Vlist = arange(1.3, 1.41, 0.01)
-Vlist = arange(0.2, 2.2, 0.2)
+#Vlist = arange(0.2, 2.2, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 10
@@ -30,7 +30,7 @@ MEASUREMENT_PERIOD = 13           # in unit of block
 tmin = 60
 tmax = 300
 ncores = 16 
-wtime = '12:00'
+wtime = '24:00'
 bin = '../bin/main'
 
 resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'

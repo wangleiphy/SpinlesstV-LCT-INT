@@ -8,11 +8,11 @@ W = 1
 N = L*W/2 
 
 Thop = 1.0
-M = 1600 
+M = 3200
 
 parms = []
 #for V in arange(0.0, 2.2, 0.05):
-for V in [2.0]:
+for V in [3.0, 4.0]:
     parms.append({
           'LATTICE_LIBRARY'           : 'mylattices.xml',
           'MODEL_LIBRARY'             : 'mymodels.xml',
@@ -33,7 +33,7 @@ for V in [2.0]:
 #          'MEASURE_LOCAL[Nloc]'       : 'n',
 #          'INITIAL_SITE'              : 0
           #"PRINT_EIGENVECTORS"        : 1
-          'SWEEPS'                     : 16, 
+          'SWEEPS'                     : 20, 
           'MAXSTATES'                  : M
         })
 

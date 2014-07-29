@@ -62,6 +62,7 @@ if args.copydata:
         subprocess.check_call(cmd)
 
 #pyalps.propsort(res,'V') 
+print pyalps.plot.convertToText(res)
 
 pyalps.plot.plot(res)
 plt.legend(loc='lower left')

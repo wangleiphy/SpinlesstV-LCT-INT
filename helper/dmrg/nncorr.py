@@ -36,5 +36,7 @@ for d in data:
     V = d.props['V0']
     L = d.props['L']
 
-    print nncorr(d.x, d.y[0], L)
+    res = nncorr(d.x, d.y[0], L)
+    for x, y in enumerate(res):
+        print x, y 
 

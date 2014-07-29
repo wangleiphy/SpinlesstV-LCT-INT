@@ -13,7 +13,7 @@ nickname = 'nncorr'
 
 Llist = [32]
 Wlist = [1] #Llist 
-Vlist = [1.0, 2.0]
+Vlist = [3.0, 4.0]
 #Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 2.2, 0.2)
 

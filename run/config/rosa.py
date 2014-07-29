@@ -10,9 +10,9 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroT_checkpoint'
 
-Llist = [18]
+Llist = [9]
 Wlist = Llist 
-Vlist = [1.36, 1.37, 1.38]
+Vlist = [1.4]
 #Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 1.6, 0.2)
 
@@ -20,10 +20,10 @@ itime_max = 1<<31
 RECALC_PERIOD = 10
 WRAP_REFRESH_PERIOD = 10
 
-STEPS_PER_BLOCK = 4
+STEPS_PER_BLOCK = 2
 NBLOCKS = 1024
 THERMALIZATION = 2*10**4
-SWEEPS = 10**6  
+SWEEPS = 2*10**6  
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 wtime = '24:00:00'
@@ -37,7 +37,7 @@ resfolder = '/scratch/rosa/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]
 
 Tlimit = max(3600*h + 60*m + s - int(tmax*2.) , 0)
-prog += ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -T ' + str(Tlimit)
+prog += ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -T ' + str(Tlimit) + ' -c '
 
 def submitJob(bin,args,jobname,wtime,run=False,ncores=None, wait = None):
 

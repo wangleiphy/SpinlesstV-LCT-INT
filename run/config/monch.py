@@ -11,7 +11,7 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'zeroTfine_checkpoint'
 
-Llist = [3, 6, 9 , 12]
+Llist = [12]
 Wlist = Llist 
 Vlist = [1.0]
 #Vlist = arange(1.31, 1.41, 0.02)
@@ -21,14 +21,14 @@ itime_max = 1<<31
 RECALC_PERIOD = 10
 WRAP_REFRESH_PERIOD = 10
 
-STEPS_PER_BLOCK = 4
+STEPS_PER_BLOCK = 2
 NBLOCKS = 1024
 THERMALIZATION = 2*10**4
-SWEEPS = 10**6 
+SWEEPS = 2*10**6 
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################
-wtime = '12:00:00'
+wtime = '24:00:00'
 tmin = 60
 tmax = 600
 ncores = 320  # a multiply of ntasks_per_node 
@@ -48,7 +48,7 @@ def submitJob(bin,args,jobname,wtime,run=False,ncores=20, wait=None):
 #SBATCH --exclusive
 #SBATCH --nodes=%g
 #SBATCH --time=%s
-#SBATCH --partition=dphys_largemem
+#SBATCH --partition=dphys_compute
 #SBATCH --ntasks-per-node=20
 #SBATCH --ntasks-per-socket=10
 #SBATCH --cpus-per-task=1

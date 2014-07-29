@@ -6,13 +6,14 @@ BETA = 40 #projection time
 BCmodifier = "APBCX"
 #BCmodifier = ""
 
-latticename = 'honeycomb lattice'
+latticename = 'chain lattice'
+#latticename = 'honeycomb lattice'
 ###############################
-nickname = 'walltime'
+nickname = 'nncorr'
 
-Llist = [12]
-Wlist = [12] #Llist 
-Vlist = [1.2, 1.3, 1.4, 1.5]
+Llist = [32]
+Wlist = [1] #Llist 
+Vlist = [1.0, 2.0]
 #Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 2.2, 0.2)
 

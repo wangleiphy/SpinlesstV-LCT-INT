@@ -112,8 +112,11 @@ int main(int argc, char** argv){
 
         std::string filename = boost::lexical_cast<std::string>(params["filename"]);  
         std::string h5output_file = filename.substr(0, filename.find_last_of('.')) + ".out.h5"; // hdf5 output file 
-        std::string checkpoint_file = filename.substr(0, filename.find_last_of('.')) 
-                                  +  ".clone" + boost::lexical_cast<std::string>(comm.rank()) + ".h5";
+        std::string checkpoint_path = filename.substr(0, filename.find_last_of('.'))  + ".chkp"; 
+        std::string checkpoint_file = checkpoint_path +  "/clone"+ boost::lexical_cast<std::string>(comm.rank()) + ".h5";
+
+        if (!boost::filesystem::exists(checkpoint_path) && comm.rank() ==0)
+            boost::filesystem::create_directory(checkpoint_path);
 
       // Run simulation
       MpiSimulation sim(params, comm, check_schedule(options.tmin, options.tmax));

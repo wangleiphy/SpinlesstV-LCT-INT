@@ -1,0 +1,1168 @@
+<!--
+   Copyright (c) 2003-2010 Matthias Troyer (troyer@ethz.ch)
+  
+   Distributed under the Boost Software License, Version 1.0.
+   (See accompanying file LICENSE_1_0.txt or copy at
+   http://www.boost.org/LICENSE_1_0.txt)
+  -->
+  
+<LATTICES>
+<LATTICE name="0d lattice" dimension="0"/>
+
+<LATTICE name="chain lattice" dimension="1">
+  <PARAMETER name="a" default="1"/>
+  <BASIS><VECTOR>a</VECTOR></BASIS>
+  <RECIPROCALBASIS><VECTOR>2*pi/a</VECTOR></RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="square lattice" dimension="2">
+  <PARAMETER name="a" default="1"/>
+  <BASIS><VECTOR>a 0</VECTOR><VECTOR>0 a</VECTOR></BASIS>
+  <RECIPROCALBASIS><VECTOR>2*pi/a 0</VECTOR><VECTOR>0 2*pi/a</VECTOR></RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="rectangular lattice" dimension="2">
+  <PARAMETER name="a" default="1"/>
+  <PARAMETER name="b" default="a"/>
+  <BASIS><VECTOR>a 0</VECTOR><VECTOR>0 b</VECTOR></BASIS>
+  <RECIPROCALBASIS><VECTOR>2*pi/a 0</VECTOR><VECTOR>0 2*pi/b</VECTOR></RECIPROCALBASIS>
+</LATTICE>
+
+
+<LATTICE name="checkerboard lattice" dimension="2">
+  <PARAMETER name="a" default="1"/>
+  <BASIS><VECTOR>a/2 a/2</VECTOR><VECTOR>-a/2 a/2</VECTOR></BASIS>
+  <RECIPROCALBASIS><VECTOR>2*pi/a 2*pi/a</VECTOR><VECTOR>-2*pi/a 2*pi/a</VECTOR></RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="triangular lattice" dimension="2">
+  <PARAMETER name="a" default="1"/>
+  <BASIS><VECTOR>a 0</VECTOR><VECTOR>a/2 a*sqrt(3)/2</VECTOR></BASIS>
+  <RECIPROCALBASIS><VECTOR>2*pi/a -2*pi/a/sqrt(3)</VECTOR><VECTOR>0 4*pi/a/sqrt(3)</VECTOR></RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="centered rectangular lattice" dimension="2">
+  <PARAMETER name="a" default="1"/>
+  <PARAMETER name="b" default="1"/>
+  <BASIS><VECTOR>a 0</VECTOR><VECTOR>sqrt(b*b-a*a/4) a/2</VECTOR></BASIS>
+  <RECIPROCALBASIS><VECTOR>a 0</VECTOR><VECTOR>sqrt(b*b-a*a/4) a/2</VECTOR></RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="oblique lattice" dimension="2">
+  <PARAMETER name="a" default="1"/>
+  <PARAMETER name="b" default="1"/>
+  <PARAMETER name="phi" default="Pi/2"/>
+  <BASIS><VECTOR>a 0</VECTOR><VECTOR>b*sin(phi) b*cos(phi)</VECTOR></BASIS>
+  <RECIPROCALBASIS><VECTOR>2*pi/a -2*pi/a/tan(phi)</VECTOR><VECTOR>0 2*pi/b/cos(phi)</VECTOR></RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="simple cubic lattice" dimension="3">
+  <PARAMETER name="a" default="1"/>
+  <BASIS>
+    <VECTOR>a 0 0</VECTOR>
+    <VECTOR>0 a 0</VECTOR>
+    <VECTOR>0 0 a</VECTOR>
+  </BASIS>
+  <RECIPROCALBASIS>
+    <VECTOR>2*pi/a 0 0</VECTOR>
+    <VECTOR>0 2*pi/a 0</VECTOR>
+    <VECTOR>0 0 2*pi/a</VECTOR>
+  </RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="face-centered cubic lattice" dimension="3">
+  <PARAMETER name="a" default="1"/>
+  <BASIS>
+    <VECTOR>a/2 a/2 0  </VECTOR>
+    <VECTOR>a/2 0   a/2</VECTOR>
+    <VECTOR>0   a/2 a/2</VECTOR>
+  </BASIS>
+  <RECIPROCALBASIS>
+    <VECTOR>2*pi/a 2*pi/a -2*pi/a  </VECTOR>
+    <VECTOR>2*pi/a -2*pi/a   2*pi/a </VECTOR>
+    <VECTOR>-2*pi/a   2*pi/a 2*pi/a </VECTOR>
+  </RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="body-centered cubic lattice" dimension="3">
+  <PARAMETER name="a" default="1"/>
+  <BASIS>
+    <VECTOR> a/2  a/2 -a/2</VECTOR>
+    <VECTOR> a/2 -a/2  a/2</VECTOR>
+    <VECTOR>-a/2  a/2  a/2</VECTOR>
+  </BASIS>
+  <RECIPROCALBASIS>
+    <VECTOR> 2*pi/a  2*pi/a 0</VECTOR>
+    <VECTOR> 2*pi/a 0  2*pi/a</VECTOR>
+    <VECTOR> 0  2*pi/a  2*pi/a</VECTOR>
+  </RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="tetragonal lattice" dimension="3">
+  <PARAMETER name="a" default="1"/>
+  <PARAMETER name="c" default="1"/>
+  <BASIS>
+    <VECTOR>a 0 0</VECTOR>
+    <VECTOR>0 a 0</VECTOR>
+    <VECTOR>0 0 c</VECTOR>
+  </BASIS>
+  <RECIPROCALBASIS>
+    <VECTOR>2*pi/a 0 0</VECTOR>
+    <VECTOR>0 2*pi/a 0</VECTOR>
+    <VECTOR>0 0 2*pi/c</VECTOR>
+  </RECIPROCALBASIS>
+</LATTICE>
+
+<LATTICE name="orthorhombic lattice" dimension="3">
+  <PARAMETER name="a" default="1"/>
+  <PARAMETER name="b" default="1"/>
+  <PARAMETER name="c" default="1"/>
+  <BASIS>
+    <VECTOR>a 0 0</VECTOR>
+    <VECTOR>0 b 0</VECTOR>
+    <VECTOR>0 0 c</VECTOR>
+  </BASIS>
+  <RECIPROCALBASIS>
+    <VECTOR>2*pi/a 0 0</VECTOR>
+    <VECTOR>0 2*pi/b 0</VECTOR>
+    <VECTOR>0 0 2*pi/c</VECTOR>
+  </RECIPROCALBASIS>
+</LATTICE>
+
+
+<LATTICE name="hexagonal lattice" dimension="3">
+  <PARAMETER name="a" default="1"/>
+  <PARAMETER name="c" default="1"/>
+  <BASIS>
+    <VECTOR>a   0           0</VECTOR>
+    <VECTOR>a/2 a*sqrt(3)/2 0</VECTOR>
+    <VECTOR>0   0           c</VECTOR>
+  </BASIS>
+  <RECIPROCALBASIS>
+    <VECTOR>2*pi/a -2*pi/a/sqrt(3) 0     </VECTOR>
+    <VECTOR>0      4*pi/a/sqrt(3)  0     </VECTOR>
+    <VECTOR>0      0               2*pi/c</VECTOR>
+  </RECIPROCALBASIS>
+</LATTICE>
+
+
+<UNITCELL name="isolated" dimension="1">
+  <VERTEX/>
+</UNITCELL>
+
+<UNITCELL name="simple1d" dimension="1">
+  <VERTEX/>
+  <EDGE><SOURCE vertex="1" offset="0"/><TARGET vertex="1" offset="1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="complex1d" dimension="1">
+  <VERTEX/>
+  <EDGE type="0"><SOURCE vertex="1" offset="0"/><TARGET vertex="1" offset="1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1" offset="0"/><TARGET vertex="1" offset="2"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="simple2d" dimension="2">
+  <VERTEX/>
+  <EDGE><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="1 0"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="triangular" dimension="2">
+  <VERTEX/>
+  <EDGE><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="-1 1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="anisotropic2d" dimension="2">
+  <VERTEX/>
+  <EDGE type="0">
+    <SOURCE vertex="1" offset="0 0"/>
+    <TARGET vertex="1" offset="1 0"/>
+  </EDGE>
+  <EDGE type="1">
+    <SOURCE vertex="1" offset="0 0"/>
+    <TARGET vertex="1" offset="0 1"/>
+  </EDGE>
+</UNITCELL>
+
+<UNITCELL name="nnn2d" dimension="2">
+  <VERTEX/>
+  <EDGE type="0"><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="1 1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1" offset="0 0"/><TARGET vertex="1" offset="1 -1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="simple3d" dimension="3" vertices="1">
+  <VERTEX/>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0 0"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="0 1 0"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="1" offset="0 0 1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="2band1d" dimension="1">
+  <VERTEX type="0"/>
+  <VERTEX type="1"/>
+  <EDGE type="0"><SOURCE vertex="1" offset="0"/><TARGET vertex="2" offset="0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1" offset="0"/><TARGET vertex="1" offset="1"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="2" offset="0"/><TARGET vertex="2" offset="1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="Kagome" dimension="2">
+  <VERTEX><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX><COORDINATE>0.5 0</COORDINATE></VERTEX>
+  <VERTEX><COORDINATE>0 0.5</COORDINATE></VERTEX>
+
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="3"/></EDGE>
+  <EDGE><SOURCE vertex="2"/><TARGET vertex="3"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="2" offset="-1 0"/></EDGE>
+  <EDGE><SOURCE vertex="2"/><TARGET vertex="3" offset="1 -1"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="3" offset="0 -1"/></EDGE>
+</UNITCELL>
+
+<UNITCELL name="honeycomb" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>-0.33333333333333 0.66666666666667</COORDINATE></VERTEX>
+
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE><SOURCE vertex="2"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="2" offset="1 -1"/></EDGE>
+</UNITCELL>
+
+
+<UNITCELL name="brickwall" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>0.5 0.5</COORDINATE></VERTEX>
+
+  <EDGE><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE><SOURCE vertex="2"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE><SOURCE vertex="2"/><TARGET vertex="1" offset="0 1"/></EDGE>
+</UNITCELL>
+
+
+<UNITCELL name="brickwall2" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 -0.1</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>-0.5 0.0</COORDINATE></VERTEX>
+  <VERTEX type="2"><COORDINATE>-0.5 0.5</COORDINATE></VERTEX>
+  <VERTEX type="3"><COORDINATE>0.0 0.6</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="3"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="3"/><TARGET vertex="4"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="4"/><TARGET vertex="1" offset="0 1"/></EDGE>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="4"/><TARGET vertex="3" offset="1 0"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="3" offset="0 -1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="3" offset="0 0"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="4" offset="0 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="4" offset="0 -1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="2" offset="-1 0"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="3"/><TARGET vertex="3" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="3"/><TARGET vertex="1" offset="-1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="3"/><TARGET vertex="1" offset="-1 1"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="4"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="4"/><TARGET vertex="2" offset="1 1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="4"/><TARGET vertex="4" offset="-1 0"/></EDGE>
+
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="4" offset="0 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="2"/><TARGET vertex="3" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="2"/><TARGET vertex="3" offset="-1 0"/></EDGE>
+
+  <EDGE type="2"><SOURCE vertex="4"/><TARGET vertex="1" offset="-1 1"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="3"/><TARGET vertex="2" offset="0 1"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="4"/><TARGET vertex="1" offset="1 1"/></EDGE>
+
+</UNITCELL>
+
+
+<UNITCELL name="nnhoneycomb" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>-0.333333333333 0.666666666666667</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2" offset="1 -1"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 -1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="-1 1"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="2" offset="1 -1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="2" offset="-1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="2" offset="0  1"/></EDGE>
+
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="2" offset="-1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="2" offset="1 -2"/></EDGE>
+
+</UNITCELL>
+
+<UNITCELL name="titus" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>0.5 0.5</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2" offset="-1 0"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2" offset="0 -1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="1" offset="1 1" /></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="2" offset="0 -1"/></EDGE>
+
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="1" offset="0 -1"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="2"/><TARGET vertex="2" offset="1 0"/></EDGE>
+</UNITCELL>
+
+
+<UNITCELL name="titus2" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>0 0.5</COORDINATE></VERTEX>
+  <VERTEX type="2"><COORDINATE>0.5 0</COORDINATE></VERTEX>
+  <VERTEX type="3"><COORDINATE>0.5 0.5</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="3"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="3"/><TARGET vertex="4"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="4"/><TARGET vertex="2"/></EDGE>
+
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="4"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="3"/><TARGET vertex="4" offset="0 -1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="3" offset="-1 0"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="4"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="3"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="4"/><TARGET vertex="1" offset="1 1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="3"/><TARGET vertex="2" offset="1 -1"/></EDGE>
+
+  <EDGE type="2"><SOURCE vertex="4"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="3"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="2"/><TARGET vertex="3" offset="0 1"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="4"/><TARGET vertex="1" offset="0 1"/></EDGE>
+
+</UNITCELL>
+
+
+<UNITCELL name="hofstadter9" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>0 0.111111111111</COORDINATE></VERTEX>
+  <VERTEX type="2"><COORDINATE>0 0.222222222222</COORDINATE></VERTEX>
+  <VERTEX type="3"><COORDINATE>0 0.333333333333</COORDINATE></VERTEX>
+  <VERTEX type="4"><COORDINATE>0 0.444444444444</COORDINATE></VERTEX>
+  <VERTEX type="5"><COORDINATE>0 0.555555555556</COORDINATE></VERTEX>
+  <VERTEX type="6"><COORDINATE>0 0.666666666667</COORDINATE></VERTEX>
+  <VERTEX type="7"><COORDINATE>0 0.777777777778</COORDINATE></VERTEX>
+  <VERTEX type="8"><COORDINATE>0 0.888888888889</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="3"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="3"/><TARGET vertex="4"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="4"/><TARGET vertex="5"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="5"/><TARGET vertex="6"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="6"/><TARGET vertex="7"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="7"/><TARGET vertex="8"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="8"/><TARGET vertex="9"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="9"/><TARGET vertex="1" offset="0 1"/></EDGE>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="3"/><TARGET vertex="3" offset="1 0"/></EDGE>
+  <EDGE type="3"><SOURCE vertex="4"/><TARGET vertex="4" offset="1 0"/></EDGE>
+  <EDGE type="4"><SOURCE vertex="5"/><TARGET vertex="5" offset="1 0"/></EDGE>
+  <EDGE type="5"><SOURCE vertex="6"/><TARGET vertex="6" offset="1 0"/></EDGE>
+  <EDGE type="6"><SOURCE vertex="7"/><TARGET vertex="7" offset="1 0"/></EDGE>
+  <EDGE type="7"><SOURCE vertex="8"/><TARGET vertex="8" offset="1 0"/></EDGE>
+  <EDGE type="8"><SOURCE vertex="9"/><TARGET vertex="9" offset="1 0"/></EDGE>
+
+</UNITCELL>
+
+
+
+<UNITCELL name="hofstadter7" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>0 0.142857142857</COORDINATE></VERTEX>
+  <VERTEX type="2"><COORDINATE>0 0.285714285714</COORDINATE></VERTEX>
+  <VERTEX type="3"><COORDINATE>0 0.428571428571</COORDINATE></VERTEX>
+  <VERTEX type="4"><COORDINATE>0 0.571428571429</COORDINATE></VERTEX>
+  <VERTEX type="5"><COORDINATE>0 0.714285714286</COORDINATE></VERTEX>
+  <VERTEX type="6"><COORDINATE>0 0.857142857143</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="3"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="3"/><TARGET vertex="4"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="4"/><TARGET vertex="5"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="5"/><TARGET vertex="6"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="6"/><TARGET vertex="7"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="7"/><TARGET vertex="1" offset="0 1"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="2"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="3"><SOURCE vertex="3"/><TARGET vertex="3" offset="1 0"/></EDGE>
+  <EDGE type="4"><SOURCE vertex="4"/><TARGET vertex="4" offset="1 0"/></EDGE>
+  <EDGE type="5"><SOURCE vertex="5"/><TARGET vertex="5" offset="1 0"/></EDGE>
+  <EDGE type="6"><SOURCE vertex="6"/><TARGET vertex="6" offset="1 0"/></EDGE>
+  <EDGE type="7"><SOURCE vertex="7"/><TARGET vertex="7" offset="1 0"/></EDGE>
+</UNITCELL>
+
+
+<UNITCELL name="hofstadter6" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>0 0.166666666667</COORDINATE></VERTEX>
+  <VERTEX type="2"><COORDINATE>0 0.333333333333</COORDINATE></VERTEX>
+  <VERTEX type="3"><COORDINATE>0 0.5</COORDINATE></VERTEX>
+  <VERTEX type="4"><COORDINATE>0 0.666666666667</COORDINATE></VERTEX>
+  <VERTEX type="5"><COORDINATE>0 0.833333333333</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="3"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="3"/><TARGET vertex="4"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="4"/><TARGET vertex="5"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="5"/><TARGET vertex="6"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="6"/><TARGET vertex="1" offset="0 1"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="2"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="3"><SOURCE vertex="3"/><TARGET vertex="3" offset="1 0"/></EDGE>
+  <EDGE type="4"><SOURCE vertex="4"/><TARGET vertex="4" offset="1 0"/></EDGE>
+  <EDGE type="5"><SOURCE vertex="5"/><TARGET vertex="5" offset="1 0"/></EDGE>
+  <EDGE type="6"><SOURCE vertex="6"/><TARGET vertex="6" offset="1 0"/></EDGE>
+</UNITCELL>
+
+
+<UNITCELL name="hofstadter3" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>0 0.333333333333</COORDINATE></VERTEX>
+  <VERTEX type="2"><COORDINATE>0 0.666666666667</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="3"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="3"/><TARGET vertex="1" offset="0 1"/></EDGE>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="3"/><TARGET vertex="3" offset="1 0"/></EDGE>
+</UNITCELL>
+
+
+<UNITCELL name="piflux" dimension="2">
+  <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX type="1"><COORDINATE>0 0.5</COORDINATE></VERTEX>
+
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="1" offset="0 1"/></EDGE>
+
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="2"/><TARGET vertex="1" offset="1 0"/></EDGE>
+
+  <EDGE type="2"><SOURCE vertex="2"/><TARGET vertex="1" offset="-1 1"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="2" offset="-1 -1"/></EDGE>
+</UNITCELL>
+
+
+
+
+<UNITCELL name="coupled ladders" dimension="2">
+  <VERTEX type="0"/>
+  <VERTEX type="0"/>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="1" offset="1 0"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="2"/><TARGET vertex="2" offset="1 0"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="2"><SOURCE vertex="1"/><TARGET vertex="2" offset="0 1"/></EDGE>
+</UNITCELL>
+
+
+<LATTICEGRAPH name = "square lattice 3x3" vt_skip="true">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <EXTENT dimension="1" size="3"/>
+    <EXTENT dimension="2" size="3"/>
+    <BOUNDARY dimension="1" type="periodic"/>
+    <BOUNDARY dimension="2" type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple2d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "square lattice 4x4" vt_skip="true">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <EXTENT dimension="1" size="4"/>
+    <EXTENT dimension="2" size="4"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple2d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "dimer" vt_skip="true">
+  <FINITELATTICE>
+    <LATTICE ref="chain lattice"/>
+    <EXTENT dimension="1" size="2"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple1d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "site" vt_skip="true">
+  <FINITELATTICE>
+    <LATTICE ref="chain lattice"/>
+    <EXTENT dimension="1" size="1"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="isolated"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "simple cubic lattice">
+  <FINITELATTICE>
+    <LATTICE ref="simple cubic lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <PARAMETER name="H" default="W"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <EXTENT dimension="3" size="H"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple3d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "square lattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="simple2d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "open square lattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple2d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "coupled ladders" vt_name="CoupledLaddersLattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="coupled ladders"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "triangular lattice">
+  <FINITELATTICE>
+    <LATTICE ref="triangular lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="triangular"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "frustrated square lattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="nnn2d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "chain lattice">
+  <FINITELATTICE>
+    <LATTICE ref="chain lattice"/>
+    <EXTENT dimension="1" size ="L"/>
+    <PARAMETER name="BC" default="periodic"/>
+    <BOUNDARY type="BC" />
+  </FINITELATTICE>
+  <UNITCELL ref="simple1d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "open chain lattice">
+  <FINITELATTICE>
+    <LATTICE ref="chain lattice"/>
+    <EXTENT dimension="1" size ="L"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple1d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "nnn chain lattice" vt_name="NNNChainLattice">
+  <FINITELATTICE>
+    <LATTICE ref="chain lattice"/>
+    <EXTENT dimension="1" size ="L"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="complex1d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "nnn open chain lattice" vt_name="NNNOpenChainLattice">
+  <FINITELATTICE>
+    <LATTICE ref="chain lattice"/>
+    <EXTENT dimension="1" size ="L"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="complex1d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "2 band chain lattice">
+  <FINITELATTICE>
+    <LATTICE ref="chain lattice"/>
+    <EXTENT dimension="1" size ="L"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="2band1d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "2 band open chain lattice">
+  <FINITELATTICE>
+    <LATTICE ref="chain lattice"/>
+    <EXTENT dimension="1" size ="L"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="2band1d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "anisotropic square lattice">
+  <FINITELATTICE>
+    <LATTICE ref="rectangular lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="anisotropic2d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "ladder" vt_name="LadderLattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="2"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="periodic"/>
+    <BOUNDARY dimension="2" type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="anisotropic2d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "open ladder" vt_name="OpenLadderLattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="2"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="open"/>
+    <BOUNDARY dimension="2" type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="anisotropic2d"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "inhomogeneous square lattice" vt_skip="true">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple2d"/>
+  <INHOMOGENEOUS><VERTEX/></INHOMOGENEOUS>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "inhomogeneous simple cubic lattice" vt_skip="true">
+  <FINITELATTICE>
+    <LATTICE ref="simple cubic lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <PARAMETER name="H" default="W"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <EXTENT dimension="3" size="H"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple3d"/>
+  <INHOMOGENEOUS><VERTEX/></INHOMOGENEOUS>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "depleted square lattice" vt_skip="true">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="simple2d"/>
+  <DEPLETION>
+    <VERTEX probability="DEPLETION" seed="DEPLETION_SEED"/>
+  </DEPLETION>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "Kagome lattice">
+  <FINITELATTICE>
+    <LATTICE ref="triangular lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="Kagome"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "honeycomb lattice">
+  <FINITELATTICE>
+    <LATTICE ref="triangular lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="honeycomb"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "nnhoneycomb lattice">
+  <FINITELATTICE>
+    <LATTICE ref="triangular lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="periodic"/>
+  </FINITELATTICE>
+  <UNITCELL ref="nnhoneycomb"/>
+</LATTICEGRAPH>
+
+
+<LATTICEGRAPH name = "brickwall lattice">
+  <FINITELATTICE>
+    <LATTICE ref="checkerboard lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY type="open"/>
+  </FINITELATTICE>
+  <UNITCELL ref="brickwall"/>
+</LATTICEGRAPH>
+
+
+<LATTICEGRAPH name = "brickwall2 lattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="brickwall2"/>
+</LATTICEGRAPH>
+
+
+<LATTICEGRAPH name = "hofstadter9">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="hofstadter9"/>
+</LATTICEGRAPH>
+
+
+<LATTICEGRAPH name = "hofstadter7">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="hofstadter7"/>
+</LATTICEGRAPH>
+
+
+<LATTICEGRAPH name = "hofstadter6">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="hofstadter6"/>
+</LATTICEGRAPH>
+
+
+<LATTICEGRAPH name = "hofstadter3">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="hofstadter3"/>
+</LATTICEGRAPH>
+
+
+<LATTICEGRAPH name = "piflux lattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="piflux"/>
+</LATTICEGRAPH>
+
+
+<LATTICEGRAPH name = "titus lattice">
+  <FINITELATTICE>
+    <LATTICE ref="checkerboard lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="titus"/>
+</LATTICEGRAPH>
+
+<LATTICEGRAPH name = "titus2 lattice">
+  <FINITELATTICE>
+    <LATTICE ref="square lattice"/>
+    <PARAMETER name="W" default="L"/>
+    <EXTENT dimension="1" size="L"/>
+    <EXTENT dimension="2" size="W"/>
+    <BOUNDARY dimension="1" type="BCx" />
+    <BOUNDARY dimension="2" type="BCy" />
+  </FINITELATTICE>
+  <UNITCELL ref="titus2"/>
+</LATTICEGRAPH>
+
+<GRAPH name="5-site dimerized" vertices="5">
+  <EDGE type="0" source="1" target="2"/>
+  <EDGE type="1" source="2" target="3"/>
+  <EDGE type="0" source="3" target="4"/>
+  <EDGE type="1" source="4" target="5"/>
+</GRAPH>
+
+<GRAPH name="4-site mixed" vertices="4">
+  <VERTEX id="1" type="0"/>
+  <VERTEX id="2" type="1"/>
+  <VERTEX id="3" type="0"/>
+  <VERTEX id="4" type="1"/>
+  <EDGE type="0" source="1" target="2"/>
+  <EDGE type="0" source="2" target="3"/>
+  <EDGE type="0" source="3" target="4"/>
+  <EDGE type="0" source="4" target="1"/>
+  <EDGE type="1" source="1" target="3"/>
+  <EDGE type="1" source="2" target="4"/>
+</GRAPH>
+
+<GRAPH name="triangle" vertices="3">
+  <EDGE type="0" source="1" target="2"/>
+  <EDGE type="0" source="2" target="3"/>
+  <EDGE type="0" source="3" target="1"/>
+</GRAPH>
+
+<GRAPH name="dp8site" vertices="8" edges="12">
+ <VERTEX id="1" type="0">  <COORDINATE> 0 2 </COORDINATE> </VERTEX>
+ <VERTEX id="2" type="1">  <COORDINATE> -1 1 </COORDINATE> </VERTEX>
+ <VERTEX id="3" type="0">  <COORDINATE> -2 0 </COORDINATE> </VERTEX>
+ <VERTEX id="4" type="1">  <COORDINATE> -1 -1 </COORDINATE> </VERTEX>
+ <VERTEX id="5" type="0">  <COORDINATE> 0 -2 </COORDINATE> </VERTEX>
+ <VERTEX id="6" type="1">  <COORDINATE> 1 -1 </COORDINATE> </VERTEX>
+ <VERTEX id="7" type="0">  <COORDINATE> 2 0 </COORDINATE> </VERTEX>
+ <VERTEX id="8" type="1">  <COORDINATE> 1 1 </COORDINATE> </VERTEX>
+ <EDGE source="1" target="2" type="0"/>
+ <EDGE source="1" target="8" type="0"/>
+ <EDGE source="2" target="3" type="0"/>
+ <EDGE source="2" target="4" type="1"/>
+ <EDGE source="2" target="8" type="1"/>
+ <EDGE source="3" target="4" type="0"/>
+ <EDGE source="4" target="5" type="0"/>
+ <EDGE source="4" target="6" type="1"/>
+ <EDGE source="5" target="6" type="0"/>
+ <EDGE source="6" target="7" type="0"/>
+ <EDGE source="6" target="8" type="1"/>
+ <EDGE source="7" target="8" type="0"/>
+</GRAPH>
+
+<GRAPH name="honeycombL3W3APBCX" dimension="2" vertices="18" edges="27">
+  <VERTEX id="1" type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
+  <VERTEX id="2" type="1"><COORDINATE>4.9960036108132044319e-15 0.57735026918962861764</COORDINATE></VERTEX>
+  <VERTEX id="3" type="0"><COORDINATE>0.5 0.86602540378443859659</COORDINATE></VERTEX>
+  <VERTEX id="4" type="1"><COORDINATE>0.50000000000000510703 1.4433756729740672142</COORDINATE></VERTEX>
+  <VERTEX id="5" type="0"><COORDINATE>1 1.7320508075688771932</COORDINATE></VERTEX>
+  <VERTEX id="6" type="1"><COORDINATE>1.000000000000005107 2.3094010767585060329</COORDINATE></VERTEX>
+  <VERTEX id="7" type="0"><COORDINATE>1 0</COORDINATE></VERTEX>
+  <VERTEX id="8" type="1"><COORDINATE>1.000000000000005107 0.57735026918962861764</COORDINATE></VERTEX>
+  <VERTEX id="9" type="0"><COORDINATE>1.5 0.86602540378443859659</COORDINATE></VERTEX>
+  <VERTEX id="10" type="1"><COORDINATE>1.500000000000005107 1.4433756729740672142</COORDINATE></VERTEX>
+  <VERTEX id="11" type="0"><COORDINATE>2 1.7320508075688771932</COORDINATE></VERTEX>
+  <VERTEX id="12" type="1"><COORDINATE>2.0000000000000053291 2.3094010767585060329</COORDINATE></VERTEX>
+  <VERTEX id="13" type="0"><COORDINATE>2 0</COORDINATE></VERTEX>
+  <VERTEX id="14" type="1"><COORDINATE>2.000000000000004885 0.57735026918962861764</COORDINATE></VERTEX>
+  <VERTEX id="15" type="0"><COORDINATE>2.5 0.86602540378443859659</COORDINATE></VERTEX>
+  <VERTEX id="16" type="1"><COORDINATE>2.5000000000000053291 1.4433756729740672142</COORDINATE></VERTEX>
+  <VERTEX id="17" type="0"><COORDINATE>3 1.7320508075688771932</COORDINATE></VERTEX>
+  <VERTEX id="18" type="1"><COORDINATE>3.0000000000000053291 2.3094010767585060329</COORDINATE></VERTEX>
+  <EDGE source="1" target="2" id="1" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="1" target="12" id="2" type="0" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="2" target="3" id="3" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+  <EDGE source="3" target="4" id="4" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="3" target="8" id="5" type="0" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="4" target="5" id="6" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+  <EDGE source="5" target="6" id="7" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="5" target="10" id="8" type="0" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="6" target="1" id="9" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+  <EDGE source="7" target="8" id="10" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="7" target="18" id="11" type="0" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="8" target="9" id="12" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+  <EDGE source="9" target="10" id="13" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="9" target="14" id="14" type="0" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="10" target="11" id="15" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+  <EDGE source="11" target="12" id="16" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="11" target="16" id="17" type="0" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="12" target="7" id="18" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+  <EDGE source="13" target="14" id="19" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="13" target="6" id="20" type="1" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="14" target="15" id="21" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+  <EDGE source="15" target="16" id="22" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="15" target="2" id="23" type="1" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="16" target="17" id="24" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+  <EDGE source="17" target="18" id="25" type="0" vector="4.9960036108132044319e-15 0.57735026918962861764"/>
+  <EDGE source="17" target="4" id="26" type="1" vector="0.50000000000000510703 -0.28867513459481003446"/>
+  <EDGE source="18" target="13" id="27" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
+</GRAPH>
+
+<GRAPH name="chainL32APBCX" dimension="1" vertices="32" edges="32">
+  <VERTEX id="1" type="0"><COORDINATE>0</COORDINATE></VERTEX>
+  <VERTEX id="2" type="0"><COORDINATE>1</COORDINATE></VERTEX>
+  <VERTEX id="3" type="0"><COORDINATE>2</COORDINATE></VERTEX>
+  <VERTEX id="4" type="0"><COORDINATE>3</COORDINATE></VERTEX>
+  <VERTEX id="5" type="0"><COORDINATE>4</COORDINATE></VERTEX>
+  <VERTEX id="6" type="0"><COORDINATE>5</COORDINATE></VERTEX>
+  <VERTEX id="7" type="0"><COORDINATE>6</COORDINATE></VERTEX>
+  <VERTEX id="8" type="0"><COORDINATE>7</COORDINATE></VERTEX>
+  <VERTEX id="9" type="0"><COORDINATE>8</COORDINATE></VERTEX>
+  <VERTEX id="10" type="0"><COORDINATE>9</COORDINATE></VERTEX>
+  <VERTEX id="11" type="0"><COORDINATE>10</COORDINATE></VERTEX>
+  <VERTEX id="12" type="0"><COORDINATE>11</COORDINATE></VERTEX>
+  <VERTEX id="13" type="0"><COORDINATE>12</COORDINATE></VERTEX>
+  <VERTEX id="14" type="0"><COORDINATE>13</COORDINATE></VERTEX>
+  <VERTEX id="15" type="0"><COORDINATE>14</COORDINATE></VERTEX>
+  <VERTEX id="16" type="0"><COORDINATE>15</COORDINATE></VERTEX>
+  <VERTEX id="17" type="0"><COORDINATE>16</COORDINATE></VERTEX>
+  <VERTEX id="18" type="0"><COORDINATE>17</COORDINATE></VERTEX>
+  <VERTEX id="19" type="0"><COORDINATE>18</COORDINATE></VERTEX>
+  <VERTEX id="20" type="0"><COORDINATE>19</COORDINATE></VERTEX>
+  <VERTEX id="21" type="0"><COORDINATE>20</COORDINATE></VERTEX>
+  <VERTEX id="22" type="0"><COORDINATE>21</COORDINATE></VERTEX>
+  <VERTEX id="23" type="0"><COORDINATE>22</COORDINATE></VERTEX>
+  <VERTEX id="24" type="0"><COORDINATE>23</COORDINATE></VERTEX>
+  <VERTEX id="25" type="0"><COORDINATE>24</COORDINATE></VERTEX>
+  <VERTEX id="26" type="0"><COORDINATE>25</COORDINATE></VERTEX>
+  <VERTEX id="27" type="0"><COORDINATE>26</COORDINATE></VERTEX>
+  <VERTEX id="28" type="0"><COORDINATE>27</COORDINATE></VERTEX>
+  <VERTEX id="29" type="0"><COORDINATE>28</COORDINATE></VERTEX>
+  <VERTEX id="30" type="0"><COORDINATE>29</COORDINATE></VERTEX>
+  <VERTEX id="31" type="0"><COORDINATE>30</COORDINATE></VERTEX>
+  <VERTEX id="32" type="0"><COORDINATE>31</COORDINATE></VERTEX>
+  <EDGE source="1" target="2" id="1" type="0" vector="1"/>
+  <EDGE source="2" target="3" id="2" type="0" vector="1"/>
+  <EDGE source="3" target="4" id="3" type="0" vector="1"/>
+  <EDGE source="4" target="5" id="4" type="0" vector="1"/>
+  <EDGE source="5" target="6" id="5" type="0" vector="1"/>
+  <EDGE source="6" target="7" id="6" type="0" vector="1"/>
+  <EDGE source="7" target="8" id="7" type="0" vector="1"/>
+  <EDGE source="8" target="9" id="8" type="0" vector="1"/>
+  <EDGE source="9" target="10" id="9" type="0" vector="1"/>
+  <EDGE source="10" target="11" id="10" type="0" vector="1"/>
+  <EDGE source="11" target="12" id="11" type="0" vector="1"/>
+  <EDGE source="12" target="13" id="12" type="0" vector="1"/>
+  <EDGE source="13" target="14" id="13" type="0" vector="1"/>
+  <EDGE source="14" target="15" id="14" type="0" vector="1"/>
+  <EDGE source="15" target="16" id="15" type="0" vector="1"/>
+  <EDGE source="16" target="17" id="16" type="0" vector="1"/>
+  <EDGE source="17" target="18" id="17" type="0" vector="1"/>
+  <EDGE source="18" target="19" id="18" type="0" vector="1"/>
+  <EDGE source="19" target="20" id="19" type="0" vector="1"/>
+  <EDGE source="20" target="21" id="20" type="0" vector="1"/>
+  <EDGE source="21" target="22" id="21" type="0" vector="1"/>
+  <EDGE source="22" target="23" id="22" type="0" vector="1"/>
+  <EDGE source="23" target="24" id="23" type="0" vector="1"/>
+  <EDGE source="24" target="25" id="24" type="0" vector="1"/>
+  <EDGE source="25" target="26" id="25" type="0" vector="1"/>
+  <EDGE source="26" target="27" id="26" type="0" vector="1"/>
+  <EDGE source="27" target="28" id="27" type="0" vector="1"/>
+  <EDGE source="28" target="29" id="28" type="0" vector="1"/>
+  <EDGE source="29" target="30" id="29" type="0" vector="1"/>
+  <EDGE source="30" target="31" id="30" type="0" vector="1"/>
+  <EDGE source="31" target="32" id="31" type="0" vector="1"/>
+  <EDGE source="32" target="1" id="32" type="1" vector="1"/>
+</GRAPH>
+
+
+<GRAPH name= "chainL64APBCX" dimension="1" vertices="64" edges="64">
+<VERTEX id="1" type="0"><COORDINATE>0</COORDINATE></VERTEX>
+<VERTEX id="2" type="0"><COORDINATE>1</COORDINATE></VERTEX>
+<VERTEX id="3" type="0"><COORDINATE>2</COORDINATE></VERTEX>
+<VERTEX id="4" type="0"><COORDINATE>3</COORDINATE></VERTEX>
+<VERTEX id="5" type="0"><COORDINATE>4</COORDINATE></VERTEX>
+<VERTEX id="6" type="0"><COORDINATE>5</COORDINATE></VERTEX>
+<VERTEX id="7" type="0"><COORDINATE>6</COORDINATE></VERTEX>
+<VERTEX id="8" type="0"><COORDINATE>7</COORDINATE></VERTEX>
+<VERTEX id="9" type="0"><COORDINATE>8</COORDINATE></VERTEX>
+<VERTEX id="10" type="0"><COORDINATE>9</COORDINATE></VERTEX>
+<VERTEX id="11" type="0"><COORDINATE>10</COORDINATE></VERTEX>
+<VERTEX id="12" type="0"><COORDINATE>11</COORDINATE></VERTEX>
+<VERTEX id="13" type="0"><COORDINATE>12</COORDINATE></VERTEX>
+<VERTEX id="14" type="0"><COORDINATE>13</COORDINATE></VERTEX>
+<VERTEX id="15" type="0"><COORDINATE>14</COORDINATE></VERTEX>
+<VERTEX id="16" type="0"><COORDINATE>15</COORDINATE></VERTEX>
+<VERTEX id="17" type="0"><COORDINATE>16</COORDINATE></VERTEX>
+<VERTEX id="18" type="0"><COORDINATE>17</COORDINATE></VERTEX>
+<VERTEX id="19" type="0"><COORDINATE>18</COORDINATE></VERTEX>
+<VERTEX id="20" type="0"><COORDINATE>19</COORDINATE></VERTEX>
+<VERTEX id="21" type="0"><COORDINATE>20</COORDINATE></VERTEX>
+<VERTEX id="22" type="0"><COORDINATE>21</COORDINATE></VERTEX>
+<VERTEX id="23" type="0"><COORDINATE>22</COORDINATE></VERTEX>
+<VERTEX id="24" type="0"><COORDINATE>23</COORDINATE></VERTEX>
+<VERTEX id="25" type="0"><COORDINATE>24</COORDINATE></VERTEX>
+<VERTEX id="26" type="0"><COORDINATE>25</COORDINATE></VERTEX>
+<VERTEX id="27" type="0"><COORDINATE>26</COORDINATE></VERTEX>
+<VERTEX id="28" type="0"><COORDINATE>27</COORDINATE></VERTEX>
+<VERTEX id="29" type="0"><COORDINATE>28</COORDINATE></VERTEX>
+<VERTEX id="30" type="0"><COORDINATE>29</COORDINATE></VERTEX>
+<VERTEX id="31" type="0"><COORDINATE>30</COORDINATE></VERTEX>
+<VERTEX id="32" type="0"><COORDINATE>31</COORDINATE></VERTEX>
+<VERTEX id="33" type="0"><COORDINATE>32</COORDINATE></VERTEX>
+<VERTEX id="34" type="0"><COORDINATE>33</COORDINATE></VERTEX>
+<VERTEX id="35" type="0"><COORDINATE>34</COORDINATE></VERTEX>
+<VERTEX id="36" type="0"><COORDINATE>35</COORDINATE></VERTEX>
+<VERTEX id="37" type="0"><COORDINATE>36</COORDINATE></VERTEX>
+<VERTEX id="38" type="0"><COORDINATE>37</COORDINATE></VERTEX>
+<VERTEX id="39" type="0"><COORDINATE>38</COORDINATE></VERTEX>
+<VERTEX id="40" type="0"><COORDINATE>39</COORDINATE></VERTEX>
+<VERTEX id="41" type="0"><COORDINATE>40</COORDINATE></VERTEX>
+<VERTEX id="42" type="0"><COORDINATE>41</COORDINATE></VERTEX>
+<VERTEX id="43" type="0"><COORDINATE>42</COORDINATE></VERTEX>
+<VERTEX id="44" type="0"><COORDINATE>43</COORDINATE></VERTEX>
+<VERTEX id="45" type="0"><COORDINATE>44</COORDINATE></VERTEX>
+<VERTEX id="46" type="0"><COORDINATE>45</COORDINATE></VERTEX>
+<VERTEX id="47" type="0"><COORDINATE>46</COORDINATE></VERTEX>
+<VERTEX id="48" type="0"><COORDINATE>47</COORDINATE></VERTEX>
+<VERTEX id="49" type="0"><COORDINATE>48</COORDINATE></VERTEX>
+<VERTEX id="50" type="0"><COORDINATE>49</COORDINATE></VERTEX>
+<VERTEX id="51" type="0"><COORDINATE>50</COORDINATE></VERTEX>
+<VERTEX id="52" type="0"><COORDINATE>51</COORDINATE></VERTEX>
+<VERTEX id="53" type="0"><COORDINATE>52</COORDINATE></VERTEX>
+<VERTEX id="54" type="0"><COORDINATE>53</COORDINATE></VERTEX>
+<VERTEX id="55" type="0"><COORDINATE>54</COORDINATE></VERTEX>
+<VERTEX id="56" type="0"><COORDINATE>55</COORDINATE></VERTEX>
+<VERTEX id="57" type="0"><COORDINATE>56</COORDINATE></VERTEX>
+<VERTEX id="58" type="0"><COORDINATE>57</COORDINATE></VERTEX>
+<VERTEX id="59" type="0"><COORDINATE>58</COORDINATE></VERTEX>
+<VERTEX id="60" type="0"><COORDINATE>59</COORDINATE></VERTEX>
+<VERTEX id="61" type="0"><COORDINATE>60</COORDINATE></VERTEX>
+<VERTEX id="62" type="0"><COORDINATE>61</COORDINATE></VERTEX>
+<VERTEX id="63" type="0"><COORDINATE>62</COORDINATE></VERTEX>
+<VERTEX id="64" type="0"><COORDINATE>63</COORDINATE></VERTEX>
+<EDGE source="1" target="2" id="1" type="0" vector="1"/>
+<EDGE source="2" target="3" id="2" type="0" vector="1"/>
+<EDGE source="3" target="4" id="3" type="0" vector="1"/>
+<EDGE source="4" target="5" id="4" type="0" vector="1"/>
+<EDGE source="5" target="6" id="5" type="0" vector="1"/>
+<EDGE source="6" target="7" id="6" type="0" vector="1"/>
+<EDGE source="7" target="8" id="7" type="0" vector="1"/>
+<EDGE source="8" target="9" id="8" type="0" vector="1"/>
+<EDGE source="9" target="10" id="9" type="0" vector="1"/>
+<EDGE source="10" target="11" id="10" type="0" vector="1"/>
+<EDGE source="11" target="12" id="11" type="0" vector="1"/>
+<EDGE source="12" target="13" id="12" type="0" vector="1"/>
+<EDGE source="13" target="14" id="13" type="0" vector="1"/>
+<EDGE source="14" target="15" id="14" type="0" vector="1"/>
+<EDGE source="15" target="16" id="15" type="0" vector="1"/>
+<EDGE source="16" target="17" id="16" type="0" vector="1"/>
+<EDGE source="17" target="18" id="17" type="0" vector="1"/>
+<EDGE source="18" target="19" id="18" type="0" vector="1"/>
+<EDGE source="19" target="20" id="19" type="0" vector="1"/>
+<EDGE source="20" target="21" id="20" type="0" vector="1"/>
+<EDGE source="21" target="22" id="21" type="0" vector="1"/>
+<EDGE source="22" target="23" id="22" type="0" vector="1"/>
+<EDGE source="23" target="24" id="23" type="0" vector="1"/>
+<EDGE source="24" target="25" id="24" type="0" vector="1"/>
+<EDGE source="25" target="26" id="25" type="0" vector="1"/>
+<EDGE source="26" target="27" id="26" type="0" vector="1"/>
+<EDGE source="27" target="28" id="27" type="0" vector="1"/>
+<EDGE source="28" target="29" id="28" type="0" vector="1"/>
+<EDGE source="29" target="30" id="29" type="0" vector="1"/>
+<EDGE source="30" target="31" id="30" type="0" vector="1"/>
+<EDGE source="31" target="32" id="31" type="0" vector="1"/>
+<EDGE source="32" target="33" id="32" type="0" vector="1"/>
+<EDGE source="33" target="34" id="33" type="0" vector="1"/>
+<EDGE source="34" target="35" id="34" type="0" vector="1"/>
+<EDGE source="35" target="36" id="35" type="0" vector="1"/>
+<EDGE source="36" target="37" id="36" type="0" vector="1"/>
+<EDGE source="37" target="38" id="37" type="0" vector="1"/>
+<EDGE source="38" target="39" id="38" type="0" vector="1"/>
+<EDGE source="39" target="40" id="39" type="0" vector="1"/>
+<EDGE source="40" target="41" id="40" type="0" vector="1"/>
+<EDGE source="41" target="42" id="41" type="0" vector="1"/>
+<EDGE source="42" target="43" id="42" type="0" vector="1"/>
+<EDGE source="43" target="44" id="43" type="0" vector="1"/>
+<EDGE source="44" target="45" id="44" type="0" vector="1"/>
+<EDGE source="45" target="46" id="45" type="0" vector="1"/>
+<EDGE source="46" target="47" id="46" type="0" vector="1"/>
+<EDGE source="47" target="48" id="47" type="0" vector="1"/>
+<EDGE source="48" target="49" id="48" type="0" vector="1"/>
+<EDGE source="49" target="50" id="49" type="0" vector="1"/>
+<EDGE source="50" target="51" id="50" type="0" vector="1"/>
+<EDGE source="51" target="52" id="51" type="0" vector="1"/>
+<EDGE source="52" target="53" id="52" type="0" vector="1"/>
+<EDGE source="53" target="54" id="53" type="0" vector="1"/>
+<EDGE source="54" target="55" id="54" type="0" vector="1"/>
+<EDGE source="55" target="56" id="55" type="0" vector="1"/>
+<EDGE source="56" target="57" id="56" type="0" vector="1"/>
+<EDGE source="57" target="58" id="57" type="0" vector="1"/>
+<EDGE source="58" target="59" id="58" type="0" vector="1"/>
+<EDGE source="59" target="60" id="59" type="0" vector="1"/>
+<EDGE source="60" target="61" id="60" type="0" vector="1"/>
+<EDGE source="61" target="62" id="61" type="0" vector="1"/>
+<EDGE source="62" target="63" id="62" type="0" vector="1"/>
+<EDGE source="63" target="64" id="63" type="0" vector="1"/>
+<EDGE source="64" target="1" id="64" type="1" vector="1"/>
+</GRAPH>
+
+</LATTICES>

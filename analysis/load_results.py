@@ -9,6 +9,7 @@ import subprocess
 import socket
 import argparse
 from numpy import array , linspace , sqrt , arange 
+from pytools.floatwitherror import FloatWithError as fwe
 import re 
 
 parser = argparse.ArgumentParser(description='')
@@ -17,6 +18,9 @@ parser.add_argument("-fileheaders", nargs='+', default="params", help="fileheade
 parser.add_argument("-x", default="V", help="variable")
 parser.add_argument("-y", default="M2", help="observable")
 parser.add_argument("-copydata", action='store_true',  help="copy data")
+
+parser.add_argument("-extrapolate", action='store_true',  help="do curve fitting")
+parser.add_argument("-nextrapolate", type=int, default= 4 ,  help="number of points used in extrapolation")
 
 
 group = parser.add_mutually_exclusive_group(required=True)
@@ -34,17 +38,18 @@ resultFiles = []
 for fileheader in args.fileheaders:
     resultFiles += pyalps.getResultFiles(prefix=fileheader)
 
+resultFiles = list(set(resultFiles))
+
 #filter resultFilies
 for f in list(resultFiles):
-#    L = int(re.search('L([0-9]*)W',f).group(1)) 
-#    W = int(re.search('W([0-9]*)N',f).group(1)) 
-#    N = int(re.search('N([0-9]*)U',f).group(1)) 
+    L = int(re.search('L([0-9]*)W',f).group(1)) 
     V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
-#    if (N!= L*W):  
-#        resultFiles.remove(f)
     
 #    if V< 1.3 or V>1.4:
 #        resultFiles.remove(f)
+
+    if L in [15]:
+        resultFiles.remove(f)
 
 
 data = []
@@ -90,6 +95,41 @@ elif args.x == 'L':
         d.props['line'] = '-o'
 else:
     pass 
+
+if args.extrapolate:
+    for d in res:
+        # do curve_fit 
+        from scipy.optimize import curve_fit 
+        ymean = array([y.mean for y in d.y]) # take only the mean 
+        yerror = array([y.error for y in d.y]) 
+
+        def func(x, *p):
+             return p[0]*x + p[1]
+             #return p[0]*x**2 + p[1]*x + p[2]
+             #return p[0]*x**3 + p[1]*x**2 + p[2]*x + p[3]
+        
+        #try:
+        popt, pcov = curve_fit(func, d.x[-args.nextrapolate:], ymean[-args.nextrapolate:], sigma = yerror[-args.nextrapolate], p0=array((0.,0.)))
+        
+        print d.props['V'], popt
+        
+        xlist = linspace(0,0.1,100)
+        plt.plot(xlist, func(xlist, *tuple(popt)), '--')
+        #except:
+        #    pass 
+
+
+        #plot intersection at 1/L = 0
+        M2 = fwe()
+        numbins = len(d.y[0].jackknife)
+        for k in range(numbins):
+            y = [yi.jackknife[k]  for yi in d.y]
+            popt, pcov = curve_fit(func, d.x[-args.nextrapolate:], y[-args.nextrapolate:], p0=array((0.,0.)))
+            #print k, popt
+            M2.jackbins.append(popt[1])
+        M2.jacknife_eval()
+
+        plt.errorbar(0, M2.mean, M2.error, linewidth=6, alpha=0.5)
 
 
 plt.title('$V_c, a, b = %g, %g, %g$'%(args.xc, args.a, args.b))

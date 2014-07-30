@@ -222,14 +222,7 @@ class Green_function{
                 itau_ = itau; 
             }
 
-             bool refresh = false; 
-             if (wrap_refresh_counter_ < wrap_refresh_period_){
-                 ++wrap_refresh_counter_; 
-             }else{
-
-                 refresh = true; 
-                 wrap_refresh_counter_ = 0; 
-             }
+            ++wrap_refresh_counter_; 
 
             //when we wrap to a new block we need to update storage 
             if (b > b_){// move to a larger block on the left  
@@ -238,9 +231,10 @@ class Green_function{
                 Mat UR= Storage_[b_];
                 propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, UR);
 
-                if (refresh){
+                if (wrap_refresh_counter_ >= wrap_refresh_period_){
                    Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
                    UR = svd.matrixU();
+                   wrap_refresh_counter_ = 0; 
                 }
 
                 Storage_[b] = UR; 
@@ -251,9 +245,10 @@ class Green_function{
                 Mat VL = Storage_[b_+1];
                 propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, VL);
 
-                if (refresh){
+                if (wrap_refresh_counter_ >= wrap_refresh_period_){
                   Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
                   VL = svd.matrixV().adjoint();
+                  wrap_refresh_counter_ = 0;
                 }
 
                 Storage_[b+1] = VL; 

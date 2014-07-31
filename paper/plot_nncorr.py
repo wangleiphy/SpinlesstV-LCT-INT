@@ -56,7 +56,7 @@ for d in res:
     d.props['xlabel'] = r'$R$'
 
     if args.logscale:
-        d.props['ylabel'] = r'$|C(R)|$'
+        d.props['ylabel'] = r'$(-1)^RC(R)$'
         d.y = abs(d.y)
     else:
         d.props['ylabel'] = r'$C(R)$'

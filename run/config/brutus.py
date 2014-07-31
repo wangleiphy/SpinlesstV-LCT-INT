@@ -24,7 +24,7 @@ WRAP_REFRESH_PERIOD = 10
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
 THERMALIZATION = 2*10**4          # in unit of block 
-SWEEPS = 2*10**6                    # in unit of the the whole system 
+SWEEPS = 4*10**6                    # in unit of the the whole system 
 MEASUREMENT_PERIOD = 13           # in unit of block
 ##############################
 

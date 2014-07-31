@@ -122,9 +122,13 @@ int main(int argc, char** argv){
       MpiSimulation sim(params, comm, check_schedule(options.tmin, options.tmax));
     
       if (options.resume && boost::filesystem::exists(checkpoint_file)){
-         sim.load(checkpoint_file);
+        sim.load(checkpoint_file);
+
         if (comm.rank()== 0)
-            std::cout << "loaded configuration from " << checkpoint_file  << std::endl;
+            std::cout << "loaded configuration from " << checkpoint_path  << std::endl;
+      }else{
+        if (comm.rank()== 0)
+            std::cout << "will write configuration to " << checkpoint_path  << std::endl;
       }
 
       sim.run(alps::stop_callback(options.timelimit));  

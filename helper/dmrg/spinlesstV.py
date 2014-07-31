@@ -3,20 +3,20 @@ from subprocess import check_call
 from math import sqrt , cos , sin , pi 
 from numpy import arange 
 
-L = 32
+L = 64 
 W = 1
 N = L*W/2 
 
 Thop = 1.0
-M = 3200
+M = 1600 
 
 parms = []
 #for V in arange(0.0, 2.2, 0.05):
-for V in [3.0, 4.0]:
+for V in [1.0, 2.0, 3.0, 4.0]:
     parms.append({
           'LATTICE_LIBRARY'           : 'mylattices.xml',
           'MODEL_LIBRARY'             : 'mymodels.xml',
-          'LATTICE'                   : 'chainL32APBCX', 
+          'LATTICE'                   : 'chainL64APBCX', 
           'MODEL'                     : "spinless fermions",
 	      'CONSERVED_QUANTUMNUMBERS'  : 'N',
   	      'TRANSLATION_SYMMETRY'      : 'false',

@@ -42,6 +42,7 @@ if __name__=='__main__':
                
                            inputfile = params(latticename, BCmodifier, L , W,  
                                               V=V, BETA= BETA,  
+                                              Add = Add, Remove = Remove ,  
                                               Maxorder = Maxorder, itime_max = itime_max,  
                                               MEASUREMENT_PERIOD = MEASUREMENT_PERIOD, 
                                               RECALC_PERIOD = RECALC_PERIOD, 

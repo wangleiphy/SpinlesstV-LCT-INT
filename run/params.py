@@ -75,8 +75,8 @@ def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime
 
             ,'NBLOCKS'  : NBLOCKS 
             ,'STEPS_PER_BLOCK'  : STEPS_PER_BLOCK
-            ,'Add'  , Add
-            ,'Remove' , Remove  
+            ,'Add'    : Add
+            ,'Remove' : Remove  
             }
 
     writeParameterFile(inputname, parms)

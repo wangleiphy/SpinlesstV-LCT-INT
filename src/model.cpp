@@ -31,7 +31,7 @@ void InteractionExpansion::add()
   //std::cout << "2" << std::endl; 
 
   // true means compute_only_weight
-  double metropolis_weight = -0.25*(beta/nblock)*V*n_bond/(num_vertices+1)*add_impl(itau, sites, true);
+  double metropolis_weight = -0.25*(beta/nblock)*V*n_bond/(num_vertices+1)*add_impl(itau, sites, true) * (Remove/Add) ;
 
   //std::cout << "3" << std::endl; 
 
@@ -77,7 +77,7 @@ void InteractionExpansion::remove()
 
     //std::cout << "itau to remove " << itau << std::endl; 
 
-    double metropolis_weight = 4.*num_vertices/(-(beta/nblock)*V*n_bond) * remove_impl(itau, true);
+    double metropolis_weight = 4.*num_vertices/(-(beta/nblock)*V*n_bond) * remove_impl(itau, true) *  (Add/Remove);
 
     if(fabs(metropolis_weight) > random()){ //do the actual update
 
@@ -96,4 +96,55 @@ void InteractionExpansion::remove()
       measurements["Removal"] << 0.;
 
     }
+}
+
+void InteractionExpansion::shift()
+{
+
+  if(tlist.empty()) 
+    return; 
+  
+  itime_type itau = gf.itau(); 
+  if (tlist.find(itau) == tlist.end()) // there is no vertex at current time do nothing 
+      return; 
+    
+  //std::cout << "...1" << std::endl; 
+
+  //mv sj to sjprime, which is another neighbor of si (but different from sj)
+  unsigned i = randomint(2); // 0 or 1 
+  site_type si = vlist[itau][i]; 
+  site_type sj = vlist[itau][1-i]; 
+
+  //std::cout << "...2" << std::endl; 
+
+  std::vector<site_type> neighbors; 
+  for (unsigned j=0 ; j< lattice.num_neighbors(si); ++j){
+       if (lattice.neighbor(si, j)!=sj){
+            neighbors.push_back(lattice.neighbor(si, j)); 
+       }
+  }
+
+  //std::cout << "sj, neighbors " <<  sj << " " << neighbors[0] << " " << neighbors[1] << std::endl; 
+
+  std::vector<site_type> sites; 
+  sites.push_back(si); 
+  sites.push_back(sj);
+  sites.push_back(neighbors[randomint(neighbors.size())] ); //sjprime 
+    
+  // true means compute_only_weight
+  double metropolis_weight = shift_impl(sites, true);
+
+  //std::cout << "...4 " <<  metropolis_weight << std::endl; 
+
+  if(fabs(metropolis_weight) > random()){
+
+    measurements["Shift"] << 1.;
+    shift_impl(sites, false);
+
+    sign*=metropolis_weight<0.?-1.:1.;
+  }else{
+
+    measurements["Shift"] << 0.;
+
+  }
 }

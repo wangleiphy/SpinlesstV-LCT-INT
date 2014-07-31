@@ -52,11 +52,13 @@ private:
   // add and remove vertices 
   void add();
   void remove();
+  void shift();
 
   // in file update.cpp:
   // add or remove vertex in partition funciton sector  
   double add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight); 
   double remove_impl(const itime_type itau, const bool compute_only_weight);
+  double shift_impl(const std::vector<site_type>& sites, const bool compute_only_weight);
 
   /*measurement functions*/
   // in file observables.cpp
@@ -103,7 +105,11 @@ private:
   Eigen::MatrixXi          disttable;          //  table(si, sj) = dist  
   std::vector<unsigned>    shellsize;          //  number of sites in dist steps 
 
-    
+
+  const double Add; 
+  const double Remove; 
+  std::vector<double> probs; 
+
   template<typename T>
   T randomint(const T i) {return random() * i;}//random int [0, i) 
   

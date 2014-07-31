@@ -32,12 +32,22 @@ K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BCmodifier"]) )),
 gf(K_, beta/boost::lexical_cast<double>(itime_max), itime_max, nblock, blocksize,parms["WRAP_REFRESH_PERIOD"]), 
 distmap(get_distmap(lattice)), 
 disttable(get_disttable(distmap, n_site)), 
-shellsize(get_shellsize(distmap))
+shellsize(get_shellsize(distmap)), 
+Add(boost::lexical_cast<double>(parms["Add"])),
+Remove(boost::lexical_cast<double>(parms["Remove"])),
+probs() // empty vector 
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,itime_max)), 
 //bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))
 //random(eng_, boost::uniform_real<>()), 
 {   
+
+   probs.push_back(Add); 
+   probs.push_back(Add+Remove); 
+   if (Add+Remove>= 1.0) {
+       abort(); 
+       std::cerr << "Add + Remove >= 1.0" << std::endl; 
+   }
    
    //initialize ALPS observables
    initialize_observables();

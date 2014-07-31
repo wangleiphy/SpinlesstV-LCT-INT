@@ -48,8 +48,8 @@ for f in list(resultFiles):
 #    if V< 1.3 or V>1.4:
 #        resultFiles.remove(f)
 
-    if L in [15]:
-        resultFiles.remove(f)
+#    if L in [15]:
+#        resultFiles.remove(f)
 
 
 data = []
@@ -81,12 +81,15 @@ if args.x =='V':
     for d in res:
         L = d.props['L']
         d.x = (d.x- args.xc) * L ** args.a 
-        d.y = [y*L**args.b for y in d.y]
+        d.y = array([y*L**args.b for y in d.y])
 
         d.props['xlabel'] = r'$(V-V_c)L^{a}$'
         d.props['ylabel'] = r'$M_2L^{b}$'
         d.props['label'] = '$L=%g$' %(L)
         d.props['line'] = '-o'
+
+        if args.y == 'PertOrder':
+            d.y /= (2.*L**2)
 
 elif args.x == 'L':
     for d in res:

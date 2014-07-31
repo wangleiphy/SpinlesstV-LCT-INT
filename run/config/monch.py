@@ -3,6 +3,9 @@ import time
 import re 
 from numpy import arange, array 
 
+Add = 0.4 
+Remove = 0.4 
+
 Maxorder = 8192
 BETA = 40. #projection time 
 BCmodifier = 'APBCX' #only APBCX will have effect anything else will not affet the lattice 
@@ -14,18 +17,18 @@ nickname = 'zeroTfine_checkpoint'
 
 Llist = [15]
 Wlist = [15] #Llist 
-Vlist = [1.4]
+Vlist = [1.33]
 #Vlist = arange(1.31, 1.41, 0.02)
 #Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
-RECALC_PERIOD = 25
+RECALC_PERIOD = 10
 WRAP_REFRESH_PERIOD = 25
 
 STEPS_PER_BLOCK = 2
 NBLOCKS = 1024
 THERMALIZATION = 2*10**4
-SWEEPS = 10**6 
+SWEEPS = 2*10**6 
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################

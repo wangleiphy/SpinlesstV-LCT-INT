@@ -167,7 +167,7 @@ class Green_function{
         }
             
         //update changes gtau_ 
-        void update(const site_type si, const site_type sj, const double gij){
+        void update(const site_type si, const site_type sj, const double gij, const double gji){
 
              //std::cout << "si, sj, gij: "  << si << " " << sj << " " << gij << std::endl; 
              //std::cout << "uKdag_.col(si):\n" << uKdag_.col(si) << std::endl; 
@@ -179,7 +179,7 @@ class Green_function{
              Eigen::RowVectorXd ri = uK_.row(si)* gtau_- uK_.row(si); 
              Eigen::RowVectorXd rj = uK_.row(sj)* gtau_- uK_.row(sj); 
 
-             gtau_ -= ((gtau_*uKdag_.col(sj)) * ri + (gtau_*uKdag_.col(si)) * rj )/gij; 
+             gtau_ -= (gtau_*uKdag_.col(sj)) * ri/gij + (gtau_*uKdag_.col(si)) * rj /gji; 
 
              if (itau_%blocksize_==0){ //special treatment when update the block starting point 
                                        //otherwise this vertex will be untreated in stablization 

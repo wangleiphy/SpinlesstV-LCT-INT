@@ -31,7 +31,7 @@ void InteractionExpansion::add()
   //std::cout << "2" << std::endl; 
 
   // true means compute_only_weight
-  double metropolis_weight = -0.25*(beta/nblock)*V*n_bond/(num_vertices+1)*add_impl(itau, sites, true);
+  double metropolis_weight = -0.25*(beta/nblock)*V*n_bond/(num_vertices+1)*add_impl(itau, sites, true) * (Remove/Add) ;
 
   //std::cout << "3" << std::endl; 
 
@@ -77,7 +77,7 @@ void InteractionExpansion::remove()
 
     //std::cout << "itau to remove " << itau << std::endl; 
 
-    double metropolis_weight = 4.*num_vertices/(-(beta/nblock)*V*n_bond) * remove_impl(itau, true);
+    double metropolis_weight = 4.*num_vertices/(-(beta/nblock)*V*n_bond) * remove_impl(itau, true) *  (Add/Remove);
 
     if(fabs(metropolis_weight) > random()){ //do the actual update
 

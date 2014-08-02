@@ -25,7 +25,7 @@ def writeParameterFile(fname,parms):
 write parameters for main 
 '''
 
-def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime_max=1073741824, MEASUREMENT_PERIOD = 10, RECALC_PERIOD=10,  WRAP_REFRESH_PERIOD=10, SWEEPS=1000000, THERMALIZATION=100000, NBLOCKS = 15, STEPS_PER_BLOCK=10, folder='../data/', textoutput=0):
+def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime_max=1073741824, MEASUREMENT_PERIOD = 10, RECALC_PERIOD=10,  WRAP_REFRESH_PERIOD=10, SWEEPS=1000000, THERMALIZATION=100000, NBLOCKS = 15, STEPS_PER_BLOCK=10, Add = 0.4, Remove = 0.4, folder='../data/', textoutput=0):
     
     key = lattice.replace(' ','') + BCmodifier  
     key += 'L' + str(L)\
@@ -41,6 +41,12 @@ def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime
            +'Therm'+str(THERMALIZATION)\
            +'Sweeps'+str(SWEEPS) \
            +'Nskip' + str(MEASUREMENT_PERIOD)
+
+    totprob = Add + Remove
+    if (totprob >=1.0 ):
+        print 'Add + Remove= ', totalprob , ' are you sure ?'
+        sys.exit(1)
+
 
     inputname = '../jobs/'+ key +'.in'
     outputname = folder + key +'.dat'
@@ -69,6 +75,8 @@ def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 32., Maxorder = 2048, itime
 
             ,'NBLOCKS'  : NBLOCKS 
             ,'STEPS_PER_BLOCK'  : STEPS_PER_BLOCK
+            ,'Add'    : Add
+            ,'Remove' : Remove  
             }
 
     writeParameterFile(inputname, parms)

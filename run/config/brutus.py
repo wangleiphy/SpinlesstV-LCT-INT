@@ -1,6 +1,9 @@
 import subprocess 
 from numpy import arange, array 
 
+Add = 0.4
+Remove = 0.4  
+
 Maxorder = 8192
 BETA = 40 #projection time 
 BCmodifier = "APBCX"
@@ -13,18 +16,18 @@ nickname = 'nncorr'
 
 Llist = [32]
 Wlist = [1] #Llist 
-Vlist = [3.0]
+Vlist = [4.0]
 #Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 2.2, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 10
-WRAP_REFRESH_PERIOD = 10
+WRAP_REFRESH_PERIOD = 25 
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
 THERMALIZATION = 2*10**4          # in unit of block 
-SWEEPS = 2*10**6                    # in unit of the the whole system 
+SWEEPS = 5*10**6                  # in unit of the the whole system 
 MEASUREMENT_PERIOD = 13           # in unit of block
 ##############################
 

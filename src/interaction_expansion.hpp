@@ -105,7 +105,11 @@ private:
   Eigen::MatrixXi          disttable;          //  table(si, sj) = dist  
   std::vector<unsigned>    shellsize;          //  number of sites in dist steps 
 
-    
+
+  const double Add; 
+  const double Remove; 
+  std::vector<double> probs; 
+
   template<typename T>
   T randomint(const T i) {return random() * i;}//random int [0, i) 
   

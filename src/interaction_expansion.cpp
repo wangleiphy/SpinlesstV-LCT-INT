@@ -28,8 +28,9 @@ iblock(0),
 direction(nblock==1? 0:1),
 sweeps(0),
 sign(1.), 
-K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BCmodifier"]) )),
-gf(K_, beta/boost::lexical_cast<double>(itime_max), itime_max, nblock, blocksize,parms["WRAP_REFRESH_PERIOD"]), 
+K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BCmodifier"]))), // K of the true Ham 
+Ktrial_(buildKtrial(lattice)), // to generate the trial wave function  
+gf(K_, Ktrial_, beta/boost::lexical_cast<double>(itime_max), itime_max, nblock, blocksize,parms["WRAP_REFRESH_PERIOD"]), 
 distmap(get_distmap(lattice)), 
 disttable(get_disttable(distmap, n_site)), 
 shellsize(get_shellsize(distmap)), 

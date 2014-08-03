@@ -98,6 +98,7 @@ private:
   double sign;
 
   Mat K_;    // the kinetic energy matrix 
+  Mat Ktrial_; 
   Green_function gf; 
 
   //graph stuff 

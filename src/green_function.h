@@ -10,7 +10,7 @@ class Green_function{
 
     public:
 
-        Green_function(const Mat& K, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
+        Green_function(const Mat& K, const Mat& Ktrial, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
@@ -35,42 +35,32 @@ class Green_function{
          //std::cout << "uK_:\n" << uK_ << std::endl; 
  
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
+         //generate the trial wave function
+         //uKdagP_ = Mat::Identity(ns_, np_); // if the trial Ham is K 
+        
+         ces.compute(Ktrial);
+         uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
         
          init_without_vertex(); 
         }
 
         void init_without_vertex(){
-
-           gtau_ = Mat::Zero(ns_, ns_); 
-           //initially gtau_ is noninteracting gf = 1./(1+ exp(-E*beta))
-           //on eigen basis it is diagonal 
-           for(site_type l=0; l<ns_; ++l) 
-               gtau_(l, l) = l< np_? 0.: 1.;  
-           
-           //std::cout << "initially:" << std::endl; 
-           //std::cout << "D_:\n" << D_<< std::endl; 
-           
-           //fill in storage LLLL...R 
-           //since initially there is no vertices U and V are all diagonal 
-           //note this can be called at any time, we are not necessaryly at itau =0
-           itime_type b = itau_/blocksize_; //current block 
-           for (unsigned ib=0; ib<=b; ++ib) 
-              Storage_[ib] = Mat::Identity(ns_, np_);  //right 
-           for (unsigned ib=b+1; ib< Storage_.size(); ++ib) 
-              Storage_[ib] = Mat::Identity(np_, ns_); //left 
+            tlist_type tlist; 
+            vlist_type vlist; 
+            init_with_vertex(tlist, vlist); 
         }
 
         void init_with_vertex(const tlist_type& tlist, vlist_type& vlist){
 
           itau_ = 0; 
 
-          Storage_[0] = Mat::Identity(ns_, np_);  //right 
+          Storage_[0] = uKdagP_;  //right 
           if (tlist.find(0) != tlist.end()){ //special treatment when we have a vertex at itau_ = 0 
                Vprop(vlist[0][0], vlist[0][1], "L",  Storage_[0]);// update U in Storage 
           }
         
           unsigned nblock = Storage_.size()-1; 
-          Storage_[nblock] = Mat::Identity(np_, ns_);  //left
+          Storage_[nblock] = uKdagP_.adjoint();  //left
           for (unsigned ib=nblock-1; ib>0; --ib) {
              Mat VL = Storage_[ib+1];
              propagator2(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, VL);
@@ -476,6 +466,7 @@ class Green_function{
         Vec wK_; 
         Mat uK_; 
         Mat uKdag_; 
+        Mat uKdagP_; 
         
         itime_type ihalfTheta_; 
         itime_type itau_; 

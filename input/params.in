@@ -1,13 +1,13 @@
 LATTICE_LIBRARY = "../input/mylattices.xml"
 LATTICE = "honeycomb lattice"
-BCmodifier = "APBCX"
+BCmodifier = ""
 BETA = 40.
-L = 12
-W = 12
+L = 3
+W = 3
 V = 1.0
 MAX_ORDER = 8192 
 THERMALIZATION = 10000
-SWEEPS = 1000000
+SWEEPS = 50000
 SEED = 42
 filename = '../data/test.dat'
 ITIME_MAX = 2147483648

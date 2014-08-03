@@ -14,6 +14,8 @@ from fss import FSS
 from autoScale import autoScale , myValue
 import re 
 from numpy import array , linspace , sqrt , argsort 
+from matplotlib.ticker import MaxNLocator
+from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument("-fileheaders", nargs='+', default="params", help="fileheaders")
@@ -131,25 +133,51 @@ if (args.Scaling):
     for d in res:
         L = d.props['L']
         d.y = [y*L**args.b/(1.+ args.c* L **(-args.w) ) for y in d.y]
-        d.x = (d.x- args.xc) * L ** args.a + args.d * L **(-args.phi)
-
-        d.props['xlabel'] = r'$(V-V_c)L^{a}+dL^{-\phi}$'
-        d.props['ylabel'] = r'$yL^{b}/(1+cL^{-\omega})$'
-
 
 icolor = 0
 for d in res:
     L = int(d.props['L'])
-    d.props['xlabel'] = r'$(V-V_c)L^{1/\nu}$'
+    d.props['xlabel'] = r'$V$'
     d.props['ylabel'] = r'$M_2L^{z+\eta}$'
     d.props['label'] = '$L=%g$' %(L)
     d.props['line'] = '-o'
     d.props['color'] = colors[icolor]
     icolor += 1
 
-#print pyalps.plot.convertToText(res)
+fig = plt.figure(figsize = (8, 8))
+
+ax1 = plt.subplot(211)
 pyalps.plot.plot(res)
+ax1.yaxis.set_major_locator(MaxNLocator(4))
+#plt.axvline(args.xc,color='k')
+#ax1.get_xaxis().set_visible(False)
 plt.legend(loc='best')
+
+#########################
+at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=4,)
+at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+plt.gca().add_artist(at)
+#########################
+
+#further scale x 
+for d in res:
+    L = d.props['L']
+    d.x = (d.x- args.xc) * L ** args.a + args.d * L **(-args.phi)
+    d.props['xlabel'] = r'$(V-V_c)L^{1/\nu}$'
+
+ax2 = plt.subplot(212)
+pyalps.plot.plot(res)
+ax2.yaxis.set_major_locator(MaxNLocator(4))
+plt.legend(loc='best')
+#ax2.yaxis.set_major_locator(MaxNLocator(4))
+
+#########################
+at = AnchoredText("b",prop=dict(size=18), frameon=True,loc=4,)
+at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+plt.gca().add_artist(at)
+#########################
+
+plt.subplots_adjust(hspace=0.2)
 
 #if (args.Scaling):
 #    plt.title('$x_c=%g,a=%g,b=%g,c=%g,d=%g,\omega=%g,\phi=%g$'%(args.xc,args.a, args.b, args.c, args.d, args.w, args.phi))

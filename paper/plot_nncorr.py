@@ -84,7 +84,7 @@ if args.copydata:
 print pyalps.plot.convertToText(res)
 
 pyalps.plot.plot(res)
-plt.legend(loc='upper right')
+plt.legend(loc='lower left')
 
 if args.logscale:
     plt.gca().set_yscale('log')

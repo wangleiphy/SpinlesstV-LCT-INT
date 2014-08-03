@@ -918,7 +918,7 @@
  <EDGE source="7" target="8" type="0"/>
 </GRAPH>
 
-<GRAPH name="honeycombL3W3APBCX" dimension="2" vertices="18" edges="27">
+<GRAPH name="honeycombL3W3" dimension="2" vertices="18" edges="27">
   <VERTEX id="1" type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
   <VERTEX id="2" type="1"><COORDINATE>4.9960036108132044319e-15 0.57735026918962861764</COORDINATE></VERTEX>
   <VERTEX id="3" type="0"><COORDINATE>0.5 0.86602540378443859659</COORDINATE></VERTEX>

@@ -6,22 +6,22 @@ Remove = 0.4
 
 Maxorder = 8192
 BETA = 40 #projection time 
-BCmodifier = "APBCX"
-#BCmodifier = ""
+#BCmodifier = "APBCX"
+BCmodifier = ""
 
 latticename = 'chain lattice'
 #latticename = 'honeycomb lattice'
 ###############################
-nickname = 'nncorr'
+nickname = 'PBC'
 
 Llist = [32]
 Wlist = [1] #Llist 
-Vlist = [3.0, 4.0]
+Vlist = [1.0, 2.0, 3.0, 4.0]
 #Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 2.2, 0.2)
 
 itime_max = 1<<31
-RECALC_PERIOD = 10
+RECALC_PERIOD = 17
 WRAP_REFRESH_PERIOD = 25 
 
 STEPS_PER_BLOCK = 1

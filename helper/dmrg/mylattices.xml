@@ -966,7 +966,7 @@
   <EDGE source="18" target="13" id="27" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
 </GRAPH>
 
-<GRAPH name="chainL32APBCX" dimension="1" vertices="32" edges="32">
+<GRAPH name="chainL32" dimension="1" vertices="32" edges="32">
   <VERTEX id="1" type="0"><COORDINATE>0</COORDINATE></VERTEX>
   <VERTEX id="2" type="0"><COORDINATE>1</COORDINATE></VERTEX>
   <VERTEX id="3" type="0"><COORDINATE>2</COORDINATE></VERTEX>

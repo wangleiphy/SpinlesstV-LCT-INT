@@ -50,6 +50,10 @@ for f in list(resultFiles):
 
 #    if L in [15]:
 #        resultFiles.remove(f)
+    if L in [3]:
+        resultFiles.remove(f)
+
+
 
 
 data = []
@@ -66,7 +70,7 @@ else:
 #    d.props['observable'] =  args.y
 
 if args.x == 'V':
-    res e pyalps.collectXY(data, x='V', y=args.y, foreach = ['L'])
+    res = pyalps.collectXY(data, x='V', y=args.y, foreach = ['L'])
     pyalps.propsort(res,'L')
 elif args.x == 'L':
     res = pyalps.collectXY(data, x='L', y=args.y, foreach = ['V'])

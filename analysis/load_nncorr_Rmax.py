@@ -14,7 +14,6 @@ import argparse
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument("-fileheaders", nargs='+', default="params", help="fileheaders")
-parser.add_argument("-y", default="nncorr", help="observable")
 
 parser.add_argument("-copydata", action='store_true',  help="copy data")
 parser.add_argument("-logscale", action='store_true',  help="logscale")
@@ -41,23 +40,32 @@ for f in list(resultFiles):
         resultFiles.remove(f)
 
 
-
 print resultFiles 
 
-res = pyalps.loadMeasurements(resultFiles, args.y)
-res = pyalps.flatten(res)
+data = pyalps.loadMeasurements(resultFiles, 'nncorr')
+data = pyalps.flatten(data)
 
-for d in res:
+res = []
+for d in data:
     V = d.props['V']
+    L = d.props['L']
     d.props['xlabel'] = r'$R$'
-
-    if args.logscale:
-        d.props['ylabel'] = r'$|C(R)|$'
-        d.y = abs(d.y)
-    else:
-        d.props['ylabel'] = r'$C(R)$'
-
     d.props['label'] =  r'$V=%g$'%(V)
+
+    
+    r = pyalps.DataSet()
+    r.y = [d.y[-1]]
+    r.props = d.props 
+    r.props['observable'] = 'farthestnncorr'
+
+    res.append(r)
+
+print res 
+res = pyalps.collectXY(res, x='L', y='farthestnncorr', foreach = ['V'])
+
+#for d in res:
+#    d.y *= d.x**2
+#    d.x = 1./d.x 
 
 if args.copydata:
     for resultFile in resultFiles:
@@ -69,6 +77,9 @@ print pyalps.plot.convertToText(res)
 
 pyalps.plot.plot(res)
 plt.legend(loc='lower left')
+
+#plt.xlim([0, 0.2])
+#plt.ylim([0, 0.015])
 
 if args.logscale:
     plt.gca().set_yscale('log')

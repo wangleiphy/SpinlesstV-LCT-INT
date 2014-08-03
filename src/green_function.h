@@ -51,17 +51,30 @@ class Green_function{
         }
 
         void init_with_vertex(const tlist_type& tlist, vlist_type& vlist){
+          //does not change itau_ 
 
-          itau_ = 0; 
+          itime_type b = itau_/blocksize_; //current block 
 
           Storage_[0] = uKdagP_;  //right 
-          if (tlist.find(0) != tlist.end()){ //special treatment when we have a vertex at itau_ = 0 
-               Vprop(vlist[0][0], vlist[0][1], "L",  Storage_[0]);// update U in Storage 
+          for (unsigned ib=0; ib<b; ++ib) {
+
+                Mat UR= Storage_[ib];
+                propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, UR);
+
+                Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
+                Storage_[ib+1] = svd.matrixU(); 
           }
+
+          if (itau_%blocksize_==0 && tlist.find(itau_) != tlist.end()){ //special treatment when 
+                                                                        //itau_ is at block boundary 
+                                                                        //and we have a vertex at itau_  
+               Vprop(vlist[itau_][0], vlist[itau_][1], "L",  Storage_[b]);
+          }
+
         
           unsigned nblock = Storage_.size()-1; 
           Storage_[nblock] = uKdagP_.adjoint();  //left
-          for (unsigned ib=nblock-1; ib>0; --ib) {
+          for (unsigned ib=nblock-1; ib>b; --ib) {
              Mat VL = Storage_[ib+1];
              propagator2(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, VL);
 

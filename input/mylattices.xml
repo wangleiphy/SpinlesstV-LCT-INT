@@ -234,9 +234,9 @@
   <VERTEX type="0"><COORDINATE>0 0</COORDINATE></VERTEX>
   <VERTEX type="1"><COORDINATE>-0.33333333333333 0.66666666666667</COORDINATE></VERTEX>
 
-  <EDGE><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
-  <EDGE><SOURCE vertex="2"/><TARGET vertex="1" offset="0 1"/></EDGE>
-  <EDGE><SOURCE vertex="1"/><TARGET vertex="2" offset="1 -1"/></EDGE>
+  <EDGE type="0"><SOURCE vertex="1"/><TARGET vertex="2"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="2"/><TARGET vertex="1" offset="0 1"/></EDGE>
+  <EDGE type="1"><SOURCE vertex="1"/><TARGET vertex="2" offset="1 -1"/></EDGE>
 </UNITCELL>
 
 

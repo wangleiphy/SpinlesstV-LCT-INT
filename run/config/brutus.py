@@ -9,16 +9,16 @@ BETA = 40 #projection time
 #BCmodifier = "APBCX"
 BCmodifier = ""
 
-latticename = 'chain lattice'
-#latticename = 'honeycomb lattice'
+#latticename = 'chain lattice'
+latticename = 'honeycomb lattice'
 ###############################
 nickname = 'PBC'
 
-Llist = [32]
-Wlist = [1] #Llist 
-Vlist = [1.0, 2.0, 3.0, 4.0]
+Llist = [3]
+Wlist = [3] #Llist 
+#Vlist = [1.0, 2.0, 3.0, 4.0]
 #Vlist = arange(1.3, 1.41, 0.01)
-#Vlist = arange(0.2, 2.2, 0.2)
+Vlist = arange(0.2, 2.2, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 17
@@ -41,7 +41,7 @@ resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'
 #h, m = [int(i) for i in wtime.split(':')]
 #Tlimit = max(3600*h + 60*m - int(tmax*2) , 0)
 
-prog = 'mpirun '+ bin  + ' -i '+ str(tmin) + ' -a ' + str(tmax)  + ' -c '
+prog = 'mpirun '+ bin  + ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -c '
 
 def submitJob(bin,args,jobname,wtime,run=False,ncores=None, wait=[]):
 

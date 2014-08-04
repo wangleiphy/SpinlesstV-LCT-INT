@@ -65,8 +65,8 @@ for d in res:
 
     d.props['line'] = 'o'
     d.props['color'] = colors[icolor]
-
-    R, nncorr = loadtxt('../data/dmrg/nncorr_chainL32APBCXL32_W1_N16_V'+str(V)+'.dat', unpack=True, usecols = (0,1))
+    
+    R, nncorr = loadtxt('../data/dmrg/nncorr_chainL32_L32_W1_N16_V'+str(V)+'.dat', unpack=True, usecols = (0,1))
     if args.logscale:
         plt.plot(R, abs(nncorr), '-', c=colors[icolor])
     else:

@@ -41,7 +41,7 @@ prog = '../bin/main'
 resfolder = '/mnt/lnec/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]
 Tlimit = max(3600*h + 60*m + s - int(tmax*2) , 0)
-prog += ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -T ' + str(Tlimit) + ' -c '
+prog += ' -i '+ str(tmin) + ' -a ' + str(tmax) + ' -T ' + str(Tlimit) # + ' -c '
 
 def submitJob(bin,args,jobname,wtime,run=False,ncores=20, wait=None):
 

@@ -6,6 +6,7 @@ void InteractionExpansion::interaction_expansion_step()
 {
        
    for (unsigned step =0; step < steps_per_block; ++step){
+
        double update_type=random();
 
        if(update_type < probs[0]){     

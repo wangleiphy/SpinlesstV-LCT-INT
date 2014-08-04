@@ -10,57 +10,140 @@ class Green_function{
 
     public:
 
-        Green_function(const Mat& K, const time_type timestep, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
+        Green_function(const Mat& K, const Mat& Ktrial, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
-        ,itau_(0)
+        ,ihalfTheta_(itime_max/2)// index for tau = Theta/2 
+        ,itau_(0)  
         ,gtau_()
         ,blocksize_(blocksize)
         ,wrap_refresh_counter_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
         ,Storage_(nblock+1)// it stores LLL...RRR 
         {
-   
-         Eigen::SelfAdjointEigenSolver<Mat> ces;
-         ces.compute(K);
-   
-         wK_ = ces.eigenvalues();  
-         uK_ = ces.eigenvectors(); 
-         uKdag_ = ces.eigenvectors().adjoint(); 
+
+         {
+          Eigen::SelfAdjointEigenSolver<Mat> ces;
+          ces.compute(K);
+          
+          wK_ = ces.eigenvalues();  
+          uK_ = ces.eigenvectors(); 
+          uKdag_ = ces.eigenvectors().adjoint(); 
+         }
 
          //std::cout << "K:\n" << K << std::endl; 
          //std::cout << "wK_:\n" << wK_ << std::endl; 
          //std::cout << "uK_:\n" << uK_ << std::endl; 
+ 
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
-        
          //generate the trial wave function
-         uKdagP_ = Mat::Identity(ns_, np_); // if the trial Ham is K 
+         //uKdagP_ = Mat::Identity(ns_, np_); // if the trial Ham is K 
         
-         //haven't implemented this 
-         //Mat Ktrial = K; 
-         //for (site_type l = 0; l< ns_; ++l)
-         //    Ktrial(l, l) += (l%2==0) ? 0.05: -0.05; 
-         //ces.compute(Ktrial);
-         //uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
-        
-         //initialize Storage and gtau
-         init_without_vertex(); 
+         //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
+         {
+           Eigen::SelfAdjointEigenSolver<Mat> ces;
+           ces.compute(Ktrial);
+           uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
 
+           Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
+           uKdagP_ = svd.matrixU(); 
+         }
+
+         //std::cout << "uKdagP:\n" << uKdagP_ << std::endl; 
+         //init_without_vertex(); 
         }
 
+        /*
         void init_without_vertex(){
 
-           //fill in storage LLLL...R 
-           //note this can be called at any time, we are not necessaryly at itau =0
-           itime_type b = itau_/blocksize_; //current block 
-           for (unsigned ib=0; ib<=b; ++ib) 
-              Storage_[ib] = uKdagP_;  //right 
-           for (unsigned ib=b+1; ib< Storage_.size(); ++ib) 
-              Storage_[ib] = uKdagP_.adjoint(); //left 
+          itime_type b = itau_/blocksize_; //current block 
+
+          std::cout << "itau_,b= " << itau_ <<  " " << b << std::endl; 
+          Storage_[0] = uKdagP_;  //right 
+
+          unsigned counter = 0 ; 
+          for (unsigned ib=0; ib<b; ++ib) {
+
+                Mat UR= Storage_[ib];
+                Kprop(-1, blocksize_, "L", UR); 
+                //++counter; 
+
+                //if (counter >= wrap_refresh_period_){
+                   Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
+                   UR = svd.matrixU();
+                //   counter = 0; 
+                //}
+                Storage_[ib+1] = UR; 
+          }
+
+          unsigned nblock = Storage_.size()-1; 
+          Storage_[nblock] = uKdagP_.adjoint();  //left
+
+          counter = 0;
+          for (unsigned ib=nblock-1; ib>b; --ib) {
+
+             Mat VL = Storage_[ib+1];
+             Kprop(-1, blocksize_, "R", VL); 
+             //++counter; 
+
+             //if (counter >= wrap_refresh_period_){
+                Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
+                VL = svd.matrixV().adjoint(); 
+                //counter = 0; 
+             //}
+             Storage_[ib] = VL;
+          }
+
+           Mat UR = Storage_[b]; 
+           Kprop(-1, itau_ - b*blocksize_, "L", UR);
         
-           //
-           gtau_ = Mat::Identity(ns_, ns_) - uKdagP_ * uKdagP_.adjoint(); 
+           Mat VL = Storage_[b+1]; 
+           Kprop(-1, (b+1)*blocksize_-itau_, "R", VL);
+
+           gtau_ = Mat::Identity(ns_, ns_ ) -UR * ((VL*UR).inverse() * VL);
+        }
+        */
+
+         void init_without_vertex(){
+               tlist_type tlist; 
+               vlist_type vlist; 
+               init_with_vertex(tlist, vlist); 
+         }
+
+        void init_with_vertex(const tlist_type& tlist, vlist_type& vlist){
+          //does not change itau_ 
+
+          itime_type b = itau_/blocksize_; //current block 
+
+          Storage_[0] = uKdagP_;  //right 
+          for (unsigned ib=0; ib<b; ++ib) {
+
+                Mat UR= Storage_[ib];
+                propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, UR);
+
+                Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
+                Storage_[ib+1] = svd.matrixU(); 
+          }
+
+          if (itau_%blocksize_==0 && (tlist.find(itau_) != tlist.end()) ){ //special treatment when 
+                                                                        //itau_ is at block boundary 
+                                                                        //and we have a vertex at itau_  
+               Vprop(vlist[itau_][0], vlist[itau_][1], "L",  Storage_[b]);
+          }
+        
+          unsigned nblock = Storage_.size()-1; 
+          Storage_[nblock] = uKdagP_.adjoint();  //left
+          for (unsigned ib=nblock-1; ib>b; --ib) {
+
+             Mat VL = Storage_[ib+1];
+             propagator2(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, VL);
+
+             Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
+             Storage_[ib] = svd.matrixV().adjoint();
+          }
+
+            gtau_ = Gstable(itau_, tlist, vlist); // from scratch 
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
@@ -73,43 +156,82 @@ class Green_function{
 
               //std::cout << "in rebuild:" << std::endl; 
          
-              std::cout << "gtau_:\n" << uK_* gtau_ *uKdag_ << std::endl; 
-              std::cout << "gtau:\n" << uK_* gtau * uKdag_  << std::endl; 
-              std::cout << "diff:\n" <<gtau_- gtau << std::endl; 
+              //std::cout << "gtau_:\n" << gtau_ << std::endl; 
+              //std::cout << "gtau:\n" << gtau << std::endl; 
+              //std::cout << "diff:\n" <<gtau_- gtau << std::endl; 
 
-              std::cout << "tlist: "; 
-              std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-              std::cout << std::endl; 
-              abort(); 
+              //std::cout << "tlist: "; 
+              //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
+              //std::cout << std::endl; 
             }
            
             gtau_ = gtau;
         }
         
-        const itime_type itau() const{
+        itime_type itau() const{
             return itau_; 
-        }
-
-        const Mat& gtau() const {
-            return gtau_; 
         }
 
         time_type tau() const {
             return itime2time(itau_); 
         }
 
-        double gij(const site_type si, const site_type sj)const {
+
+        /*
+        Mat gtau() const {// gtau in site basis 
+            return uK_*gtau_*uKdag_; 
+        }
+        */
+
+        double gij(const site_type si, const site_type sj)const {// current g in the site basis 
             // (U gtau U^{dagger} )_ij 
             return  (uK_.row(si) *gtau_) * uKdag_.col(sj);  
         }
+        
+        /*
+        double gijhalfTheta(const site_type si, const site_type sj, const tlist_type& tlist, vlist_type& vlist)const {
+            
+            //wrap Green's function to halfTheta  
+            Mat gtau = gtau_; 
+            if (ihalfTheta_ >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, ihalfTheta_, itau_, tlist, vlist, gtau);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, ihalfTheta_, itau_, tlist, vlist, gtau); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
 
-        Eigen::VectorXd denmat(const site_type si)const {
-            // (U gtau U^{dagger} )_ij 
-            return  uK_ *(gtau_ * uKdag_.col(si));  
+            }else{
+
+                // B^{-1} G B 
+                propagator2(1, itau_, ihalfTheta_, tlist, vlist, gtau); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, ihalfTheta_, tlist, vlist, gtau);   //  V_ * B(tau1) ... B(tau2)
+            }
+
+            return  (uK_.row(si) *gtau) * uKdag_.col(sj);  
+        }
+        */
+
+        Vec denmathalfTheta(const site_type si, const tlist_type& tlist, vlist_type& vlist)const {
+            //wrap Green's function to halfTheta  
+            Mat gtau = gtau_; 
+            if (ihalfTheta_ >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, ihalfTheta_, itau_, tlist, vlist, gtau);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, ihalfTheta_, itau_, tlist, vlist, gtau); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
+
+            }else{
+
+                // B^{-1} G B 
+                propagator2(1, itau_, ihalfTheta_, tlist, vlist, gtau); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, ihalfTheta_, tlist, vlist, gtau);   //  V_ * B(tau1) ... B(tau2)
+            }
+            return  uK_ *(gtau * uKdag_.col(si));  
+        }
+
+        Vec denmat(const site_type si)const {
+           return  uK_ *(gtau_ * uKdag_.col(si));  
         }
             
         //update changes gtau_ 
-        void update(const site_type si, const site_type sj, const double gij){
+        void update(const site_type si, const site_type sj, const double gij, const double gji){
 
              //std::cout << "si, sj, gij: "  << si << " " << sj << " " << gij << std::endl; 
              //std::cout << "uKdag_.col(si):\n" << uKdag_.col(si) << std::endl; 
@@ -121,9 +243,10 @@ class Green_function{
              Eigen::RowVectorXd ri = uK_.row(si)* gtau_- uK_.row(si); 
              Eigen::RowVectorXd rj = uK_.row(sj)* gtau_- uK_.row(sj); 
 
-             gtau_ -= ((gtau_*uKdag_.col(sj)) * ri + (gtau_*uKdag_.col(si)) * rj )/gij; 
+             gtau_ -= (gtau_*uKdag_.col(sj)) * ri/gij + (gtau_*uKdag_.col(si)) * rj /gji; 
 
              if (itau_%blocksize_==0){ //special treatment when update the block starting point 
+                                       //otherwise this vertex will be untreated in stablization 
                   //std::cout << "update: special treatment because update on the block boundary" << std::endl; 
                   Vprop(si, sj, "L",  Storage_[itau_/blocksize_]);// update U in Storage 
              }
@@ -163,14 +286,7 @@ class Green_function{
                 itau_ = itau; 
             }
 
-             bool refresh = false; 
-             if (wrap_refresh_counter_ < wrap_refresh_period_){
-                 ++wrap_refresh_counter_; 
-             }else{
-
-                 refresh = true; 
-                 wrap_refresh_counter_ = 0; 
-             }
+            ++wrap_refresh_counter_; 
 
             //when we wrap to a new block we need to update storage 
             if (b > b_){// move to a larger block on the left  
@@ -179,9 +295,10 @@ class Green_function{
                 Mat UR= Storage_[b_];
                 propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, UR);
 
-                if (refresh){
+                if (wrap_refresh_counter_ >= wrap_refresh_period_){
                    Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
                    UR = svd.matrixU();
+                   wrap_refresh_counter_ = 0; 
                 }
 
                 Storage_[b] = UR; 
@@ -192,9 +309,10 @@ class Green_function{
                 Mat VL = Storage_[b_+1];
                 propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, VL);
 
-                if (refresh){
+                if (wrap_refresh_counter_ >= wrap_refresh_period_){
                   Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
                   VL = svd.matrixV().adjoint();
+                  wrap_refresh_counter_ = 0;
                 }
 
                 Storage_[b+1] = VL; 
@@ -266,7 +384,7 @@ class Green_function{
            */
           
            //(2)
-           Mat res =  -UR * ((VL*UR).inverse() * VL); 
+           Mat res = -UR * ((VL*UR).inverse() * VL); 
            for (site_type l =0; l< ns_; ++l)
                res(l, l) += 1.0; 
 
@@ -422,9 +540,9 @@ class Green_function{
         Vec wK_; 
         Mat uK_; 
         Mat uKdag_; 
-
         Mat uKdagP_; 
-
+        
+        itime_type ihalfTheta_; 
         itime_type itau_; 
 
         Mat gtau_; 

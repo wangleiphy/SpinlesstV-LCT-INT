@@ -49,10 +49,12 @@ double InteractionExpansion::remove_impl(const itime_type itau, const bool compu
     
  }else{
         
-     if (tlist.size()> 1)
+     if (tlist.size()> 1){
          gf.update(si, sj, gij, gij); 
-     else //since we will get a empty list as use this opputunity to reset all memory 
+     }else{ //since we will get a empty list as use this opputunity to reset all memory 
+         //std::cout << "empty vertex occur" << std::endl; 
          gf.init_without_vertex(); 
+     }
 
      //std::cout << "gtau from fastupdate:\n"<< gf.gtau() << std::endl; 
      

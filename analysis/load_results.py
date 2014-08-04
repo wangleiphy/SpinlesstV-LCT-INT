@@ -50,8 +50,8 @@ for f in list(resultFiles):
 
 #    if L in [15]:
 #        resultFiles.remove(f)
-    if L in [3]:
-        resultFiles.remove(f)
+    #if L in [3]:
+#        resultFiles.remove(f)
 
 
 

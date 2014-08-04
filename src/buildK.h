@@ -42,8 +42,9 @@ Mat buildKtrial(const alps::graph_helper<>& lattice){
 
         alps::graph_helper<>::boundary_crossing_type bc = get(alps::boundary_crossing_t(), lattice.graph(), *it);
         
-        K(si,sj) = (bc.crosses(0)==0 && bc.crosses(1)==0) ? -1.0 : 0.0 ;//OBC condition along both directions   
+        //K(si,sj) = (bc.crosses(0)==0 && bc.crosses(1)==0) ? -1.0 : 0.0 ;//OBC condition along both directions   
         //K(si,sj) = (bc.crosses(0)==0 && bc.crosses(1)==0) ? -1.0 : 1.0 ;//APBC condition along both directions   
+        K(si,sj) = (bc.crosses(0)==0) ? -1.0 : 1.0 ;//APBC condition along x directions   
         K(sj,si) = K(si,sj);
     }
 
@@ -52,6 +53,7 @@ Mat buildKtrial(const alps::graph_helper<>& lattice){
     typedef boost::mt19937 engine_type;
     engine_type eng;
     boost::variate_generator<engine_type&, boost::uniform_real<> > random(eng, boost::uniform_real<>()); 
+
 
     BOOST_FOREACH(const alps::graph_helper<>::bond_descriptor& b, lattice.bonds()){
          //double hopping = -1.0; // + 0.0001 * (random() -0.5); // added random noise to break degeneracy

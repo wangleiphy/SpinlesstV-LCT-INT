@@ -60,7 +60,7 @@ probs() // empty vector
 
 void InteractionExpansion::initialize_tvlist(){
 
-   unsigned Nv = static_cast<unsigned>(0.2*(beta * n_site * V));   //initial number of vertices 
+   unsigned Nv = static_cast<unsigned>(0.13*(beta * n_site * V));   //initial number of vertices 
    //std::cout << "Nv: " << Nv << std::endl; 
    for (unsigned i=0; i< Nv; ++i) {
        itime_type itau = randomint(itime_max); 

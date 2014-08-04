@@ -30,6 +30,7 @@ public:
   void evaluate(results_type& results);
 
   void test(); 
+  void initialize_tvlist(); 
 
   using alps::mcbase::save;
   virtual void save(alps::hdf5::archive & ar) const;

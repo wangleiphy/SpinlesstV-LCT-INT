@@ -42,7 +42,9 @@ Mat buildKtrial(const alps::graph_helper<>& lattice){
 
         alps::graph_helper<>::boundary_crossing_type bc = get(alps::boundary_crossing_t(), lattice.graph(), *it);
         
-        K(si,sj) = bc.crosses(0)==0 ? -1.0 : 1.0 ;//anti-periodic condition along x direction: if cross x, we revert sign of hopping  
+        //K(si,sj) = (bc.crosses(0)==0 && bc.crosses(1)==0) ? -1.0 : 0.0 ;//OBC condition along both directions   
+        //K(si,sj) = (bc.crosses(0)==0 && bc.crosses(1)==0) ? -1.0 : 1.0 ;//APBC condition along both directions   
+        K(si,sj) = (bc.crosses(0)==0) ? -1.0 : 1.0 ;//APBC condition along x directions   
         K(sj,si) = K(si,sj);
     }
 
@@ -55,7 +57,7 @@ Mat buildKtrial(const alps::graph_helper<>& lattice){
 
     BOOST_FOREACH(const alps::graph_helper<>::bond_descriptor& b, lattice.bonds()){
          //double hopping = -1.0; // + 0.0001 * (random() -0.5); // added random noise to break degeneracy
-         double delta  = 1E-6; 
+         double delta  = 1E-3; 
          double hopping = lattice.bond_type(b)==0 ? -1.-delta : -1.+delta; 
          K(lattice.source(b), lattice.target(b)) = hopping; 
          K(lattice.target(b), lattice.source(b)) = hopping; 

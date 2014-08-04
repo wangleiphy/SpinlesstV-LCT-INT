@@ -38,6 +38,7 @@ if __name__=='__main__':
 
     jobid = input.waitfor 
     for L, W in zip(Llist, Wlist):
+        jobid = None 
         for V in Vlist:
                
                            inputfile = params(latticename, BCmodifier, L , W,  
@@ -57,4 +58,4 @@ if __name__=='__main__':
                            args = {}
                            jobname = jobdir + os.path.basename(inputfile).replace('.in','')
                
-                           jobid = submitJob(bin,args,jobname,wtime,ncores=ncores,run=input.run, wait=None)
+                           jobid = submitJob(bin,args,jobname,wtime,ncores=ncores,run=input.run, wait=jobid)

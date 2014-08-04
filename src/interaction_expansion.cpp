@@ -46,8 +46,8 @@ probs() // empty vector
    probs.push_back(Add); 
    probs.push_back(Add+Remove); 
    if (Add+Remove>= 1.0) {
-       abort(); 
        std::cerr << "Add + Remove >= 1.0" << std::endl; 
+       abort(); 
    }
    
    //initialize ALPS observables
@@ -58,14 +58,27 @@ probs() // empty vector
    }
 }
 
+void InteractionExpansion::initialize_tvlist(){
+
+   unsigned Nv = static_cast<unsigned>(0.2*(beta * n_site * V));   //initial number of vertices 
+   //std::cout << "Nv: " << Nv << std::endl; 
+   for (unsigned i=0; i< Nv; ++i) {
+       itime_type itau = randomint(itime_max); 
+       tlist.insert(itau); 
+  
+       std::vector<site_type> sites; 
+       alps::graph_helper<>::bond_descriptor b = lattice.bond(randomint(n_bond));
+       sites.push_back(lattice.source(b));
+       sites.push_back(lattice.target(b));
+       vlist[itau] = sites;
+   }
+   gf.init_with_vertex(tlist, vlist); 
+}
 
 void InteractionExpansion::update()
 {
       sweeps++; // one sweep means try go through a block (with steps_per_block updates)
       interaction_expansion_step();                
-
-      //if (tlist.size()== max_order)//TESTING: freeze the vertex configuration just do sweep 
-      //    steps_per_block = 0; 
 
       iblock += direction; 
 

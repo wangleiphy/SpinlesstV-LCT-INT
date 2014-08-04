@@ -127,6 +127,8 @@ int main(int argc, char** argv){
         if (comm.rank()== 0)
             std::cout << "loaded configuration from " << checkpoint_path  << std::endl;
       }else{
+        sim.initialize_tvlist(); 
+
         if (comm.rank()== 0)
             std::cout << "will write configuration to " << checkpoint_path  << std::endl;
       }

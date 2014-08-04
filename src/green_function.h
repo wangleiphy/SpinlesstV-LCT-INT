@@ -15,20 +15,22 @@ class Green_function{
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
         ,ihalfTheta_(itime_max/2)// index for tau = Theta/2 
-        ,itau_(0)
+        ,itau_(0)  
         ,gtau_()
         ,blocksize_(blocksize)
         ,wrap_refresh_counter_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
         ,Storage_(nblock+1)// it stores LLL...RRR 
         {
-   
-         Eigen::SelfAdjointEigenSolver<Mat> ces;
-         ces.compute(K);
-   
-         wK_ = ces.eigenvalues();  
-         uK_ = ces.eigenvectors(); 
-         uKdag_ = ces.eigenvectors().adjoint(); 
+
+         {
+          Eigen::SelfAdjointEigenSolver<Mat> ces;
+          ces.compute(K);
+          
+          wK_ = ces.eigenvalues();  
+          uK_ = ces.eigenvectors(); 
+          uKdag_ = ces.eigenvectors().adjoint(); 
+         }
 
          //std::cout << "K:\n" << K << std::endl; 
          //std::cout << "wK_:\n" << wK_ << std::endl; 
@@ -38,17 +40,76 @@ class Green_function{
          //generate the trial wave function
          //uKdagP_ = Mat::Identity(ns_, np_); // if the trial Ham is K 
         
-         ces.compute(Ktrial);
-         uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
-        
-         init_without_vertex(); 
+         //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
+         {
+           Eigen::SelfAdjointEigenSolver<Mat> ces;
+           ces.compute(Ktrial);
+           uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
+
+           Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
+           uKdagP_ = svd.matrixU(); 
+         }
+
+         //std::cout << "uKdagP:\n" << uKdagP_ << std::endl; 
+         //init_without_vertex(); 
         }
 
+        /*
         void init_without_vertex(){
-            tlist_type tlist; 
-            vlist_type vlist; 
-            init_with_vertex(tlist, vlist); 
+
+          itime_type b = itau_/blocksize_; //current block 
+
+          std::cout << "itau_,b= " << itau_ <<  " " << b << std::endl; 
+          Storage_[0] = uKdagP_;  //right 
+
+          unsigned counter = 0 ; 
+          for (unsigned ib=0; ib<b; ++ib) {
+
+                Mat UR= Storage_[ib];
+                Kprop(-1, blocksize_, "L", UR); 
+                //++counter; 
+
+                //if (counter >= wrap_refresh_period_){
+                   Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
+                   UR = svd.matrixU();
+                //   counter = 0; 
+                //}
+                Storage_[ib+1] = UR; 
+          }
+
+          unsigned nblock = Storage_.size()-1; 
+          Storage_[nblock] = uKdagP_.adjoint();  //left
+
+          counter = 0;
+          for (unsigned ib=nblock-1; ib>b; --ib) {
+
+             Mat VL = Storage_[ib+1];
+             Kprop(-1, blocksize_, "R", VL); 
+             //++counter; 
+
+             //if (counter >= wrap_refresh_period_){
+                Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
+                VL = svd.matrixV().adjoint(); 
+                //counter = 0; 
+             //}
+             Storage_[ib] = VL;
+          }
+
+           Mat UR = Storage_[b]; 
+           Kprop(-1, itau_ - b*blocksize_, "L", UR);
+        
+           Mat VL = Storage_[b+1]; 
+           Kprop(-1, (b+1)*blocksize_-itau_, "R", VL);
+
+           gtau_ = Mat::Identity(ns_, ns_ ) -UR * ((VL*UR).inverse() * VL);
         }
+        */
+
+         void init_without_vertex(){
+               tlist_type tlist; 
+               vlist_type vlist; 
+               init_with_vertex(tlist, vlist); 
+         }
 
         void init_with_vertex(const tlist_type& tlist, vlist_type& vlist){
           //does not change itau_ 
@@ -65,16 +126,16 @@ class Green_function{
                 Storage_[ib+1] = svd.matrixU(); 
           }
 
-          if (itau_%blocksize_==0 && tlist.find(itau_) != tlist.end()){ //special treatment when 
+          if (itau_%blocksize_==0 && (tlist.find(itau_) != tlist.end()) ){ //special treatment when 
                                                                         //itau_ is at block boundary 
                                                                         //and we have a vertex at itau_  
                Vprop(vlist[itau_][0], vlist[itau_][1], "L",  Storage_[b]);
           }
-
         
           unsigned nblock = Storage_.size()-1; 
           Storage_[nblock] = uKdagP_.adjoint();  //left
           for (unsigned ib=nblock-1; ib>b; --ib) {
+
              Mat VL = Storage_[ib+1];
              propagator2(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, VL);
 
@@ -323,7 +384,7 @@ class Green_function{
            */
           
            //(2)
-           Mat res =  -UR * ((VL*UR).inverse() * VL); 
+           Mat res = -UR * ((VL*UR).inverse() * VL); 
            for (site_type l =0; l< ns_; ++l)
                res(l, l) += 1.0; 
 

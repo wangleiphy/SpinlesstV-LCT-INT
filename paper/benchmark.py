@@ -41,7 +41,7 @@ res4 = pyalps.collectXY(data, x='V', y='M2', foreach = ['L'])
 #print pyalps.plot.convertToText(res)
 
 
-V, M2, IntE, Energy = loadtxt('../data/ed/V_M2_honeycombL3W3APBC.dat', unpack = True, comments= '#', usecols= (0,1,2,3))
+V, M2, IntE, Energy = loadtxt('../data/ed/V_M2_honeycombL3W3.dat', unpack = True, comments= '#', usecols= (0,1,2,3))
 
 
 icolor = 0
@@ -106,23 +106,23 @@ plt.xlim([0.0, 2.0])
 plt.subplots_adjust(right=0.88)
 
 ################inset###################
-inset = plt.axes([0.24, 0.38, 0.3, 0.25])
-data = pyalps.loadMeasurements(resultFiles, ['PertOrder','Walltime'])
-res = pyalps.ResultsToXY(data, 'PertOrder', 'Walltime') 
+#inset = plt.axes([0.24, 0.38, 0.3, 0.25])
+#data = pyalps.loadMeasurements(resultFiles, ['PertOrder','Walltime'])
+#res = pyalps.ResultsToXY(data, 'PertOrder', 'Walltime') 
 
-for d in res:
-    d.y /= 3600. 
-    d.props['xlabel'] = r'$\langle k \rangle$'
-    d.props['ylabel'] = r'Wall time (h)'
-    d.props['line'] = '-o'
-    d.props['color'] = colors[icolor]
-    icolor = (icolor+1)%len(colors)
+#for d in res:
+#    d.y /= 3600. 
+#    d.props['xlabel'] = r'$\langle k \rangle$'
+#    d.props['ylabel'] = r'Wall time (h)'
+#    d.props['line'] = '-o'
+#    d.props['color'] = colors[icolor]
+#    icolor = (icolor+1)%len(colors)
 
-pyalps.plot.plot(res)
-plt.xlabel( r'$\langle k \rangle$', fontsize=14)
-plt.ylabel(r'Wall time (h)', fontsize=14)
-inset.xaxis.set_major_locator(MaxNLocator(4))
-inset.yaxis.set_major_locator(MaxNLocator(4))
+#pyalps.plot.plot(res)
+#plt.xlabel( r'$\langle k \rangle$', fontsize=14)
+#plt.ylabel(r'Wall time (h)', fontsize=14)
+#inset.xaxis.set_major_locator(MaxNLocator(4))
+#inset.yaxis.set_major_locator(MaxNLocator(4))
 ################inset###################
 
 

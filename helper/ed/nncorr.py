@@ -70,7 +70,7 @@ for d, e in zip(data, en):
     Val = zeros(len(Typ), float)
     Typ = array(Typ)
     Val[where(Typ==0)]= -1.0 # actually hopping 
-    Val[where(Typ==1)]= +1.0 # actually hopping 
+    Val[where(Typ==1)]= -1.0 # actually hopping 
 
     Kmat = sps.csr_matrix((Val, (Row, Col)), shape=(Nsite, Nsite)) # we have one term per bond, Kmat is not hermitian now 
     ###forming the connection graph 

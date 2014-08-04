@@ -33,12 +33,12 @@ resultFiles = list(set(resultFiles))
 resultFiles.sort()
 
 #filter resultFilies
-for f in list(resultFiles):
-    L = int(re.search('L([0-9]*)W',f).group(1)) 
-    V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
-    
-    if V not in [1.33, 1.34, 1.35, 1.36]:
-        resultFiles.remove(f)
+#for f in list(resultFiles):
+#    L = int(re.search('L([0-9]*)W',f).group(1)) 
+#    V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
+#    
+#    if V not in [1.33, 1.34, 1.35, 1.36]:
+#        resultFiles.remove(f)
 
 
 

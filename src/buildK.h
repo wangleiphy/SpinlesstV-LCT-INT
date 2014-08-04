@@ -42,7 +42,7 @@ Mat buildKtrial(const alps::graph_helper<>& lattice){
 
         alps::graph_helper<>::boundary_crossing_type bc = get(alps::boundary_crossing_t(), lattice.graph(), *it);
         
-        K(si,sj) = (bc.crosses(0)==0 && bc.crosses(1)==0) ? -1.0 : 1.0 ;//anti-periodic condition along both directions   
+        K(si,sj) = (bc.crosses(0)==0 && bc.crosses(1)==0) ? -1.0 : 0.0 ;//OBC condition along both directions   
         K(sj,si) = K(si,sj);
     }
 

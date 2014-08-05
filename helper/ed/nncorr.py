@@ -29,7 +29,7 @@ def IntE(Kmat, nnmat):
  
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-fileheader", default='honeycombL3W3APBCXL3_W3_N9_V', help="fileheader")
+parser.add_argument("-fileheader", default='honeycombL3W3L3_W3_N9_V', help="fileheader")
 parser.add_argument("-dir", default='../../data/ed/', help="dir")
 args = parser.parse_args()
 

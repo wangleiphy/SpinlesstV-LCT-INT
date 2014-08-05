@@ -107,7 +107,7 @@ void InteractionExpansion::update()
 void InteractionExpansion::measure(){
   if (sweeps > therm_steps && sweeps%measurement_period ==0){
      time_type tau = gf.tau(); 
-     if (tau >=0.4*beta && tau < 0.6*beta) //only measure when we are in the center
+     if (tau >=0.45*beta && tau < 0.55*beta) //only measure when we are in the center
         measure_observables();
    } 
 }

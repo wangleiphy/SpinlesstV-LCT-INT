@@ -42,12 +42,22 @@ class Green_function{
         
          //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
          {
+
+           //Vec v= 0.1*Vec::Random(np_);  
+           //Mat R = v.asDiagonal();  
+           //R += Mat::Identity(np_, np_); //a random diagonal matrix
+           Mat R = Mat::Random(np_, np_); 
+           std::cout << "R:\n" << R << std::endl;
+
            Eigen::SelfAdjointEigenSolver<Mat> ces;
            ces.compute(Ktrial);
-           uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
+           right_ = uKdag_ * ces.eigenvectors().leftCols(np_) * R;  
 
-           Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
-           uKdagP_ = svd.matrixU(); 
+           //Eigen::JacobiSVD<Mat> svd(right_, Eigen::ComputeThinU); 
+           //right_ = svd.matrixU(); 
+           left_ = R.inverse() * ces.eigenvectors().leftCols(np_).adjoint() * uK_; 
+
+           //std::cout << "overlaps " << (uKdag_ * ces.eigenvectors()).determinant() << std::endl;  
          }
 
          //std::cout << "uKdagP:\n" << uKdagP_ << std::endl; 
@@ -116,7 +126,7 @@ class Green_function{
 
           itime_type b = itau_/blocksize_; //current block 
 
-          Storage_[0] = uKdagP_;  //right 
+          Storage_[0] = right_;  //right 
           for (unsigned ib=0; ib<b; ++ib) {
 
                 Mat UR= Storage_[ib];
@@ -133,7 +143,7 @@ class Green_function{
           }
         
           unsigned nblock = Storage_.size()-1; 
-          Storage_[nblock] = uKdagP_.adjoint();  //left
+          Storage_[nblock] = left_;  //left
           for (unsigned ib=nblock-1; ib>b; --ib) {
 
              Mat VL = Storage_[ib+1];
@@ -540,7 +550,9 @@ class Green_function{
         Vec wK_; 
         Mat uK_; 
         Mat uKdag_; 
-        Mat uKdagP_; 
+
+        Mat right_; 
+        Mat left_; 
         
         itime_type ihalfTheta_; 
         itime_type itau_; 

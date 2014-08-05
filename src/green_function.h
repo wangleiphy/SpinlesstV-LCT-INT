@@ -39,16 +39,17 @@ class Green_function{
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
          //generate the trial wave function
          //uKdagP_ = Mat::Identity(ns_, np_); // if the trial Ham is K 
-        
-         //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
+         //uKdagP_ = Mat::Random(ns_, np_); 
+
          {
            Eigen::SelfAdjointEigenSolver<Mat> ces;
            ces.compute(Ktrial);
            uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
 
-           Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
-           uKdagP_ = svd.matrixU(); 
+           //Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
+           //uKdagP_ = svd.matrixU(); 
 
+           //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
            //std::cout << "overlaps " << (uKdag_ * ces.eigenvectors()).determinant() << std::endl;  
          }
 

@@ -54,17 +54,15 @@ Mat buildKtrial(const alps::graph_helper<>& lattice){
     engine_type eng;
     boost::variate_generator<engine_type&, boost::uniform_real<> > random(eng, boost::uniform_real<>()); 
 
-
     BOOST_FOREACH(const alps::graph_helper<>::bond_descriptor& b, lattice.bonds()){
          //double hopping = -1.0; // + 0.0001 * (random() -0.5); // added random noise to break degeneracy
          double delta  = 1E-3; 
-         double hopping = lattice.bond_type(b)==0 ? -1.-delta : -1.+delta; 
+         double hopping = lattice.bond_type(b)==0 ? -1.-delta : -1.; 
          K(lattice.source(b), lattice.target(b)) = hopping; 
          K(lattice.target(b), lattice.source(b)) = hopping; 
     }
 
-   */
-
+    */
    //std::cout << "K:\n" << K << std::endl; 
 
    return K; 

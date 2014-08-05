@@ -36,9 +36,8 @@ if __name__=='__main__':
     subprocess.check_call(cmd)
     
 
-    jobid = input.waitfor 
     for L, W in zip(Llist, Wlist):
-        jobid = None 
+        jobid = input.waitfor 
         for V in Vlist:
                
                            inputfile = params(latticename, BCmodifier, L , W,  

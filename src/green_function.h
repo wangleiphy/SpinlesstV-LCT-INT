@@ -48,6 +48,8 @@ class Green_function{
 
            Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
            uKdagP_ = svd.matrixU(); 
+
+           //std::cout << "overlaps " << (uKdag_ * ces.eigenvectors()).determinant() << std::endl;  
          }
 
          //std::cout << "uKdagP:\n" << uKdagP_ << std::endl; 

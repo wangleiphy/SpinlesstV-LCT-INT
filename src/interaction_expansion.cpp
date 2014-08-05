@@ -131,6 +131,7 @@ void InteractionExpansion::save(alps::hdf5::archive & ar) const {
     }
     
     ar["sweeps"] << sweeps;
+    //ar["cycles"] << cycles;
     ar["vt"] << vt;
     ar["vi"] << vi;
     ar["vj"] << vj;
@@ -149,6 +150,7 @@ void InteractionExpansion::load(alps::hdf5::archive & ar) {
     std::vector<site_type> vi, vj; 
     
     ar["sweeps"] >> sweeps;
+    //ar["cycles"] >> cycles;
     ar["vt"] >> vt;
     ar["vi"] >> vi;  
     ar["vj"] >> vj;

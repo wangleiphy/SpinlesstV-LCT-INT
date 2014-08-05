@@ -15,9 +15,9 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'PBC'
 
-Llist = [12]
+Llist = [3]
 Wlist = Llist 
-#Vlist = [1.33]
+#Vlist = [1.0]
 Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 1.6, 0.2)
 
@@ -32,7 +32,7 @@ SWEEPS = 2*10**6
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################
-wtime = '12:00:00'
+wtime = '01:00:00'
 tmin = 60
 tmax = 600
 ncores = 320  # a multiply of ntasks_per_node 

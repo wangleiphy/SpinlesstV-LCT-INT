@@ -24,9 +24,11 @@ public:
   double fraction_completed() const;
 
   //print progress 
-  unsigned pertorder() const {return tlist.size();}; 
-  unsigned long progress() const {return sweeps;};        
-  unsigned block() const {return iblock;};   
+  unsigned pertorder() const {return tlist.size();}
+  unsigned long progress() const {return sweeps;}
+  unsigned block() const {return iblock;}
+  unsigned cycle() const {return cycles;}
+
   void evaluate(results_type& results);
 
   void test(); 
@@ -94,6 +96,7 @@ private:
   const itime_type blocksize;
   itime_type iblock; 
   int direction; 
+  unsigned cycles; 
   unsigned long sweeps;        
 
   double sign;

@@ -26,6 +26,7 @@ steps_per_block(parms["STEPS_PER_BLOCK"] | 100),
 blocksize(itime_max/nblock),
 iblock(0),
 direction(nblock==1? 0:1),
+cycles(0), 
 sweeps(0),
 sign(1.), 
 K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BCmodifier"]))), // K of the true Ham 
@@ -83,8 +84,10 @@ void InteractionExpansion::update()
       iblock += direction; 
 
       //if hit the end, revert the sweep direction 
-      if (iblock == nblock-1 || iblock == 0)
+      if (iblock == nblock-1 || iblock == 0){
           direction *= -1; 
+          cycles++; 
+      }
 
       //std::cout << "iblock, itau : " << iblock << "  " << gf.itau() << std::endl; 
       //std::cout << "tlist: "; 

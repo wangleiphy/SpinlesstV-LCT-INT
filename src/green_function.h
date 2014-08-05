@@ -46,8 +46,8 @@ class Green_function{
            ces.compute(Ktrial);
            uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
 
-           //Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
-           //uKdagP_ = svd.matrixU(); 
+           Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
+           uKdagP_ = svd.matrixU(); 
 
            //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
            //std::cout << "overlaps " << (uKdag_ * ces.eigenvectors()).determinant() << std::endl;  

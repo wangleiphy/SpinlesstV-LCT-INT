@@ -15,15 +15,15 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'PBC'
 
-Llist = [15]
+Llist = [3]
 Wlist = Llist 
-Vlist = [1.0, 1.4]
-#Vlist = arange(1.3, 1.4, 0.01)
+#Vlist = [1.0, 1.4]
+Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 1.6, 0.2)
 
 itime_max = 1<<31
-RECALC_PERIOD = 11
-WRAP_REFRESH_PERIOD = 25
+RECALC_PERIOD = 10
+WRAP_REFRESH_PERIOD = 17 
 
 STEPS_PER_BLOCK = 2
 NBLOCKS = 1024
@@ -36,7 +36,7 @@ wtime = '24:00:00'
 tmin = 60
 tmax = 600
 ncores = 320  # a multiply of ntasks_per_node 
-prog = '../bin/main'
+prog = '../bin/main_vbstrialwf'
 
 resfolder = '/mnt/lnec/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]
@@ -52,7 +52,7 @@ def submitJob(bin,args,jobname,wtime,run=False,ncores=20, wait=None):
 #SBATCH --exclusive
 #SBATCH --nodes=%g
 #SBATCH --time=%s
-#SBATCH --partition=dphys_compute
+#SBATCH --partition=dphys_largemem 
 #SBATCH --ntasks-per-node=20
 #SBATCH --ntasks-per-socket=10
 #SBATCH --cpus-per-task=1

@@ -25,14 +25,14 @@ itime_max = 1<<31
 RECALC_PERIOD = 10
 WRAP_REFRESH_PERIOD = 25
 
-STEPS_PER_BLOCK = 2
+STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
 THERMALIZATION = 2*10**4
 SWEEPS = 2*10**6 
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################
-wtime = '01:00:00'
+wtime = '00:30:00'
 tmin = 60
 tmax = 600
 ncores = 320  # a multiply of ntasks_per_node 

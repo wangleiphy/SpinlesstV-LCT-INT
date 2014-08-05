@@ -68,8 +68,10 @@ double InteractionExpansion::remove_impl(const itime_type itau, const bool compu
 }
 
 /*implement shift site index in a vertex*/
-double InteractionExpansion::shift_impl(const std::vector<site_type>& sites, const bool compute_only_weight)
+double InteractionExpansion::shift_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight)
 {
+
+  gf.wrap(itau, tlist, vlist);  
     
   site_type si = sites[0]; 
   site_type sj = sites[1]; 

@@ -104,12 +104,20 @@ void InteractionExpansion::shift()
   if(tlist.empty()) 
     return; 
   
-  itime_type itau = gf.itau(); 
-  if (tlist.find(itau) == tlist.end()) // there is no vertex at current time do nothing 
-      return; 
-    
-  //std::cout << "...1" << std::endl; 
+  tlist_type::const_iterator lower, upper; 
+  lower = std::lower_bound (tlist.begin(), tlist.end(), iblock*blocksize); 
+  upper = std::upper_bound (tlist.begin(), tlist.end(), (iblock+1)*blocksize, std::less_equal<itime_type>());  //equal is exclude
 
+  unsigned num_vertices = std::distance(lower, upper); //number of vertices in this block
+
+  // no vertex in current block do nothing
+  if(num_vertices == 0){
+      return; 
+  }
+
+  std::advance(lower, randomint(num_vertices)); //the vertex to shift 
+  itime_type itau = *lower; 
+    
   //mv sj to sjprime, which is another neighbor of si (but different from sj)
   unsigned i = randomint(2); // 0 or 1 
   site_type si = vlist[itau][i]; 
@@ -132,14 +140,14 @@ void InteractionExpansion::shift()
   sites.push_back(neighbors[randomint(neighbors.size())] ); //sjprime 
     
   // true means compute_only_weight
-  double metropolis_weight = shift_impl(sites, true);
+  double metropolis_weight = shift_impl(itau, sites, true);
 
   //std::cout << "...4 " <<  metropolis_weight << std::endl; 
 
   if(fabs(metropolis_weight) > random()){
 
     measurements["Shift"] << 1.;
-    shift_impl(sites, false);
+    shift_impl(itau, sites, false);
 
     sign*=metropolis_weight<0.?-1.:1.;
   }else{

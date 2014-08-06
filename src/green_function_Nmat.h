@@ -10,20 +10,20 @@ class Green_function{
 
     public:
 
-        Green_function(const Mat& K, const time_type timestep, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
+        Green_function(const Mat& K, const Mat& Ktrial, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
+        ,ihalfTheta_(itime_max/2)// index for tau = Theta/2 
         ,itau_(0)
-        ,R_(Mat::Identity(ns_, np_))// these are the regularied version 
-        ,N_(Mat::Identity(np_, np_))
-        ,L_(Mat::Identity(np_, ns_))
+        ,R_(ns_, np_) 
+        ,N_(np_, np_)
+        ,L_(np_, ns_)
         ,blocksize_(blocksize)
         ,wrap_refresh_counter1_(0)
         ,wrap_refresh_counter2_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
-        ,Lstorage_(nblock)
-        ,Rstorage_(nblock)
+        ,Storage_(nblock+1)// it stores LLL...RRR 
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;
@@ -38,21 +38,60 @@ class Green_function{
          //std::cout << "uK_:\n" << uK_ << std::endl; 
  
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
+         {
+           Eigen::SelfAdjointEigenSolver<Mat> ces;
+           ces.compute(Ktrial);
+           uKdagP_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
+
+           Eigen::JacobiSVD<Mat> svd(uKdagP_, Eigen::ComputeThinU); 
+           uKdagP_ = svd.matrixU(); 
+
+           //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
+           //std::cout << "overlaps " << (uKdag_ * ces.eigenvectors()).determinant() << std::endl;  
+         }
         
-         init_without_vertex(); 
+         //init_without_vertex(); 
         }
 
         void init_without_vertex(){
+               tlist_type tlist; 
+               vlist_type vlist; 
+               init_with_vertex(tlist, vlist); 
+         }
 
-          //fill in storage
-           //since initially there is no vertices U and V are all diagonal 
-           for (unsigned ib=0; ib< Rstorage_.size(); ++ib) {
-               Rstorage_[ib] = Mat::Identity(ns_, np_); // U^{dagger} *P and assume P is the eigen state of K 
-           }
-           
-           for (unsigned ib=0; ib< Lstorage_.size(); ++ib) {
-               Lstorage_[ib] = Mat::Identity(np_, ns_); 
-           }
+        void init_with_vertex(const tlist_type& tlist, vlist_type& vlist){
+          //does not change itau_ 
+
+          itime_type b = itau_/blocksize_; //current block 
+
+          Storage_[0] = uKdagP_;  //right 
+          for (unsigned ib=0; ib<b; ++ib) {
+
+                Mat UR= Storage_[ib];
+                propagator1(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, UR);
+
+                Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
+                Storage_[ib+1] = svd.matrixU(); 
+          }
+
+          if (itau_%blocksize_==0 && (tlist.find(itau_) != tlist.end()) ){ //special treatment when 
+                                                                        //itau_ is at block boundary 
+                                                                        //and we have a vertex at itau_  
+               Vprop(vlist[itau_][0], vlist[itau_][1], "L",  Storage_[b]);
+          }
+        
+          unsigned nblock = Storage_.size()-1; 
+          Storage_[nblock] = uKdagP_.adjoint();  //left
+          for (unsigned ib=nblock-1; ib>b; --ib) {
+
+             Mat VL = Storage_[ib+1];
+             propagator2(-1, (ib+1)*blocksize_, ib*blocksize_, tlist, vlist, VL);
+
+             Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
+             Storage_[ib] = svd.matrixV().adjoint();
+          }
+
+            boost::tie(R_, N_, L_) = stablization(itau_, tlist, vlist); // from scratch 
         }
 
         void rebuild(const tlist_type& tlist, vlist_type& vlist){
@@ -85,6 +124,10 @@ class Green_function{
             return Mat::Identity(ns_, ns_) - R_*N_*L_; 
         }
 
+        itime_type itau() const{
+            return itau_; 
+        }
+
         time_type tau() const {
             return itime2time(itau_); 
         }
@@ -99,10 +142,32 @@ class Green_function{
             res(si) = 1.0; 
             return res  -  uK_ *( R_* (N_*  (L_ * uKdag_.col(si))));
         }
+
+        Vec denmathalfTheta(const site_type si, const tlist_type& tlist, vlist_type& vlist)const {
+            //wrap Green's function to halfTheta  
+            Mat R = R_; 
+            Mat L = L_; 
+
+            if (ihalfTheta_ >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, ihalfTheta_, itau_, tlist, vlist, R);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, ihalfTheta_, itau_, tlist, vlist, L); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
+
+            }else{
+
+                // B^{-1} G B 
+                propagator2(1, itau_, ihalfTheta_, tlist, vlist, R); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, ihalfTheta_, tlist, vlist, L);   //  V_ * B(tau1) ... B(tau2)
+            }
+
+            Vec res = Vec::Zero(ns_); 
+            res(si) = 1.0; 
+            return res  -  uK_ *( R* (N_*  (L * uKdag_.col(si))));
+        }
             
         //update changes D_ and V_ 
         //but does not affect the storage 
-        void update(const site_type si, const site_type sj, const double gij){
+        void update(const site_type si, const site_type sj, const double gij, const double gji){
 
              //std::cout << "si, sj, gij: "  << si << " " << sj << " " << gij << std::endl; 
              //std::cout << "uKdag_.col(si):\n" << uKdag_.col(si) << std::endl; 
@@ -115,16 +180,16 @@ class Green_function{
              //std::cout << "Rshape: " << R_.rows() << " " << R_.cols() << std::endl;  
 
              //update N_
-             N_ +=  ((N_* (L_* uKdag_.col(sj))) * ((uK_.row(si)*R_)*N_)
-                     +(N_* (L_* uKdag_.col(si))) * ((uK_.row(sj)*R_)*N_)
-                    )/gij; 
+             N_ +=  ((N_* (L_* uKdag_.col(sj))) * ((uK_.row(si)*R_)*N_)) /gij 
+                  + ((N_* (L_* uKdag_.col(si))) * ((uK_.row(sj)*R_)*N_)) /gji; 
+
 
              //update R_
              Vprop(si, sj, "L",  R_);
 
              if (itau_%blocksize_==0){ //special treatment when update the block starting point 
                   //std::cout << "update: special treatment because update on the block boundary" << std::endl; 
-                  Rstorage_[itau_/blocksize_] = R_; 
+                  Storage_[itau_/blocksize_] = R_; 
              }
 
              //std::cout << "in update:" << std::endl; 
@@ -193,41 +258,37 @@ class Green_function{
                 itau_ = itau; 
             }
             
-            //refresh every wrap_refresh_period_ blocks  
-             refresh = false; 
-             if (wrap_refresh_counter2_ < wrap_refresh_period_){
-                 ++wrap_refresh_counter2_; 
-             }else{
-                 refresh = true; 
-                 wrap_refresh_counter2_ = 0; 
-             }
+            ++wrap_refresh_counter2_; 
 
             //when we wrap to a new block we need to update storage 
             if (b > b_){// move to a larger block on the left  
                 assert(b-b_ ==1) ; 
                     
-                Mat UR= Rstorage_[b_];
+                Mat UR= Storage_[b_];
                 propagator1(-1, b*blocksize_, b_*blocksize_, tlist, vlist, UR);
 
-                if (refresh){
+                if (wrap_refresh_counter2_ >= wrap_refresh_period_){
                    Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
                    UR = svd.matrixU();
+                   wrap_refresh_counter2_ = 0; 
                 }
 
-                Rstorage_[b] = UR; 
+                Storage_[b] = UR; 
 
             }else if (b< b_){// move to smaller block 
                 assert(b_-b ==1); 
                 
-                Mat VL = Lstorage_[b_];
+                Mat VL = Storage_[b_+1];
                 propagator2(-1, (b_+1)*blocksize_, b_*blocksize_, tlist, vlist, VL);
 
-                if (refresh){
+
+                if (wrap_refresh_counter2_ >= wrap_refresh_period_){
                   Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
                   VL = svd.matrixV().adjoint();
+                  wrap_refresh_counter2_ = 0;
                 }
 
-                Lstorage_[b] = VL; 
+                Storage_[b+1] = VL; 
             }
         }
 
@@ -258,10 +319,10 @@ class Green_function{
            itime_type b = itau/blocksize_; //block index 
            //std::cout << "itau, block: " << itau << " " << b << std::endl; 
 
-           Mat R = Rstorage_[b]; 
+           Mat R = Storage_[b]; 
            propagator1(-1, itau, b*blocksize_, tlist, vlist, R);
         
-           Mat L = Lstorage_[b]; 
+           Mat L = Storage_[b+1]; 
            propagator2(-1, (b+1)*blocksize_, itau, tlist, vlist, L);
 
            return boost::make_tuple(R, (L*R).inverse(), L); 
@@ -415,6 +476,9 @@ class Green_function{
         Mat uK_; 
         Mat uKdag_; 
 
+        Mat uKdagP_; 
+        
+        itime_type ihalfTheta_; 
         itime_type itau_; 
         
         //gtau = 1- R_ * N_ * L_; 
@@ -434,8 +498,7 @@ class Green_function{
         unsigned wrap_refresh_period_; 
 
         //storage
-        std::vector<Mat> Lstorage_;
-        std::vector<Mat> Rstorage_;
+        std::vector<Mat> Storage_;
 
 };
 

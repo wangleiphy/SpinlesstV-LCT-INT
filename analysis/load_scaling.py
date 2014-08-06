@@ -67,7 +67,7 @@ for f in list(resultFiles):
     if V< 1.3 or V>1.4:
         resultFiles.remove(f)
 
-    if L in [3]:
+    if L in [3, 6]:
         resultFiles.remove(f)
 
 

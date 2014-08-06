@@ -8,8 +8,8 @@
 
 #include <cmath>
 
-//#include "green_function.h"
-#include "green_function_Nmat.h"
+#include "green_function.h"
+//#include "green_function_Nmat.h"
 
 class InteractionExpansion: public alps::mcbase
 {

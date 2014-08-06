@@ -61,7 +61,7 @@ probs() // empty vector
 
 void InteractionExpansion::initialize_tvlist(){
 
-   unsigned Nv = 0;// static_cast<unsigned>(0.13*(beta * n_site * V));   //initial number of vertices 
+   unsigned Nv = static_cast<unsigned>(0.13*(beta * n_site * V));   //initial number of vertices 
    //std::cout << "Nv: " << Nv << std::endl; 
    for (unsigned i=0; i< Nv; ++i) {
        itime_type itau = randomint(itime_max); 
@@ -107,7 +107,8 @@ void InteractionExpansion::update()
 void InteractionExpansion::measure(){
   if (sweeps > therm_steps && sweeps%measurement_period ==0){
      time_type tau = gf.tau(); 
-     if (tau >=0.45*beta && tau < 0.55*beta) //only measure when we are in the center
+     //if (tau >=0.45*beta && tau < 0.55*beta) //only measure when we are in the center
+     if (fabs(tau - 0.5*beta) < 2.0)
         measure_observables();
    } 
 }

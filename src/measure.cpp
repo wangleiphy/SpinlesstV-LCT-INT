@@ -32,8 +32,8 @@ void InteractionExpansion::measure_M2()
 {
    site_type si = randomint(n_site); // we only do it for fixed si becaues of translational invarance 
     
-   Vec denmat = gf.denmat(si); 
-   //Vec denmat = gf.denmathalfTheta(si, tlist, vlist); //g_{ij}(Theta/2) for fixed i 
+   //Vec denmat = gf.denmat(si); 
+   Vec denmat = gf.denmathalfTheta(si, tlist, vlist); //g_{ij}(Theta/2) for fixed si 
 
    //g_ji = delta_ij - eta_i eta_j * g_ij 
 

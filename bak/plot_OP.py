@@ -74,16 +74,16 @@ for d1, d2 in zip(PBCres, APBCres):
     d1.x = 1./d1.x 
     d2.x = 1./d2.x 
 
-    #d1.y = 2.*sqrt(d1.y)
-    #d2.y = 2.*sqrt(d2.y)
+    d1.y = 2.*sqrt(d1.y)
+    d2.y = 2.*sqrt(d2.y)
 
     d1.props['label'] = 'QMC-PBC'
     d2.props['label'] = 'QMC-APBC'
 
     d2.props['xlabel'] = '$1/L\,\mathrm{or}\,1/D$'
 
-    d1.props['ylabel'] = '$M_2$'
-    d2.props['ylabel'] = '$M_2$'
+    #d1.props['ylabel'] = '$M_2$'
+    #d2.props['ylabel'] = '$M_2$'
 
     d1.props['color'] = colors[0]
     d2.props['color'] = colors[1]
@@ -112,10 +112,10 @@ if args.extrapolate:
 
 ax1.yaxis.set_major_locator(MaxNLocator(6))
 ax1.get_xaxis().set_visible(False)
-plt.ylim([-0.01, 0.06])
+#plt.ylim([-0.01, 0.06])
 
 plt.title('$V/t=1.0$')
-plt.legend(loc='upper left')
+#plt.legend(loc='upper left')
 
 #########################
 at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=1,)
@@ -134,7 +134,7 @@ if args.extrapolate:
 
 ax2.yaxis.set_major_locator(MaxNLocator(5))
 plt.xlim([0, 0.25])
-plt.ylim([-0.01, 0.06])
+#plt.ylim([-0.01, 0.06])
 
 #########################
 at = AnchoredText("b",prop=dict(size=18), frameon=True,loc=1,)
@@ -145,12 +145,13 @@ plt.gca().add_artist(at)
 plt.title('$V/t=1.4$')
 plt.legend(loc='upper left')
 
+
 ##shared y label 
 #yyl=plt.ylabel(r'$M_2$')
 #yyl.set_position((yyl.get_position()[0],1)) # This says use the top of the bottom axis as the reference point.
 #yyl.set_verticalalignment('center') 
 
-plt.subplots_adjust(hspace =0.2,left=0.15)
+#plt.subplots_adjust(hspace =0.2,left=0.15)
 
 
 if args.show:

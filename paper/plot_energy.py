@@ -14,11 +14,13 @@ import re
 from config import * 
 from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
-
-
+from extrapolate import extrapolate
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument("-fileheaders", nargs='+', default="params", help="fileheaders")
+
+parser.add_argument("-extrapolate", action='store_true',  help="do curve fitting")
+parser.add_argument("-nextrapolate", type=int, default= 4 ,  help="number of points used in extrapolation")
 
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument("-show", action='store_true',  help="show figure right now")
@@ -102,14 +104,19 @@ pyalps.plot.plot(res1)
 D, En = loadtxt('../data/iPEPS/V1.0.dat', unpack=True, usecols = (0,1))
 plt.plot(1./D, En, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
 
-ax1.yaxis.set_major_locator(MaxNLocator(6))
+if args.extrapolate:
+    extrapolate(res1, args.nextrapolate)
+
+ax1.yaxis.set_major_locator(MaxNLocator(5))
 ax1.get_xaxis().set_visible(False)
+plt.xlim([0, 0.25])
+plt.ylim([-0.92, -0.88])
 
 plt.title('$V/t=1.0$')
-plt.legend(loc='best')
+plt.legend(loc='upper left')
 
 #########################
-at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=3,)
+at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=1,)
 at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
 plt.gca().add_artist(at)
 #########################
@@ -118,24 +125,30 @@ ax2 = plt.subplot(212, sharex=ax1)
 pyalps.plot.plot(res2)
 D, En = loadtxt('../data/iPEPS/V1.4.dat', unpack=True, usecols = (0,1))
 plt.plot(1./D, En, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
-ax2.yaxis.set_major_locator(MaxNLocator(5))
+
+if args.extrapolate:
+    extrapolate(res2, args.nextrapolate)
+
+ax2.yaxis.set_major_locator(MaxNLocator(4))
+
+plt.xlim([0, 0.25])
+plt.ylim([-0.98, -0.95])
 
 #########################
-at = AnchoredText("b",prop=dict(size=18), frameon=True,loc=3,)
+at = AnchoredText("b",prop=dict(size=18), frameon=True,loc=1,)
 at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
 plt.gca().add_artist(at)
 #########################
 
 plt.title('$V/t=1.4$')
-plt.legend(loc='best')
+plt.legend(loc='upper left')
 
 ##shared y label 
 yyl=plt.ylabel(r'Energy per site')
 yyl.set_position((yyl.get_position()[0],1)) # This says use the top of the bottom axis as the reference point.
 yyl.set_verticalalignment('center') 
 
-plt.subplots_adjust(hspace =0.2)
-
+plt.subplots_adjust(hspace =0.2,left=0.15)
 
 if args.show:
     plt.show()

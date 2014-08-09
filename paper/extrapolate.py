@@ -11,12 +11,12 @@ def extrapolate(res, nextrapolate):
         yerror = array([y.error for y in d.y]) 
 
         def func(x, *p):
-             return p[0]*x + p[1]
-             #return p[0]*x**2 + p[1]*x + p[2]
+             #return p[0]*x + p[1]
+             return p[0]*x**2 + p[1]*x + p[2]
              #return p[0]*x**3 + p[1]*x**2 + p[2]*x + p[3]
         
         #try:
-        popt, pcov = curve_fit(func, d.x[-nextrapolate:], ymean[-nextrapolate:], sigma = yerror[-nextrapolate], p0=array((0.,0.)))
+        popt, pcov = curve_fit(func, d.x[-nextrapolate:], ymean[-nextrapolate:], sigma = yerror[-nextrapolate], p0=array((0.,0.,0.)))
         
         xlist = linspace(0,0.1,100)
         plt.plot(xlist, func(xlist, *tuple(popt)), '--', color = d.props['color'])
@@ -28,7 +28,7 @@ def extrapolate(res, nextrapolate):
         numbins = len(d.y[0].jackknife)
         for k in range(numbins):
             y = [yi.jackknife[k]  for yi in d.y]
-            popt, pcov = curve_fit(func, d.x[-nextrapolate:], y[-nextrapolate:], p0=array((0.,0.)))
+            popt, pcov = curve_fit(func, d.x[-nextrapolate:], y[-nextrapolate:], p0=array((0.,0.,0.)))
             #print k, popt
             M2.jackbins.append(popt[-1])
         M2.jacknife_eval()

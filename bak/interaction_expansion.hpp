@@ -7,14 +7,9 @@
 #include <alps/alea.h>
 
 #include <cmath>
-#include "green_function.h"
-#include "types.h"
-#include "mmatrix.hpp"
-#include "operator.hpp"
-#include <boost/chrono.hpp>
 
-/*types*/
-class c_or_cdagger;
+#include "green_function.h"
+//#include "green_function_Nmat.h"
 
 class InteractionExpansion: public alps::mcbase
 {
@@ -29,156 +24,119 @@ public:
   double fraction_completed() const;
 
   //print progress 
-  unsigned int pertorder() const {return M.num_vertices();}; 
-  unsigned long progress() const {return sweeps;};        
-
-  void build_matrix(); 
-  void test(); 
+  unsigned pertorder() const {return tlist.size();}
+  unsigned long progress() const {return sweeps;}
+  unsigned block() const {return iblock;}
+  unsigned cycle() const {return cycles;}
 
   void evaluate(results_type& results);
 
+  void test(); 
+  void initialize_tvlist(); 
+
+  using alps::mcbase::save;
+  virtual void save(alps::hdf5::archive & ar) const;
+  
+  using alps::mcbase::load;
+  virtual void load(alps::hdf5::archive & ar);
 
 private:
   
   /*functions*/
   // in file io.cpp
   void print(std::ostream &os) const; //print parameters 
-  void update_params(alps::params &parms) const; 
-  
-  /*green's function*/
-  // in file spines.cpp
-  double green0_spline(const creator &cdagger, const creator &c) const;
-  double green0_spline(const itime_t delta_t, const site_t site1, const site_t site2) const;
   
   /*the actual solver functions*/
   // in file solver.cpp
   void interaction_expansion_step();
-  void reset_perturbation_series();
+  //void reset_perturbation_series();
 
   // in file model.cpp 
   // add and remove vertices 
   void add();
   void remove();
-
-  // in file worm.cpp 
-  // create and destroy worm, it forms a triangle between Z, M2 and M4 
-  void Z_to_W2(); 
-  void W2_to_Z(); 
-
-  void W2_to_W4(); 
-  void W4_to_W2(); 
-
-  void Z_to_W4(); 
-  void W4_to_Z(); 
-
-  //add and remove vertex in worm space 
-  void wormadd(); 
-  void wormremove(); 
-  //shift worm 
-  void wormshift(); 
-  //create/destroy worm by open a vertex 
-  //void wormopen(); 
-  //void wormclose(); 
- 
+  void shift();
 
   // in file update.cpp:
   // add or remove vertex in partition funciton sector  
-  double add_impl(const std::vector<double>& taus, const std::vector<site_t>& sites, const bool compute_only_weight); 
-  double remove_impl(const std::vector<unsigned int>& vertices, const bool compute_only_weight);
+  double add_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight); 
+  double remove_impl(const itime_type itau, const bool compute_only_weight);
+  double shift_impl(const itime_type itau, const std::vector<site_type>& sites, const bool compute_only_weight);
 
-  //in file wormupdate.cpp:
-  //create or destroy the worm
-  double wormcreate_impl(const double tau, const std::vector<site_t>& sites, const bool compute_only_weight);
-  double wormdestroy_impl(const bool compute_only_weight, const unsigned int Morder);
-  
-  //add or remove vertex in the presence of worm
-  double wormadd_impl(const std::vector<double>& taus, const std::vector<site_t>& sites, const bool compute_only_weight);
-  double wormremove_impl(const std::vector<unsigned int>& vertices, const bool compute_only_weight);
-  //shift a worm 
-  double wormshift_impl(const double tau, const std::vector<site_t>& sites, const bool compute_only_weight);
-  //open/close a vertex to get worm  
-  double wormopen_impl(const unsigned int vertex_nr, const bool compute_only_weight); 
-  double wormclose_impl(const bool compute_only_weight);
-  
   /*measurement functions*/
   // in file observables.cpp
   void initialize_observables();
   void measure_observables();
-  //in file measure.cpp
-  void measure_local(); 
-  void measure_nncorrelation(); 
-  //in file unequaltime.cpp 
-  void measure_gf();     // <c(t) c^{+}(0)>
-  void measure_ntaun();  // <(n(t)-1/2)(n(0)-1/2)>
- 
+  // in file measure.cpp
+  void measure_M2();
+  void measure_vhist(); 
+
   /*private member variables, constant throughout the simulation*/
   const alps::Parameters Params;
   const alps::graph_helper<> lattice; 
   const unsigned int max_order;                        
-  //const spin_t n_flavors;                          //number of flavors 
-  const site_t n_site;                               //number of sites
-  const site_t n_bond;                               //number of *interaction* bond (fine when n.n. hopping and V )
-  const site_t n_cell;                               //number of unit cells = n_site/2 
-  Eigen::MatrixXd K_;  // the kinetic energy matrix 
-  
-  //graph stuff 
-  std::vector<DistanceMap> distmap;             //  vector<map(dist:vector<sites>)>
-  Eigen::MatrixXi          disttable;           //  table(si, sj) = dist  
-  std::vector<std::vector<site_t> > neighbors;  //neighbor list for each site within Nneighbors hoppings 
-  std::vector<unsigned int> shellsize;          //number of sites in dist steps 
-  std::vector<unsigned int> neighborshellsize;  //number of sites in dist+1 and dist-1 steps
+    
+  const unsigned n_site; 
+  const unsigned n_bond; // number of *interaction* bond (fine when n.n. hopping and V )
 
-//  const frequency_t n_matsubara;        //number of matsubara freq
-//  const frequency_t n_matsubara_measurements;        //number of measured matsubara freq
-  const itime_index_t n_tau;                        //number of imag time slices
-  const itime_index_t n_taumeasure;                 // number of imag time where we do measurement 
-//  const frequency_t n_self;                        //number of self energy (W) binning points
   const boost::uint64_t mc_steps;                        
   const unsigned long therm_steps;                
   
-  const itime_t temperature;                               
-  const itime_t beta;  
-  const itime_t timestepinv;// n_tau * temperature 
-  const itime_t timestep;   // 1/(n_tau * temperature) 
+  const time_type beta;  
   const double V;                        
-  //const double delta; 
+  tlist_type tlist; //a list contains time where we have vertex 
+  vlist_type vlist; //map from tau to sites 
   
-  const unsigned int recalc_period;                
-  const unsigned int measurement_period;        
-  //const unsigned int convergence_check_period;        
-  
-  //important M matrix  
-  m_matrix M;
+  const unsigned recalc_period;                
+  const unsigned measurement_period; 
 
-  /*private member variables*/
-  itime_green_function_t bare_green_itime;
-    
+  const itime_type itime_max;  
+  const itime_type nblock; 
+  const unsigned steps_per_block;        
+  const itime_type blocksize;
+  itime_type iblock; 
+  int direction; 
+  unsigned cycles; 
   unsigned long sweeps;        
-  //double weight;
+
   double sign;
 
-  const double eta2; //coef before M2
-  const double eta4; //coef before M4 
-  const double Zupdate; 
-  const double ZtoW2;
-  const double W2toZ; 
-  const double W2toW4;
-  const double W4toW2;
-  const double ZtoW4;
-  const double W4toZ;
-  const double Wupdate; //(Zupdate + Wupdate ) *2 + M2create + M2destroy + M4create + M4destroy + Wshift = 1
+  Mat K_;    // the kinetic energy matrix 
+  Mat Ktrial_left; 
+  Mat Ktrial_right; 
+  Green_function gf; 
+
+  //graph stuff 
+  std::vector<DistanceMap> distmap;            //  vector<map from dist to vector<sites> >
+  Eigen::MatrixXi          disttable;          //  table(si, sj) = dist  
+  std::vector<unsigned>    shellsize;          //  number of sites in dist steps 
+
+
+  const double Add; 
+  const double Remove; 
   std::vector<double> probs; 
 
-  const double coef2; 
-  const double coef4; 
+  template<typename T>
+  T randomint(const T i) {return random() * i;}//random int [0, i) 
+  
+  /*
+  std::pair<tlist_type::const_iterator> vertices(const  unsigned ib) const {//pointer to vertices of inside the block ib 
+    tlist_type::const_iterator lower, upper 
+    lower = std::lower_bound (tlist.begin(), tlist.end(), ib*blocksize); 
+    upper = std::upper_bound (tlist.begin(), tlist.end(), (ib+1)*blocksize, std::less_equal<itime_type>());  //equal is exclude
 
-  unsigned int wormlength; 
+    return std::make_pair(lower, upper); 
+  }
+  */
 
-  const unsigned int n_max; 
-  const bool measure_unequaltime; 
+  //random number generator 
+  //typedef boost::mt19937 engine_type;
+  //engine_type eng_;
 
-  unsigned int randomint(const unsigned int i) {return random() * i;}//random int [0, i) 
-
+  //mutable boost::variate_generator<engine_type&, boost::uniform_int<itime_type> >  itime_rng; 
+  //mutable boost::variate_generator<engine_type&, boost::uniform_int<site_type> >  bond_rng; 
+  //mutable boost::variate_generator<engine_type&, boost::uniform_real<> > random; 
+    
 };
 
 #endif

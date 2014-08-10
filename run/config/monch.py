@@ -13,13 +13,13 @@ BCmodifier = '' #only APBCX will have effect anything else will not affet the la
 #latticename = 'chain lattice'
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'PBC_randomtrialwf'
+nickname = 'PBC'
 
-Llist = [3, 6]
+Llist = [15]
 Wlist = Llist 
-#Vlist = [1.36]
-Vlist = arange(1.3, 1.41, 0.02)
-#Vlist = arange(0.2, 1.6, 0.2)
+Vlist = [1.33, 1.37]
+#Vlist = arange(1.3, 1.41, 0.01)
+#Vlist = arange(0.2, 2.2, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 17
@@ -27,16 +27,16 @@ WRAP_REFRESH_PERIOD = 25
 
 NBLOCKS = 1024
 STEPS_PER_BLOCK = 2
-THERMALIZATION = 20000
+THERMALIZATION = 50000
 SWEEPS = 1000000
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################
-wtime = '00:30:00'
+wtime = '24:00:00'
 tmin = 60
 tmax = 600
 ncores = 320  # a multiply of ntasks_per_node 
-prog = '../bin/main_randomtrialwf'
+prog = '../bin/main'
 
 resfolder = '/mnt/lnec/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]
@@ -52,7 +52,7 @@ def submitJob(bin,args,jobname,wtime,run=False,ncores=20, wait=None):
 #SBATCH --exclusive
 #SBATCH --nodes=%g
 #SBATCH --time=%s
-#SBATCH --partition=dphys_largemem
+#SBATCH --partition=dphys_compute
 #SBATCH --ntasks-per-node=20
 #SBATCH --ntasks-per-socket=10
 #SBATCH --cpus-per-task=1

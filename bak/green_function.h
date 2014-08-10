@@ -10,7 +10,7 @@ class Green_function{
 
     public:
 
-        Green_function(const Mat& K, const Mat& Ktrial, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
+        Green_function(const Mat& K, const Mat& Ktrial_left , const Mat& Ktrial_right, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
@@ -39,81 +39,30 @@ class Green_function{
          //std::cout << "U*Udag:\n" << uK_ * uKdag_ << std::endl; 
          //generate the trial wave function
          //uKdagP_ = Mat::Identity(ns_, np_); // if the trial Ham is K 
-        
-         //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
+         //uKdagP_ = Mat::Random(ns_, np_); 
+
          {
-
-           //Vec v= 0.1*Vec::Random(np_);  
-           //Mat R = v.asDiagonal();  
-           //R += Mat::Identity(np_, np_); //a random diagonal matrix
-           Mat R = Mat::Random(np_, np_); 
-           std::cout << "R:\n" << R << std::endl;
-
            Eigen::SelfAdjointEigenSolver<Mat> ces;
-           ces.compute(Ktrial);
-           right_ = uKdag_ * ces.eigenvectors().leftCols(np_) * R;  
+           ces.compute(Ktrial_left);
+           left_ = ces.eigenvectors().leftCols(np_).adjoint() * uK_;  
 
            //Eigen::JacobiSVD<Mat> svd(right_, Eigen::ComputeThinU); 
            //right_ = svd.matrixU(); 
-           left_ = R.inverse() * ces.eigenvectors().leftCols(np_).adjoint() * uK_; 
+         }
 
+         {
+           Eigen::SelfAdjointEigenSolver<Mat> ces;
+           ces.compute(Ktrial_right);
+           right_ = uKdag_ * ces.eigenvectors().leftCols(np_);  
+
+           //Eigen::JacobiSVD<Mat> svd(right_, Eigen::ComputeThinU); 
+           //right_ = svd.matrixU(); 
+
+           //std::cout << "eigenvalues of Ktrial_:\n" << ces.eigenvalues() << std::endl; 
            //std::cout << "overlaps " << (uKdag_ * ces.eigenvectors()).determinant() << std::endl;  
          }
 
-         //std::cout << "uKdagP:\n" << uKdagP_ << std::endl; 
-         //init_without_vertex(); 
         }
-
-        /*
-        void init_without_vertex(){
-
-          itime_type b = itau_/blocksize_; //current block 
-
-          std::cout << "itau_,b= " << itau_ <<  " " << b << std::endl; 
-          Storage_[0] = uKdagP_;  //right 
-
-          unsigned counter = 0 ; 
-          for (unsigned ib=0; ib<b; ++ib) {
-
-                Mat UR= Storage_[ib];
-                Kprop(-1, blocksize_, "L", UR); 
-                //++counter; 
-
-                //if (counter >= wrap_refresh_period_){
-                   Eigen::JacobiSVD<Mat> svd(UR, Eigen::ComputeThinU); 
-                   UR = svd.matrixU();
-                //   counter = 0; 
-                //}
-                Storage_[ib+1] = UR; 
-          }
-
-          unsigned nblock = Storage_.size()-1; 
-          Storage_[nblock] = uKdagP_.adjoint();  //left
-
-          counter = 0;
-          for (unsigned ib=nblock-1; ib>b; --ib) {
-
-             Mat VL = Storage_[ib+1];
-             Kprop(-1, blocksize_, "R", VL); 
-             //++counter; 
-
-             //if (counter >= wrap_refresh_period_){
-                Eigen::JacobiSVD<Mat> svd(VL, Eigen::ComputeThinV); 
-                VL = svd.matrixV().adjoint(); 
-                //counter = 0; 
-             //}
-             Storage_[ib] = VL;
-          }
-
-           Mat UR = Storage_[b]; 
-           Kprop(-1, itau_ - b*blocksize_, "L", UR);
-        
-           Mat VL = Storage_[b+1]; 
-           Kprop(-1, (b+1)*blocksize_-itau_, "R", VL);
-
-           gtau_ = Mat::Identity(ns_, ns_ ) -UR * ((VL*UR).inverse() * VL);
-        }
-        */
 
          void init_without_vertex(){
                tlist_type tlist; 
@@ -550,9 +499,9 @@ class Green_function{
         Vec wK_; 
         Mat uK_; 
         Mat uKdag_; 
-
-        Mat right_; 
+        
         Mat left_; 
+        Mat right_; 
         
         itime_type ihalfTheta_; 
         itime_type itau_; 

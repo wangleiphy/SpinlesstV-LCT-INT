@@ -9,7 +9,6 @@ import subprocess
 import socket
 import argparse
 from numpy import array , linspace , sqrt , arange , loadtxt 
-from pytools.floatwitherror import FloatWithError as fwe
 import re 
 from config import * 
 from matplotlib.ticker import MaxNLocator
@@ -55,12 +54,12 @@ for f in resultFiles:
     else:
         PBCfiles.append(f)
 
-data = pyalps.loadMeasurements(PBCfiles, 'Energy')
-PBCres = pyalps.collectXY(data, x='L', y='Energy', foreach = ['V'])
+data = pyalps.loadMeasurements(PBCfiles, 'M2')
+PBCres = pyalps.collectXY(data, x='L', y='M2', foreach = ['V'])
 pyalps.propsort(PBCres,'V')
 
-data = pyalps.loadMeasurements(ABPCfiles, 'Energy')
-APBCres = pyalps.collectXY(data, x='L', y='Energy', foreach = ['V'])
+data = pyalps.loadMeasurements(ABPCfiles, 'M2')
+APBCres = pyalps.collectXY(data, x='L', y='M2', foreach = ['V'])
 pyalps.propsort(APBCres,'V')
 
 #print pyalps.plot.convertToText(res)
@@ -75,12 +74,16 @@ for d1, d2 in zip(PBCres, APBCres):
     d1.x = 1./d1.x 
     d2.x = 1./d2.x 
 
+    d1.y = 2.*sqrt(d1.y)
+    d2.y = 2.*sqrt(d2.y)
+
     d1.props['label'] = 'QMC-PBC'
     d2.props['label'] = 'QMC-APBC'
 
     d2.props['xlabel'] = '$1/L\,\mathrm{or}\,1/D$'
-    d1.props['ylabel'] = ''
-    d2.props['ylabel'] = ''
+
+    #d1.props['ylabel'] = '$M_2$'
+    #d2.props['ylabel'] = '$M_2$'
 
     d1.props['color'] = colors[0]
     d2.props['color'] = colors[1]
@@ -101,19 +104,18 @@ ax1 = plt.subplot(211)
 
 pyalps.plot.plot(res1)
 
-D, En = loadtxt('../data/iPEPS/V1.0.dat', unpack=True, usecols = (0,1))
-plt.plot(1./D, En, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+D, OP = loadtxt('../data/iPEPS/V1.0_OP.dat', unpack=True, usecols = (0,1))
+plt.plot(1./D, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
 
 if args.extrapolate:
     extrapolate(res1, args.nextrapolate)
 
-ax1.yaxis.set_major_locator(MaxNLocator(5))
+ax1.yaxis.set_major_locator(MaxNLocator(6))
 ax1.get_xaxis().set_visible(False)
-plt.xlim([0, 0.25])
-plt.ylim([-0.92, -0.88])
+#plt.ylim([-0.01, 0.06])
 
 plt.title('$V/t=1.0$')
-plt.legend(loc='upper left')
+#plt.legend(loc='upper left')
 
 #########################
 at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=1,)
@@ -123,16 +125,16 @@ plt.gca().add_artist(at)
 
 ax2 = plt.subplot(212, sharex=ax1)
 pyalps.plot.plot(res2)
-D, En = loadtxt('../data/iPEPS/V1.4.dat', unpack=True, usecols = (0,1))
-plt.plot(1./D, En, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+
+D, OP = loadtxt('../data/iPEPS/V1.4_OP.dat', unpack=True, usecols = (0,1))
+plt.plot(1./D, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
 
 if args.extrapolate:
     extrapolate(res2, args.nextrapolate)
 
-ax2.yaxis.set_major_locator(MaxNLocator(4))
-
+ax2.yaxis.set_major_locator(MaxNLocator(5))
 plt.xlim([0, 0.25])
-plt.ylim([-0.98, -0.95])
+#plt.ylim([-0.01, 0.06])
 
 #########################
 at = AnchoredText("b",prop=dict(size=18), frameon=True,loc=1,)
@@ -143,12 +145,14 @@ plt.gca().add_artist(at)
 plt.title('$V/t=1.4$')
 plt.legend(loc='upper left')
 
-##shared y label 
-yyl=plt.ylabel(r'Energy per site')
-yyl.set_position((yyl.get_position()[0],1)) # This says use the top of the bottom axis as the reference point.
-yyl.set_verticalalignment('center') 
 
-plt.subplots_adjust(hspace =0.2,left=0.15)
+##shared y label 
+#yyl=plt.ylabel(r'$M_2$')
+#yyl.set_position((yyl.get_position()[0],1)) # This says use the top of the bottom axis as the reference point.
+#yyl.set_verticalalignment('center') 
+
+#plt.subplots_adjust(hspace =0.2,left=0.15)
+
 
 if args.show:
     plt.show()

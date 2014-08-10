@@ -45,8 +45,8 @@ for f in list(resultFiles):
     L = int(re.search('L([0-9]*)W',f).group(1)) 
     V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
     
-#    if V< 1.3 or V>1.4:
-#        resultFiles.remove(f)
+    if V< 1.3 or V>1.4:
+        resultFiles.remove(f)
 
 #    if L in [15]:
 #        resultFiles.remove(f)

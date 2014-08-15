@@ -13,10 +13,12 @@ M = 3200
 parms = []
 #for V in arange(0.0, 2.2, 0.05):
 for V in [1.0, 2.0, 3.0, 4.0]:
+#for V in [1.5, 1.6, 1.7, 1.8, 1.9, 2.1, 2.2, 2.3, 2.4, 2.5]:
+#for V in arange(20):
     parms.append({
           'LATTICE_LIBRARY'           : 'mylattices.xml',
           'MODEL_LIBRARY'             : 'mymodels.xml',
-          'LATTICE'                   : 'chainL32', 
+          'LATTICE'                   : 'open chain lattice', 
           'MODEL'                     : "spinless fermions",
 	      'CONSERVED_QUANTUMNUMBERS'  : 'N',
   	      'TRANSLATION_SYMMETRY'      : 'false',
@@ -29,7 +31,8 @@ for V in [1.0, 2.0, 3.0, 4.0]:
 	      'N_total'                   : N, 
           'NUMBER_EIGENVALUES'        : 1,
 #          'MEASURE_CORRELATIONS[corr]': 'cdag:c',
-          'MEASURE_CORRELATIONS[nncorr]': 'n:n', 
+#          'MEASURE_CORRELATIONS[nncorr]': 'n:n', 
+          'MEASURE[Renyi2]'    : 1, 
 #          'MEASURE_LOCAL[Nloc]'       : 'n',
 #          'INITIAL_SITE'              : 0
           #"PRINT_EIGENVECTORS"        : 1
@@ -43,7 +46,6 @@ input_file = pyalps.writeInputFiles('spinlesstV',parms)
 folder = '../../data/dmrg/'
 for p in parms:
     parmname = folder + str(p['LATTICE']).replace(" ", "")+'L'+str(p['L'])+'_W'+str(p['W'])+'_N'+str(p['N_total'])+'_V'+str(p['V0']) + '_SWEEPS' + str(p['SWEEPS']) + '_M'  + str(p['MAXSTATES'])
-
     input_file = pyalps.writeInputFiles(parmname, [p])
     #pyalps.runApplication('mps_optim',input_file) #,writexml=True)#,MPI=2)
 

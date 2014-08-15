@@ -17,7 +17,7 @@ nickname = 'PBC'
 
 Llist = [15]
 Wlist = Llist 
-Vlist = [1.33, 1.37]
+Vlist = [1.36]
 #Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 2.2, 0.2)
 
@@ -27,8 +27,8 @@ WRAP_REFRESH_PERIOD = 25
 
 NBLOCKS = 1024
 STEPS_PER_BLOCK = 2
-THERMALIZATION = 50000
-SWEEPS = 1000000
+THERMALIZATION = 20000
+SWEEPS = 4000000
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################

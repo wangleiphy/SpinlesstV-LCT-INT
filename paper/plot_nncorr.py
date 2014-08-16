@@ -53,13 +53,13 @@ print res
 icolor = 0
 for d in res:
     V = d.props['V']
-    d.props['xlabel'] = r'$R$'
+    d.props['xlabel'] = r'$r$'
 
     if args.logscale:
-        d.props['ylabel'] = r'$(-1)^RC(R)$'
+        d.props['ylabel'] = r'$(-1)^r C(r)$'
         d.y = abs(d.y)
     else:
-        d.props['ylabel'] = r'$C(R)$'
+        d.props['ylabel'] = r'$C(r)$'
 
     d.props['label'] =  r'$V/t=%g$'%(V)
 

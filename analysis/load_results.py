@@ -161,7 +161,6 @@ else:
     #email it to me 
     recipient = "lewang@phys.ethz.ch"
     message = 'Send from ' + os.getcwd() + ' with python ' + ' '.join([str(a) for a in sys.argv])
-    message += '\n' + pyalps.plot.convertToText(res)
     subject = 'Figure: ' + args.outname
 
     machinename = socket.gethostname()

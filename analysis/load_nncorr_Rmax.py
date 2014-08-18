@@ -9,6 +9,7 @@ import subprocess
 import socket
 import subprocess
 import re 
+from numpy import array 
 
 import argparse
 
@@ -21,6 +22,11 @@ parser.add_argument("-logscale", action='store_true',  help="logscale")
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument("-show", action='store_true',  help="show figure right now")
 group.add_argument("-outname", default="result.pdf",  help="output pdf file")
+
+group = parser.add_argument_group()
+group.add_argument("-xc", type = float,  default=0., help="xc")
+group.add_argument("-a", type = float,  default=0., help="a")
+group.add_argument("-b", type = float,  default=0., help="b")
 
 args = parser.parse_args()
 
@@ -36,7 +42,9 @@ for f in list(resultFiles):
     L = int(re.search('L([0-9]*)W',f).group(1)) 
     V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
     
-    if V not in [1.33, 1.34, 1.35, 1.36]:
+#    if V not in [1.33, 1.34, 1.35, 1.36]:
+#        resultFiles.remove(f)
+    if V< 1.3 or V>1.4 or L in [3]:
         resultFiles.remove(f)
 
 
@@ -61,11 +69,22 @@ for d in data:
     res.append(r)
 
 print res 
-res = pyalps.collectXY(res, x='L', y='farthestnncorr', foreach = ['V'])
+res = pyalps.collectXY(res, x='V', y='farthestnncorr', foreach = ['L'])
 
 #for d in res:
 #    d.y *= d.x**2
 #    d.x = 1./d.x 
+
+#scale data 
+for d in res:
+    L = d.props['L']
+    d.x = (d.x- args.xc) * L ** args.a 
+    d.y = array([y*L**args.b for y in d.y])
+
+    d.props['xlabel'] = r'$(V-V_c)L^{a}$'
+    d.props['ylabel'] = r'$C(R_\mathrm{max})L^{b}$'
+    d.props['label'] = '$L=%g$' %(L)
+    d.props['line'] = '-o'
 
 if args.copydata:
     for resultFile in resultFiles:
@@ -76,7 +95,7 @@ if args.copydata:
 print pyalps.plot.convertToText(res)
 
 pyalps.plot.plot(res)
-plt.legend(loc='lower left')
+plt.legend(loc='upper left')
 
 #plt.xlim([0, 0.2])
 #plt.ylim([0, 0.015])
@@ -98,7 +117,6 @@ else:
     #email it to me 
     recipient = "lewang@phys.ethz.ch"
     message = 'Send from ' + os.getcwd() + ' with python ' + ' '.join([str(a) for a in sys.argv])
-    message += '\n' + pyalps.plot.convertToText(nncorr)
     subject = 'Figure: ' + args.outname
 
     machinename = socket.gethostname()

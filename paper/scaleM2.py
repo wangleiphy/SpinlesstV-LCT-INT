@@ -154,7 +154,7 @@ ax1.yaxis.set_major_locator(MaxNLocator(4))
 plt.legend(loc='best')
 
 #########################
-at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=4,)
+at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=1,)
 at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
 plt.gca().add_artist(at)
 #########################
@@ -172,7 +172,7 @@ plt.legend(loc='best')
 #ax2.yaxis.set_major_locator(MaxNLocator(4))
 
 #########################
-at = AnchoredText("b",prop=dict(size=18), frameon=True,loc=4,)
+at = AnchoredText("b",prop=dict(size=18), frameon=True,loc=1,)
 at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
 plt.gca().add_artist(at)
 #########################

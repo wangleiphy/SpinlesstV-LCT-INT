@@ -73,11 +73,24 @@ resultFiles = list(set(resultFiles))
 print resultFiles 
 
 data = pyalps.loadMeasurements(resultFiles, args.y)
-
 data = pyalps.flatten(data)
 print data 
 
-res = pyalps.collectXY(data, x=args.x, y=args.y, foreach = ['L'])
+if args.y=='nncorr':
+    res = []
+    for d in data:
+        L = int(d.props['L'])
+
+        r = pyalps.DataSet()
+        #r.y = [d.y[-1]]
+        r.y = [abs(d.y[L])]
+        r.props = d.props 
+        r.props['observable'] = 'farthestnncorr'
+        res.append(r)
+
+    res = pyalps.collectXY(res, x=args.x, y='farthestnncorr', foreach = ['L'])
+else:
+    res = pyalps.collectXY(data, x=args.x, y=args.y, foreach = ['L'])
 
 print res
 

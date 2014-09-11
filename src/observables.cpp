@@ -13,6 +13,7 @@ void InteractionExpansion::initialize_observables()
                << alps::ngs::RealObservable("IntE")
                << alps::ngs::RealObservable("KinE")
                << alps::ngs::RealObservable("Energy")
+//               << alps::ngs::RealObservable("Kappa")
                ; 
 
   //measurements << alps::ngs::RealVectorObservable("Vhist"); 

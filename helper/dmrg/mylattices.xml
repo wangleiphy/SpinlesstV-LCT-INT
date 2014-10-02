@@ -966,7 +966,7 @@
   <EDGE source="18" target="13" id="27" type="0" vector="0.499999999999995004 0.28867513459481003446"/>
 </GRAPH>
 
-<GRAPH name="chainL32" dimension="1" vertices="32" edges="32">
+<GRAPH name="chainL32APBCX" dimension="1" vertices="32" edges="32">
   <VERTEX id="1" type="0"><COORDINATE>0</COORDINATE></VERTEX>
   <VERTEX id="2" type="0"><COORDINATE>1</COORDINATE></VERTEX>
   <VERTEX id="3" type="0"><COORDINATE>2</COORDINATE></VERTEX>
@@ -1163,6 +1163,26 @@
 <EDGE source="62" target="63" id="62" type="0" vector="1"/>
 <EDGE source="63" target="64" id="63" type="0" vector="1"/>
 <EDGE source="64" target="1" id="64" type="1" vector="1"/>
+</GRAPH>
+
+
+<GRAPH name="chainL8APBCX" dimension="1" vertices="8" edges="8">
+  <VERTEX id="1" type="0"><COORDINATE>0</COORDINATE></VERTEX>
+  <VERTEX id="2" type="0"><COORDINATE>1</COORDINATE></VERTEX>
+  <VERTEX id="3" type="0"><COORDINATE>2</COORDINATE></VERTEX>
+  <VERTEX id="4" type="0"><COORDINATE>3</COORDINATE></VERTEX>
+  <VERTEX id="5" type="0"><COORDINATE>4</COORDINATE></VERTEX>
+  <VERTEX id="6" type="0"><COORDINATE>5</COORDINATE></VERTEX>
+  <VERTEX id="7" type="0"><COORDINATE>6</COORDINATE></VERTEX>
+  <VERTEX id="8" type="0"><COORDINATE>7</COORDINATE></VERTEX>
+  <EDGE source="1" target="2" id="1" type="0" vector="1"/>
+  <EDGE source="2" target="3" id="2" type="0" vector="1"/>
+  <EDGE source="3" target="4" id="3" type="0" vector="1"/>
+  <EDGE source="4" target="5" id="4" type="0" vector="1"/>
+  <EDGE source="5" target="6" id="5" type="0" vector="1"/>
+  <EDGE source="6" target="7" id="6" type="0" vector="1"/>
+  <EDGE source="7" target="8" id="7" type="0" vector="1"/>
+  <EDGE source="8" target="1" id="8" type="1" vector="1"/>
 </GRAPH>
 
 </LATTICES>

@@ -15,9 +15,9 @@ latticename = 'honeycomb lattice'
 ###############################
 nickname = 'PBC'
 
-Llist = [18]
+Llist = [15]
 Wlist = Llist 
-Vlist = [1.4]
+Vlist = [1.38]
 #Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 2.2, 0.2)
 
@@ -27,8 +27,8 @@ WRAP_REFRESH_PERIOD = 25
 
 NBLOCKS = 1024
 STEPS_PER_BLOCK = 2
-THERMALIZATION = 50000
-SWEEPS = 1000000
+THERMALIZATION = 20000
+SWEEPS = 4000000
 MEASUREMENT_PERIOD = 13        # in unit of block
 
 ##############################
@@ -52,7 +52,7 @@ def submitJob(bin,args,jobname,wtime,run=False,ncores=20, wait=None):
 #SBATCH --exclusive
 #SBATCH --nodes=%g
 #SBATCH --time=%s
-#SBATCH --partition=dphys_largemem
+#SBATCH --partition=dphys_compute
 #SBATCH --ntasks-per-node=20
 #SBATCH --ntasks-per-socket=10
 #SBATCH --cpus-per-task=1

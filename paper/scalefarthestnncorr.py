@@ -10,14 +10,16 @@ import socket
 import subprocess
 import re 
 from numpy import array 
+from config import * 
+from matplotlib.ticker import MaxNLocator
+from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
+
 
 import argparse
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument("-fileheaders", nargs='+', default="params", help="fileheaders")
-
 parser.add_argument("-copydata", action='store_true',  help="copy data")
-parser.add_argument("-logscale", action='store_true',  help="logscale")
 
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument("-show", action='store_true',  help="show figure right now")
@@ -44,6 +46,7 @@ for f in list(resultFiles):
     
 #    if V not in [1.33, 1.34, 1.35, 1.36]:
 #        resultFiles.remove(f)
+
     if V< 1.3 or V>1.4 or L in [3]:
         resultFiles.remove(f)
 
@@ -56,13 +59,14 @@ data = pyalps.flatten(data)
 res = []
 for d in data:
     V = d.props['V']
-    L = d.props['L']
+    L = int(d.props['L'])
     d.props['xlabel'] = r'$R$'
     d.props['label'] =  r'$V=%g$'%(V)
 
     
     r = pyalps.DataSet()
     r.y = [d.y[-1]]
+    #r.y = [abs(d.y[L])]
     r.props = d.props 
     r.props['observable'] = 'farthestnncorr'
 
@@ -70,21 +74,20 @@ for d in data:
 
 print res 
 res = pyalps.collectXY(res, x='V', y='farthestnncorr', foreach = ['L'])
-
-#for d in res:
-#    d.y *= d.x**2
-#    d.x = 1./d.x 
+pyalps.propsort(res,'L')
 
 #scale data 
+icolor = 0
 for d in res:
     L = d.props['L']
-    d.x = (d.x- args.xc) * L ** args.a 
     d.y = array([y*L**args.b for y in d.y])
 
-    d.props['xlabel'] = r'$(V-V_c)L^{a}$'
-    d.props['ylabel'] = r'$C(R_\mathrm{max})L^{b}$'
+    d.props['xlabel'] = r'$V$'
+    d.props['ylabel'] = r'$C(r_\mathrm{max})L^{z+\eta}$'
     d.props['label'] = '$L=%g$' %(L)
     d.props['line'] = '-o'
+    d.props['color'] = colors[icolor]
+    icolor = (icolor+1)%len(colors)
 
 if args.copydata:
     for resultFile in resultFiles:
@@ -94,19 +97,40 @@ if args.copydata:
 #pyalps.propsort(res,'V') 
 print pyalps.plot.convertToText(res)
 
+fig = plt.figure(figsize = (8, 8))
+
+ax1 = plt.subplot(211)
 pyalps.plot.plot(res)
-plt.legend(loc='upper left')
+ax1.yaxis.set_major_locator(MaxNLocator(4))
+#plt.axvline(args.xc,color='k')
+#ax1.get_xaxis().set_visible(False)
+plt.legend(loc='best')
 
-#plt.xlim([0, 0.2])
-#plt.ylim([0, 0.015])
+#########################
+at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=1,)
+at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+plt.gca().add_artist(at)
+#########################
 
-if args.logscale:
-    plt.gca().set_yscale('log')
+#further scale x 
+for d in res:
+    L = d.props['L']
+    d.x = (d.x- args.xc) * L ** args.a
+    d.props['xlabel'] = r'$(V-V_c)L^{1/\nu}$'
 
+ax2 = plt.subplot(212)
+pyalps.plot.plot(res)
+ax2.yaxis.set_major_locator(MaxNLocator(4))
+plt.legend(loc='best')
+#ax2.yaxis.set_major_locator(MaxNLocator(4))
 
-#plt.figure()
-#pyalps.plot.plot(farthest)
-#plt.legend(loc='upper left')
+#########################
+at = AnchoredText("b",prop=dict(size=18), frameon=True,loc=1,)
+at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+plt.gca().add_artist(at)
+#########################
+
+plt.subplots_adjust(hspace=0.2)
 
 
 if args.show:

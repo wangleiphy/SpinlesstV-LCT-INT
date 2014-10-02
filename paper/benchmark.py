@@ -69,7 +69,7 @@ for d in res3:
     #L = d.props['L']
     d.props['line'] = 's'
     d.props['xlabel'] = '$V/t$'
-    d.props['ylabel'] = 'Energy per Site'
+    d.props['ylabel'] = 'Energy per site'
     d.props['label'] = r'$\langle\hat{H}\rangle/N$'
     d.props['color'] = colors[icolor]
     plt.plot(V, Energy, '-', c = colors[icolor] )

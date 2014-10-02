@@ -44,6 +44,12 @@ void InteractionExpansion::measure_M2()
    double M2 =denmat.adjoint()* denmat; // g_ij * g_ji
    measurements["M2"] << M2/n_site;   
 
+//   double Kappa = 0.; 
+//   for (unsigned sj=0 ; sj< n_site; ++sj){
+//       Kappa += lattice.parity(si) * lattice.parity(sj) * denmat(sj)*denmat(sj);
+//   }
+//   measurements["Kappa"] << Kappa/beta/n_site; 
+
     
    double IntE = 0.0; 
    double KinE = 0.0; 

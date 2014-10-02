@@ -14,10 +14,9 @@ from config import *
 from numpy import loadtxt , abs 
 
 parser = argparse.ArgumentParser(description='')
-parser.add_argument("-fileheaders", nargs='+', default="params", help="fileheaders")
-parser.add_argument("-y", default="nncorr", help="observable")
+parser.add_argument("-f1", nargs='+', default="params", help="fileheaders")
+parser.add_argument("-f2", nargs='+', default="params", help="fileheaders")
 
-parser.add_argument("-copydata", action='store_true',  help="copy data")
 parser.add_argument("-logscale", action='store_true',  help="logscale")
 
 group = parser.add_mutually_exclusive_group(required=True)
@@ -26,29 +25,23 @@ group.add_argument("-outname", default="result.pdf",  help="output pdf file")
 
 args = parser.parse_args()
 
+###################################################################
 resultFiles = []
-for fileheader in args.fileheaders:
+for fileheader in args.f1:
     resultFiles += pyalps.getResultFiles(prefix=fileheader)
 resultFiles = list(set(resultFiles))
 resultFiles.sort()
 
-#filter resultFilies
-#for f in list(resultFiles):
-#    if ('L3' in f) or ('Nneighbors3' not in f) :
-#    if ('Therm1000000S' not in f) :
-#    if ('Sweeps10000000Skip1000' not in f):
-#    if ('Skip20' not in f):
-#    if ('Sweeps1000000' in f):
-#     if ('V1.42' in f):
-#        resultFiles.remove(f)
-
 print resultFiles 
 
-res = pyalps.loadMeasurements(resultFiles, args.y)
+res = pyalps.loadMeasurements(resultFiles, 'nncorr')
 res = pyalps.flatten(res)
 #pyalps.propsort(res,'V') 
 
 print res 
+
+fig = plt.figure(figsize = (8, 8))
+ax1 = plt.subplot(211)
 
 icolor = 0
 for d in res:
@@ -75,20 +68,46 @@ for d in res:
 
     icolor = (icolor+1)%len(colors)
 
-
-if args.copydata:
-    for resultFile in resultFiles:
-        cmd = ['cp', resultFile, '../data/']
-        subprocess.check_call(cmd)
-
-
-print pyalps.plot.convertToText(res)
-
 pyalps.plot.plot(res)
-plt.legend(loc='lower left')
 
 if args.logscale:
     plt.gca().set_yscale('log')
+
+###################################################################
+resultFiles = []
+for fileheader in args.f2:
+    resultFiles += pyalps.getResultFiles(prefix=fileheader)
+resultFiles = list(set(resultFiles))
+resultFiles.sort()
+
+res = pyalps.loadMeasurements(resultFiles, 'nncorr')
+res = pyalps.flatten(res)
+data = pyalps.loadMeasurements(resultFiles, ['S2'])
+#print data 
+res = pyalps.collectXY(data, x='NA', y='S2', foreach = ['V'])
+
+ax2 = plt.subplot(212)
+icolor = 0
+lines = []
+for d in res:
+    V = d.props['V']
+    d.props['line'] = 's'
+    d.props['xlabel'] = '$N_A$'
+    d.props['ylabel'] = '$S_2$'
+    d.props['label'] = r'$V/t=%g$'%(V)
+    d.props['color'] = colors[icolor]
+
+    NA, S2 = loadtxt('../data/dmrg/chainL32APBCX_V'+str(V)+'_S2.dat', unpack = True, comments= '#', usecols= (0,1))
+    line = plt.plot(NA+1, S2, '-', color = colors[icolor])
+    lines.append(line)
+
+    icolor = (icolor +1)%len(colors)
+
+pyalps.plot.plot(res)
+plt.xlim([1,31])
+
+legends = ['$V/t=1$','$V/t=2$','$V/t=3$','$V/t=4$']
+fig.legend(lines, legends, loc = (0.15, 0.6), shadow=True,fancybox=True)
 
 
 if args.show:

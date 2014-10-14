@@ -70,7 +70,7 @@ for d in data:
         up += y* x*x
         down += y 
 
-    r.y = [sqrt(up/down)/L]
+    r.y = array([sqrt(up/down)/L])
 
     r.props = d.props 
     r.props['observable'] = 'xioverL'

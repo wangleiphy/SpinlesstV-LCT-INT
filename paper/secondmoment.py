@@ -13,6 +13,7 @@ from numpy import array , sqrt
 from config import * 
 from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
+from NRlist import NRlist 
 
 
 import argparse
@@ -66,9 +67,10 @@ for d in data:
     r = pyalps.DataSet()
     up  = 0.
     down = 0.
+    CRmax = abs(d.y[-1])
     for x, y in enumerate(d.y):
-        up += y* x*x
-        down += y 
+        up += (y* (-1)**x-CRmax)* x*x #* NRlist[L][x]
+        down += (y* (-1)**x-CRmax)    #* NRlist[L][x]
 
     r.y = array([sqrt(up/down)/L])
 

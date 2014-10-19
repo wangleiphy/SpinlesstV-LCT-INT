@@ -18,6 +18,7 @@ parser.add_argument("-fileheaders", nargs='+', default="params", help="fileheade
 parser.add_argument("-x", default="V", help="variable")
 parser.add_argument("-y", default="M2", help="observable")
 parser.add_argument("-copydata", action='store_true',  help="copy data")
+parser.add_argument("-logscale", action='store_true',  help="logscale")
 
 parser.add_argument("-extrapolate", action='store_true',  help="do curve fitting")
 parser.add_argument("-nextrapolate", type=int, default= 4 ,  help="number of points used in extrapolation")
@@ -147,6 +148,8 @@ pyalps.plot.plot(res)
 
 plt.legend(loc='best')
 
+if args.logscale:
+    plt.gca().set_yscale('log')
 
 if args.copydata:
     for resultFile in resultFiles:

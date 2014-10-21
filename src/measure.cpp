@@ -43,6 +43,7 @@ void InteractionExpansion::measure_M2()
     
    double M2 =denmat.adjoint()* denmat; // g_ij * g_ji
    measurements["M2"] << M2/n_site;   
+   measurements["M2k"] << (M2/n_site) * double(tlist.size());
 
 //   double Kappa = 0.; 
 //   for (unsigned sj=0 ; sj< n_site; ++sj){
@@ -61,6 +62,8 @@ void InteractionExpansion::measure_M2()
    measurements["IntE"] << 0.5*V * IntE;// interaction energy per site : -IntE * n_site * Theta = PertOrder 
    measurements["KinE"] << KinE; //kinetic energy per site , no 0.5 because we have <c_i^\dagger c_j > + <c_j^\dagger c_i>
    measurements["Energy"]  <<  0.5*V *IntE + KinE; // total enegy per site  
+   
+   measurements["KinEk"] << KinE * double(tlist.size());
 
   //C(R) = <(n_{i}-0.5) (n_{i+R}-0.5)> , average over site i and sites within each R shell 
   std::vector<double> nncorr(shellsize.size()); 

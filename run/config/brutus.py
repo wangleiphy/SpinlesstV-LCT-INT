@@ -12,13 +12,13 @@ BCmodifier = ""
 #latticename = 'chain lattice'
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'tvlist'
+nickname = 'logderivatives'
 
-Llist = [3]
+Llist = [6]
 Wlist = Llist 
 #Vlist = [1.0, 2.0, 3.0, 4.0]
-#Vlist = arange(1.3, 1.41, 0.01)
-Vlist = arange(0.2, 2.2, 0.2)
+Vlist = arange(1.2, 1.5, 0.02)
+#Vlist = arange(0.2, 2.2, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 17
@@ -34,7 +34,7 @@ MEASUREMENT_PERIOD = 13           # in unit of block
 tmin = 60
 tmax = 300
 ncores = 16 
-wtime = '24:00'
+wtime = '1:00'
 bin = '../bin/main'
 
 resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'

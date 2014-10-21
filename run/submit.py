@@ -57,4 +57,4 @@ if __name__=='__main__':
                            args = {}
                            jobname = jobdir + os.path.basename(inputfile).replace('.in','')
                
-                           jobid = submitJob(bin,args,jobname,wtime,ncores=ncores,run=input.run, wait=jobid)
+                           jobid = submitJob(bin,args,jobname,wtime,ncores=ncores,run=input.run, wait=None)

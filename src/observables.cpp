@@ -10,8 +10,10 @@ void InteractionExpansion::initialize_observables()
                << alps::ngs::RealObservable("Removal")
                << alps::ngs::RealObservable("Shift")
                << alps::ngs::RealObservable("M2")
+               << alps::ngs::RealObservable("M2k")
                << alps::ngs::RealObservable("IntE")
                << alps::ngs::RealObservable("KinE")
+               << alps::ngs::RealObservable("KinEk")
                << alps::ngs::RealObservable("Energy")
 //               << alps::ngs::RealObservable("Kappa")
                ; 
@@ -38,4 +40,6 @@ void InteractionExpansion::measure_observables()
 //finial evaluation 
 void InteractionExpansion::evaluate(results_type& results){
     //empty 
+    results.insert("dlogKinEdV", (results["KinEk"]/results["KinE"] - results["PertOrder"])/V);
+    results.insert("dlogM2dV", (results["M2k"]/results["M2"] - results["PertOrder"])/V);
 }

@@ -104,8 +104,9 @@ ax1 = plt.subplot(211)
 
 pyalps.plot.plot(res1)
 
-D, OP = loadtxt('../data/iPEPS/V1.0_OP.dat', unpack=True, usecols = (0,1))
-plt.plot(1./D, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+oneoverD, OP = loadtxt('../data/iPEPS/iPEPSV1.dat', unpack=True, usecols = (0,2))
+plt.plot(oneoverD, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+
 
 if args.extrapolate:
     extrapolate(res1, args.nextrapolate)
@@ -126,8 +127,11 @@ plt.gca().add_artist(at)
 ax2 = plt.subplot(212, sharex=ax1)
 pyalps.plot.plot(res2)
 
-D, OP = loadtxt('../data/iPEPS/V1.4_OP.dat', unpack=True, usecols = (0,1))
-plt.plot(1./D, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+oneoverD, OP = loadtxt('../data/iPEPS/iPEPSV14.dat', unpack=True, usecols = (0,2))
+plt.plot(oneoverD, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+
+oneoverD, M2 = loadtxt('../data/iPEPS/fitM2V14D6D9.dat', unpack=True, usecols = (0,1))
+plt.plot(oneoverD, M2, '--', c=colors[2])
 
 if args.extrapolate:
     extrapolate(res2, args.nextrapolate)

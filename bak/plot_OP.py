@@ -35,7 +35,7 @@ resultFiles = list(set(resultFiles))
 #filter resultFilies
 for f in list(resultFiles):
     L = int(re.search('L([0-9]*)W',f).group(1)) 
-    V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
+    V = float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
     
 #    if V< 1.3 or V>1.4:
 #        resultFiles.remove(f)
@@ -82,8 +82,8 @@ for d1, d2 in zip(PBCres, APBCres):
 
     d2.props['xlabel'] = '$1/L\,\mathrm{or}\,1/D$'
 
-    #d1.props['ylabel'] = '$M_2$'
-    #d2.props['ylabel'] = '$M_2$'
+    d1.props['ylabel'] = '$2\sqrt{M_2}$'
+    d2.props['ylabel'] = '$2\sqrt{M_2}$'
 
     d1.props['color'] = colors[0]
     d2.props['color'] = colors[1]
@@ -105,7 +105,8 @@ ax1 = plt.subplot(211)
 pyalps.plot.plot(res1)
 
 D, OP = loadtxt('../data/iPEPS/V1.0_OP.dat', unpack=True, usecols = (0,1))
-plt.plot(1./D, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+plt.plot(1./D, OP, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+#plt.plot(1./D, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
 
 if args.extrapolate:
     extrapolate(res1, args.nextrapolate)
@@ -115,7 +116,7 @@ ax1.get_xaxis().set_visible(False)
 #plt.ylim([-0.01, 0.06])
 
 plt.title('$V/t=1.0$')
-#plt.legend(loc='upper left')
+plt.legend(loc='upper left')
 
 #########################
 at = AnchoredText("a",prop=dict(size=18), frameon=True,loc=1,)
@@ -127,7 +128,9 @@ ax2 = plt.subplot(212, sharex=ax1)
 pyalps.plot.plot(res2)
 
 D, OP = loadtxt('../data/iPEPS/V1.4_OP.dat', unpack=True, usecols = (0,1))
-plt.plot(1./D, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+plt.plot(1./D, OP, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+#plt.plot(1./D, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
+
 
 if args.extrapolate:
     extrapolate(res2, args.nextrapolate)
@@ -145,13 +148,12 @@ plt.gca().add_artist(at)
 plt.title('$V/t=1.4$')
 plt.legend(loc='upper left')
 
-
 ##shared y label 
 #yyl=plt.ylabel(r'$M_2$')
 #yyl.set_position((yyl.get_position()[0],1)) # This says use the top of the bottom axis as the reference point.
 #yyl.set_verticalalignment('center') 
 
-#plt.subplots_adjust(hspace =0.2,left=0.15)
+plt.subplots_adjust(hspace =0.2,left=0.15)
 
 
 if args.show:

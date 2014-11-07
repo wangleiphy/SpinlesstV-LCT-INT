@@ -59,7 +59,7 @@ ax1 = fig.add_subplot(111)
 for d in res2:
     d.props['line'] = 'o'
     d.props['ylabel'] = ''
-    d.props['label'] = r'$\langle\hat{V}\rangle/N$'
+    d.props['label'] = r'$\langle\hat{H}_1\rangle/N$'
     d.props['color'] = colors[icolor]
     plt.plot(V, IntE, '-',  c = colors[icolor] )
     icolor = (icolor +1)%len(colors)

@@ -131,10 +131,14 @@ oneoverD, OP = loadtxt('../data/iPEPS/iPEPSV14.dat', unpack=True, usecols = (0,2
 plt.plot(oneoverD, (OP/2.)**2, '-', marker = '*', c=colors[2], label = 'iPEPS', markersize=8)
 
 oneoverD, M2 = loadtxt('../data/iPEPS/fitM2V14D6D9.dat', unpack=True, usecols = (0,1))
-plt.plot(oneoverD, M2, '--', c=colors[2])
 
 if args.extrapolate:
     extrapolate(res2, args.nextrapolate)
+
+
+plt.plot(oneoverD, M2, '--', c=colors[2])
+plt.errorbar(0, 0.00299855, 0.00150915, linewidth=6, alpha=0.5, color =colors[2], zorder=1)
+
 
 ax2.yaxis.set_major_locator(MaxNLocator(5))
 plt.xlim([0, 0.25])

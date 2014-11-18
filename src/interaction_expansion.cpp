@@ -29,9 +29,13 @@ direction(nblock==1? 0:1),
 cycles(0), 
 sweeps(0),
 sign(1.), 
+timestep(beta/itime_max), 
+window_tau(boost::lexical_cast<time_type>(parms["WINDOWSIZE"])), 
+window_upper(static_cast<itime_type>((0.5*beta+0.5*window_tau)/timestep)),//the upper and lower indices  
+window_lower(static_cast<itime_type>((0.5*beta-0.5*window_tau)/timestep)),//for the window in the center 
 K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BCmodifier"]))), // K of the true Ham 
 Ktrial_(buildKtrial(lattice)), // to generate the trial wave function  
-gf(K_, Ktrial_, beta/boost::lexical_cast<double>(itime_max), itime_max, nblock, blocksize,parms["WRAP_REFRESH_PERIOD"]), 
+gf(K_, Ktrial_, timestep, itime_max, nblock, blocksize,parms["WRAP_REFRESH_PERIOD"]), 
 distmap(get_distmap(lattice)), 
 disttable(get_disttable(distmap, n_site)), 
 shellsize(get_shellsize(distmap)), 
@@ -108,7 +112,7 @@ void InteractionExpansion::measure(){
   if (sweeps > therm_steps && sweeps%measurement_period ==0){
      time_type tau = gf.tau(); 
      //if (tau >=0.45*beta && tau < 0.55*beta) //only measure when we are in the center
-     if (fabs(tau - 0.5*beta) < 2.0)
+     if (fabs(tau - 0.5*beta) < window_tau/2.0)
         measure_observables();
    } 
 }

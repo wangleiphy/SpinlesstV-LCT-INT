@@ -84,6 +84,7 @@ private:
   
   const time_type beta;  
   const double V;                        
+
   tlist_type tlist; //a list contains time where we have vertex 
   vlist_type vlist; //map from tau to sites 
   
@@ -100,6 +101,13 @@ private:
   unsigned long sweeps;        
 
   double sign;
+
+  const time_type timestep; 
+  const time_type window_tau;  // size of the window in which we perform measurement 
+
+  const itime_type window_upper; //indices which indicate the start and end of the window 
+  const itime_type window_lower; 
+
 
   Mat K_;    // the kinetic energy matrix 
   Mat Ktrial_; 

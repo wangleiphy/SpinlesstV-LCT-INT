@@ -145,7 +145,6 @@ int main(int argc, char** argv){
      
       if (comm.rank() ==0) 
       {
-
                sim.evaluate(results);
 
                alps::hdf5::archive ar(h5output_file, "w");
@@ -153,6 +152,9 @@ int main(int argc, char** argv){
                ar["/simulation/results"] << results;
                ar.close(); 
 
+               std::cout << results << std::endl; 
+
+               /*
                std::ofstream outfile;
                outfile.open(filename.c_str());
                outfile.precision(12); 
@@ -185,6 +187,7 @@ int main(int argc, char** argv){
                }
                outfile << std::endl; 
                outfile.close();
+               */
       }
 
     } catch (std::exception const & e) {

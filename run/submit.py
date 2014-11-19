@@ -41,7 +41,7 @@ if __name__=='__main__':
         for V in Vlist:
                
                            inputfile = params(latticename, BCmodifier, L , W,  
-                                              V=V, BETA= BETA,  
+                                              V=V, BETA= BETA, WINDOWSIZE=WINDOWSIZE, 
                                               Add = Add, Remove = Remove ,  
                                               Maxorder = Maxorder, itime_max = itime_max,  
                                               MEASUREMENT_PERIOD = MEASUREMENT_PERIOD, 

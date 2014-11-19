@@ -50,8 +50,9 @@ probs() // empty vector
 
    probs.push_back(Add); 
    probs.push_back(Add+Remove); 
-   if (Add+Remove>= 1.0) {
-       std::cerr << "Add + Remove >= 1.0" << std::endl; 
+
+   if (Add+Remove> 1.0) {
+       std::cerr << "Add + Remove > 1.0" << std::endl; 
        abort(); 
    }
    

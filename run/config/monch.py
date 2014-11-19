@@ -8,31 +8,32 @@ Remove = 0.4
 
 Maxorder = 8192
 BETA = 40. #projection time 
+WINDOWSIZE = 4.0 # the window overwhich we perform measurment  
 BCmodifier = '' #only APBCX will have effect anything else will not affet the lattice 
 
 #latticename = 'chain lattice'
 latticename = 'honeycomb lattice'
 ###############################
-nickname = 'PBC'
+nickname = 'PBCnew'
 
-Llist = [15]
+Llist = [9]
 Wlist = Llist 
-Vlist = [1.38]
-#Vlist = arange(1.3, 1.41, 0.01)
+#Vlist = [1.38]
+Vlist = arange(1.3, 1.41, 0.01)
 #Vlist = arange(0.2, 2.2, 0.2)
 
 itime_max = 1<<31
-RECALC_PERIOD = 17
+RECALC_PERIOD = 23
 WRAP_REFRESH_PERIOD = 25
 
 NBLOCKS = 1024
-STEPS_PER_BLOCK = 2
-THERMALIZATION = 20000
+STEPS_PER_BLOCK = 1
+THERMALIZATION = 50000
 SWEEPS = 4000000
-MEASUREMENT_PERIOD = 13        # in unit of block
+MEASUREMENT_PERIOD = 33        # in unit of block
 
 ##############################
-wtime = '24:00:00'
+wtime = '12:00:00'
 tmin = 60
 tmax = 600
 ncores = 320  # a multiply of ntasks_per_node 

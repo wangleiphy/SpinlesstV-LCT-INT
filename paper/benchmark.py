@@ -111,7 +111,8 @@ data = pyalps.loadMeasurements(resultFiles, ['PertOrder','Walltime'])
 res = pyalps.ResultsToXY(data, 'PertOrder', 'Walltime') 
 
 for d in res:
-    d.y /= d.y[0].mean
+    #d.y /= d.y[0].mean
+    d.y /=3600. 
     d.props['xlabel'] = r'$\langle k \rangle$'
     d.props['line'] = '-o'
     d.props['color'] = colors[icolor]
@@ -119,10 +120,10 @@ for d in res:
 
 pyalps.plot.plot(res)
 plt.xlabel( r'$\langle k \rangle$', fontsize=14)
-plt.ylabel(r'Relative time', fontsize=14)
+plt.ylabel(r'Wall time (h)', fontsize=14)
 inset.xaxis.set_major_locator(MaxNLocator(4))
 inset.yaxis.set_major_locator(MaxNLocator(4))
-plt.ylim([0, 8])
+#plt.ylim([0, 8])
 plt.xlim([0, 360])
 ################inset###################
 

@@ -34,6 +34,6 @@ def extrapolate(res, nextrapolate):
         M2.jacknife_eval()
 
         if M2.mean > 0.0:
-            print d.props["V"], sqrt(M2)*2., M2
+            print d.props["V"], M2  #sqrt(M2)*2.
 
         plt.errorbar(0, M2.mean, M2.error, linewidth=6, alpha=0.5, color =d.props['color'])

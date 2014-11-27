@@ -106,25 +106,25 @@ plt.xlim([0.0, 2.0])
 plt.subplots_adjust(right=0.88)
 
 ################inset###################
-inset = plt.axes([0.22, 0.42, 0.26, 0.22])
-data = pyalps.loadMeasurements(resultFiles, ['PertOrder','Walltime'])
-res = pyalps.ResultsToXY(data, 'PertOrder', 'Walltime') 
+#inset = plt.axes([0.22, 0.42, 0.26, 0.22])
+#data = pyalps.loadMeasurements(resultFiles, ['PertOrder','Walltime'])
+#res = pyalps.ResultsToXY(data, 'PertOrder', 'Walltime') 
 
-for d in res:
-    #d.y /= d.y[0].mean
-    d.y /=3600. 
-    d.props['xlabel'] = r'$\langle k \rangle$'
-    d.props['line'] = '-o'
-    d.props['color'] = colors[icolor]
-    icolor = (icolor+1)%len(colors)
+#for d in res:
+#    #d.y /= d.y[0].mean
+#    d.y /=3600. 
+#    d.props['xlabel'] = r'$\langle k \rangle$'
+#    d.props['line'] = '-o'
+#    d.props['color'] = colors[icolor]
+#    icolor = (icolor+1)%len(colors)
 
-pyalps.plot.plot(res)
-plt.xlabel( r'$\langle k \rangle$', fontsize=14)
-plt.ylabel(r'Wall time (h)', fontsize=14)
-inset.xaxis.set_major_locator(MaxNLocator(4))
-inset.yaxis.set_major_locator(MaxNLocator(4))
+#pyalps.plot.plot(res)
+#plt.xlabel( r'$\langle k \rangle$', fontsize=14)
+#plt.ylabel(r'Wall time (h)', fontsize=14)
+#inset.xaxis.set_major_locator(MaxNLocator(4))
+#inset.yaxis.set_major_locator(MaxNLocator(4))
 #plt.ylim([0, 8])
-plt.xlim([0, 360])
+#plt.xlim([0, 360])
 ################inset###################
 
 

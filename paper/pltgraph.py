@@ -42,7 +42,7 @@ def showgraph(graph):
         p1 = vertices[t]['pos']
        
         #draw bond type 
-        plt.plot([p0[0], p1[0]], [p0[1], p1[1]], c=bond_map[c],lw=2,zorder=1)
+        plt.plot([p0[0], p1[0]], [p0[1], p1[1]], c=bond_map[c],lw=1,zorder=1)
     
         #u = p1[0] - p0[0] 
         #v = p1[1] - p0[1] 
@@ -57,7 +57,7 @@ def showgraph(graph):
     c = [site_map[v['type']] for v in vertices.values()]
     fc = [symbol_map[v['type']] for v in vertices.values()]
 
-    plt.scatter(x, y, s=100, zorder=10, facecolors=fc, edgecolors=c)
+    plt.scatter(x, y, s=120, zorder=10, facecolors=fc, edgecolors=c, linewidth=2)
 
     #for k, v in vertices.items():
     #    print k, v['pos']

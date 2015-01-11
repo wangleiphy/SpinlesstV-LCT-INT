@@ -19,6 +19,8 @@ void InteractionExpansion::initialize_observables()
                << alps::ngs::RealObservable("KinE")
                << alps::ngs::RealObservable("KinEk")
                << alps::ngs::RealObservable("Energy")
+               << alps::ngs::RealObservable("RestaX_abs")
+               << alps::ngs::RealObservable("RestaX_phi")
 //               << alps::ngs::RealObservable("Kappa")
                ; 
 
@@ -65,7 +67,8 @@ void InteractionExpansion::measure_observables()
   measure_M2();
 
   //measure_vhist(); 
-
+    
+  measure_RestaP(); 
 }
 
 //finial evaluation 

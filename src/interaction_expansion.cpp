@@ -35,7 +35,7 @@ window_upper(static_cast<itime_type>((0.5*beta+0.5*window_tau)/timestep)),//the 
 window_lower(static_cast<itime_type>((0.5*beta-0.5*window_tau)/timestep)),//for the window in the center 
 K_(buildK(lattice, boost::lexical_cast<std::string>(parms["BCmodifier"]))), // K of the true Ham 
 Ktrial_(buildKtrial(lattice)), // to generate the trial wave function  
-gf(K_, Ktrial_, timestep, itime_max, nblock, blocksize,parms["WRAP_REFRESH_PERIOD"]), 
+gf(lattice, parms["L"], parms["W"], K_, Ktrial_, timestep, itime_max, nblock, blocksize, parms["WRAP_REFRESH_PERIOD"]), 
 distmap(get_distmap(lattice)), 
 disttable(get_disttable(distmap, n_site)), 
 shellsize(get_shellsize(distmap)), 

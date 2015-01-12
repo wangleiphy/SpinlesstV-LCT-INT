@@ -94,11 +94,11 @@ void InteractionExpansion::measure_vhist(){
 void InteractionExpansion::measure_RestaP(){
     
     Mat G = gf.halfTheta(tlist, vlist); //eigen basis 
-    Eigen::MatrixXcd A = gf.X* (Mat::Identity(n_site, n_site) - G ); 
+    Eigen::MatrixXcd A = gf.X - gf.X* G; 
     A.real() += G;  
     std::complex<double> z = A.determinant(); 
     
-    measurements["RestaX_abs"] << std::abs(z); 
-    measurements["RestaX_phi"] << std::arg(z); 
+    measurements["RestaX_R"] << std::real(z); 
+    measurements["RestaX_I"] << std::imag(z); 
 }
 

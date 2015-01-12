@@ -19,8 +19,8 @@ void InteractionExpansion::initialize_observables()
                << alps::ngs::RealObservable("KinE")
                << alps::ngs::RealObservable("KinEk")
                << alps::ngs::RealObservable("Energy")
-               << alps::ngs::RealObservable("RestaX_abs")
-               << alps::ngs::RealObservable("RestaX_phi")
+               << alps::ngs::RealObservable("RestaX_R")
+               << alps::ngs::RealObservable("RestaX_I")
 //               << alps::ngs::RealObservable("Kappa")
                ; 
 
@@ -84,4 +84,6 @@ void InteractionExpansion::evaluate(results_type& results){
     results.insert("FS2", (results["kLkR"] - 0.25 * results["PertOrder"]*results["PertOrder"])/(V*V)); 
     results.insert("FS3", (results["kLkR"] - results["kL"]*results["kR"])/(V*V)); 
 
+    results.insert("RestaX_abs",  sqrt(results["RestaX_R"]*results["RestaX_R"] + results["RestaX_I"]*results["RestaX_I"])); 
+    results.insert("RestaX_phi",  atan(results["RestaX_I"]/results["RestaX_R"])); 
 }

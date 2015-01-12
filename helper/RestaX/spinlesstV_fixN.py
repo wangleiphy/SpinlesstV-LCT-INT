@@ -67,7 +67,7 @@ def calc_RestaX(Kmat, Ntot, V):
         for si in range(Nsites):
             phase += si * (bget(state, si) -0.5) 
     
-        res +=  exp(1J*2.*pi/Nsites*phase) * v[index, 0]**2
+        res +=  exp(1J*4.*pi/Nsites*phase) * v[index, 0]**2
 
     return res 
 
@@ -80,19 +80,19 @@ if __name__=='__main__':
 
     Thop = 1.0
     L = 8
-    N = 4 
+    N = L/2 
 
     #Kinetic energy matrix 
     Kmat = zeros((L, L),float)
 
     #PBC 
-    #for s in range(L):   
-    #    Kmat[s, (s+1)%L] = -Thop 
-    #    Kmat[(s+1)%L, s] = -Thop 
+    for s in range(L):   
+        Kmat[s, (s+1)%L] = -Thop 
+        Kmat[(s+1)%L, s] = -Thop 
     #OBC 
-    for s in range(L-1):   
-        Kmat[s, s+1] = -Thop 
-        Kmat[s+1, s] = -Thop 
+    #for s in range(L-1):   
+    #    Kmat[s, s+1] = -Thop 
+    #    Kmat[s+1, s] = -Thop 
     
     print Kmat 
 
@@ -100,7 +100,7 @@ if __name__=='__main__':
 
     #for V in arange(0.0, 4.0, 0.2):
     if True:
-        V = 2.0 
-        X = calc_RestaX(Kmat, 4, V)
+        V = 4.0 
+        X = calc_RestaX(Kmat, N, V)
 
         print V, X.real, X.imag 

@@ -13,7 +13,7 @@ BCmodifier = ""
 latticename = 'chain lattice'
 #latticename = 'honeycomb lattice'
 ###############################
-nickname = 'PBC_RestaX'
+nickname = 'PBC_RestaX_4Pi'
 
 Llist = [64]
 Wlist = [1] #Llist 
@@ -37,7 +37,7 @@ tmin = 60
 tmax = 300
 ncores = 16 
 wtime = '4:00'
-bin = '../bin/zeroT'
+bin = '../bin/zeroT_4Pi'
 
 resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'
 #h, m = [int(i) for i in wtime.split(':')]

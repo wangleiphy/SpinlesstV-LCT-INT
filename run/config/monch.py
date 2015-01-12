@@ -14,9 +14,9 @@ BCmodifier = '' #only APBCX will have effect anything else will not affet the la
 latticename = 'chain lattice'
 #latticename = 'honeycomb lattice'
 ###############################
-nickname = 'PBC_RestaX'
+nickname = 'PBC_RestaX_4Pi'
 
-Llist = [128]
+Llist = [64]
 Wlist = Llist 
 #Vlist = [1.38]
 #Vlist = arange(1.3, 1.41, 0.01)
@@ -37,7 +37,7 @@ wtime = '4:00:00'
 tmin = 60
 tmax = 600
 ncores = 320  # a multiply of ntasks_per_node 
-prog = '../bin/zeroT'
+prog = '../bin/zeroT_4Pi'
 
 resfolder = '/mnt/lnec/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]

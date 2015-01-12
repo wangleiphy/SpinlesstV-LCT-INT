@@ -9,16 +9,17 @@ BETA = 40. #projection time
 #BCmodifier = "APBCX"
 BCmodifier = ""
 
-#latticename = 'chain lattice'
-latticename = 'honeycomb lattice'
+latticename = 'chain lattice'
+#latticename = 'honeycomb lattice'
 ###############################
-nickname = 'logderivatives'
+nickname = 'PBC_RestaX'
 
-Llist = [6]
-Wlist = Llist 
+Llist = [16]
+Wlist = [1] #Llist 
 #Vlist = [1.0, 2.0, 3.0, 4.0]
-Vlist = arange(1.2, 1.5, 0.02)
+#Vlist = arange(1.2, 1.5, 0.02)
 #Vlist = arange(0.2, 2.2, 0.2)
+Vlist = arange(1.0, 3.0, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 17
@@ -26,16 +27,16 @@ WRAP_REFRESH_PERIOD = 25
 
 STEPS_PER_BLOCK = 1
 NBLOCKS = 1024
-THERMALIZATION = 2*10**4          # in unit of block 
+THERMALIZATION = 10**5            # in unit of block 
 SWEEPS = 2*10**6                  # in unit of the the whole system 
-MEASUREMENT_PERIOD = 13           # in unit of block
+MEASUREMENT_PERIOD = 33           # in unit of block
 ##############################
 
 tmin = 60
 tmax = 300
 ncores = 16 
-wtime = '1:00'
-bin = '../bin/main'
+wtime = '4:00'
+bin = '../bin/zeroT'
 
 resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'
 #h, m = [int(i) for i in wtime.split(':')]

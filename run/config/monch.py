@@ -11,16 +11,16 @@ BETA = 40. #projection time
 WINDOWSIZE = 4.0 # the window overwhich we perform measurment  
 BCmodifier = '' #only APBCX will have effect anything else will not affet the lattice 
 
-#latticename = 'chain lattice'
-latticename = 'honeycomb lattice'
+latticename = 'chain lattice'
+#latticename = 'honeycomb lattice'
 ###############################
-nickname = 'PBCnew'
+nickname = 'PBC_RestaX'
 
-Llist = [9]
+Llist = [128]
 Wlist = Llist 
 #Vlist = [1.38]
-Vlist = arange(1.3, 1.41, 0.01)
-#Vlist = arange(0.2, 2.2, 0.2)
+#Vlist = arange(1.3, 1.41, 0.01)
+Vlist = arange(1.0, 3.0, 0.2)
 
 itime_max = 1<<31
 RECALC_PERIOD = 23
@@ -28,16 +28,16 @@ WRAP_REFRESH_PERIOD = 25
 
 NBLOCKS = 1024
 STEPS_PER_BLOCK = 1
-THERMALIZATION = 50000
+THERMALIZATION = 100000
 SWEEPS = 4000000
 MEASUREMENT_PERIOD = 33        # in unit of block
 
 ##############################
-wtime = '12:00:00'
+wtime = '4:00:00'
 tmin = 60
 tmax = 600
 ncores = 320  # a multiply of ntasks_per_node 
-prog = '../bin/main'
+prog = '../bin/zeroT'
 
 resfolder = '/mnt/lnec/lewang/spinlessctbssdata/' + nickname  + '/'
 h, m, s = [int(i) for i in wtime.split(':')]

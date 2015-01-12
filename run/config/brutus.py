@@ -4,6 +4,7 @@ from numpy import arange, array
 Add = 0.4
 Remove = 0.4  
 
+WINDOWSIZE = 4.0 # the window overwhich we perform measurment  
 Maxorder = 8192
 BETA = 40. #projection time 
 #BCmodifier = "APBCX"
@@ -14,7 +15,7 @@ latticename = 'chain lattice'
 ###############################
 nickname = 'PBC_RestaX'
 
-Llist = [16]
+Llist = [64]
 Wlist = [1] #Llist 
 #Vlist = [1.0, 2.0, 3.0, 4.0]
 #Vlist = arange(1.2, 1.5, 0.02)

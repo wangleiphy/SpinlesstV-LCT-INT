@@ -85,5 +85,5 @@ void InteractionExpansion::evaluate(results_type& results){
     results.insert("FS3", (results["kLkR"] - results["kL"]*results["kR"])/(V*V)); 
 
     results.insert("RestaX_abs",  sqrt(results["RestaX_R"]*results["RestaX_R"] + results["RestaX_I"]*results["RestaX_I"])); 
-    results.insert("RestaX_phi",  atan(results["RestaX_I"]/results["RestaX_R"])); 
+    results.insert("RestaX_phi",  2.*atan((results["RestaX_abs"]-results["RestaX_R"])/results["RestaX_I"]) ); 
 }

@@ -1,9 +1,9 @@
 LATTICE_LIBRARY = "../input/mylattices.xml"
-LATTICE = "open chain lattice"
+LATTICE = "chain lattice"
 BCmodifier = ""
-BETA = 20.
+BETA = 40.
 WINDOWSIZE= 4.0 
-L = 4
+L = 8 
 W = 1
 V = 4.0
 MAX_ORDER = 8192 

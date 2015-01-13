@@ -22,6 +22,7 @@ class Green_function{
         ,wrap_refresh_period_(wrap_refresh_period)
         ,Storage_(nblock+1)// it stores LLL...RRR 
         ,X(Eigen::MatrixXcd::Zero(ns_, ns_))
+        ,X2(Eigen::MatrixXcd::Zero(ns_, ns_))
         {
 
          {
@@ -60,8 +61,10 @@ class Green_function{
          //resta position operator in the eigen basis
          for (site_type s=0; s< ns_; ++s){
              X(s, s) = std::exp(std::complex<double>(0., 1.)*2.*M_PI*lattice.coordinate(s)[0]/L); 
+             X2(s, s) = std::exp(std::complex<double>(0., 1.)*4.*M_PI*lattice.coordinate(s)[0]/L); 
          }
          X = (uKdag_ * X) * uK_; 
+         X2 = (uKdag_ * X2) * uK_; 
 
         }
 
@@ -590,6 +593,7 @@ class Green_function{
     
     public:        
         Eigen::MatrixXcd X; 
+        Eigen::MatrixXcd X2; 
 
 };
 

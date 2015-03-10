@@ -10,7 +10,7 @@ class Green_function{
 
     public:
 
-        Green_function(const Mat& K, const Mat& Ktrial, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
+        Green_function(const alps::graph_helper<>& lattice, const unsigned L, const unsigned W,  const Mat& K, const Mat& Ktrial, const time_type timestep, const itime_type itime_max, const unsigned nblock, const itime_type blocksize, const unsigned wrap_refresh_period)
         :ns_(K.rows())
         ,np_(ns_/2)// half filled 
         ,timestep_(timestep)
@@ -24,6 +24,8 @@ class Green_function{
         ,wrap_refresh_counter2_(0)
         ,wrap_refresh_period_(wrap_refresh_period)
         ,Storage_(nblock+1)// it stores LLL...RRR 
+        ,X(Eigen::MatrixXcd::Zero(ns_, ns_))
+        ,X2(Eigen::MatrixXcd::Zero(ns_, ns_))
         {
    
          Eigen::SelfAdjointEigenSolver<Mat> ces;
@@ -51,6 +53,14 @@ class Green_function{
          }
         
          //init_without_vertex(); 
+         //resta position operator in the eigen basis
+         for (site_type s=0; s< ns_; ++s){
+             X(s, s) = std::exp(std::complex<double>(0., 1.)*2.*M_PI*lattice.coordinate(s)[0]/L); 
+             X2(s, s) = std::exp(std::complex<double>(0., 1.)*4.*M_PI*lattice.coordinate(s)[0]/L); 
+         }
+         X = (uKdag_ * X) * uK_; 
+         X2 = (uKdag_ * X2) * uK_; 
+
         }
 
         void init_without_vertex(){
@@ -133,8 +143,7 @@ class Green_function{
         }
 
         double gij(const site_type si, const site_type sj)const {
-            double delta = (si==sj)? 1.0 : 0.0; 
-            return delta -(uK_.row(si) *R_)*  N_ * (L_*uKdag_.col(sj));  
+            return (si==sj)? 1.0 : 0.0 -(uK_.row(si) *R_)*  N_ * (L_*uKdag_.col(sj));  
         }
 
         Vec denmat(const site_type si)const {
@@ -163,6 +172,27 @@ class Green_function{
             Vec res = Vec::Zero(ns_); 
             res(si) = 1.0; 
             return res  -  uK_ *( R* (N_*  (L * uKdag_.col(si))));
+        }
+
+
+        Mat halfTheta(const tlist_type& tlist, vlist_type& vlist)const {
+            //wrap Green's function to halfTheta  
+            Mat R = R_; 
+            Mat L = L_; 
+
+            if (ihalfTheta_ >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, ihalfTheta_, itau_, tlist, vlist, R);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, ihalfTheta_, itau_, tlist, vlist, L); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
+
+            }else{
+
+                // B^{-1} G B 
+                propagator2(1, itau_, ihalfTheta_, tlist, vlist, R); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, ihalfTheta_, tlist, vlist, L);   //  V_ * B(tau1) ... B(tau2)
+            }
+
+            return Mat::Identity(ns_, ns_) -   R* (N_*  L );
         }
             
         //update changes D_ and V_ 
@@ -499,6 +529,10 @@ class Green_function{
 
         //storage
         std::vector<Mat> Storage_;
+
+    public:        
+        Eigen::MatrixXcd X; 
+        Eigen::MatrixXcd X2; 
 
 };
 

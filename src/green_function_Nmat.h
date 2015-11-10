@@ -175,6 +175,29 @@ class Green_function{
         }
 
 
+        Mat denmathalfTheta(const tlist_type& tlist, vlist_type& vlist)const {
+            //wrap Green's function to halfTheta  
+            Mat R = R_; 
+            Mat L = L_; 
+
+            if (ihalfTheta_ >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, ihalfTheta_, itau_, tlist, vlist, R);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, ihalfTheta_, itau_, tlist, vlist, L); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
+
+            }else{
+
+                // B^{-1} G B 
+                propagator2(1, itau_, ihalfTheta_, tlist, vlist, R); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, ihalfTheta_, tlist, vlist, L);   //  V_ * B(tau1) ... B(tau2)
+            }
+
+            Vec res = Vec::Zero(ns_); 
+            res(si) = 1.0; 
+            return res  -  uK_ *( R* (N_*  (L * uKdag_)));
+        }
+
+
         Mat halfTheta(const tlist_type& tlist, vlist_type& vlist)const {
             //wrap Green's function to halfTheta  
             Mat R = R_; 

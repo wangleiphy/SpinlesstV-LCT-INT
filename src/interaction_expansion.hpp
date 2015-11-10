@@ -8,8 +8,8 @@
 
 #include <cmath>
 
-//#include "green_function.h"
-#include "green_function_Nmat.h"
+#include "green_function.h"
+//#include "green_function_Nmat.h"
 
 class InteractionExpansion: public alps::mcbase
 {
@@ -69,6 +69,7 @@ private:
   void measure_observables();
   // in file measure.cpp
   void measure_M2();
+  void measure_M4();
   void measure_vhist(); 
   void measure_RestaP(); 
 

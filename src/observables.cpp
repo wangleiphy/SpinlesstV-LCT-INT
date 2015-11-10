@@ -70,6 +70,9 @@ void InteractionExpansion::measure_observables()
   measurements["kLkR"] << kL*kR;
 
   measure_M2();
+  if (MEASURE_M4){
+      measure_M4(); 
+  }
 
   //measure_vhist(); 
     

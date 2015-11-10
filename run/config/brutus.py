@@ -5,7 +5,8 @@ Add = 0.4
 Remove = 0.4  
 
 WINDOWSIZE = 4.0 # the window overwhich we perform measurment  
-Maxorder = 8192
+Maxorder = 16384 
+NBLOCKlist = [1024, 2048, 4096, 8192]
 BETA = 40. #projection time 
 #BCmodifier = "APBCX"
 BCmodifier = ""
@@ -37,7 +38,7 @@ MEASUREMENT_PERIOD = 33           # in unit of block
 tmin = 60
 tmax = 300
 ncores = 16 
-wtime = '8:00'
+wtime = '18:00'
 bin = '../bin/zeroT'
 
 resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'

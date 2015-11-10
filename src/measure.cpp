@@ -74,7 +74,52 @@ void InteractionExpansion::measure_M2()
    }
    measurements["nncorr"]  << nncorr; 
 
-   if (MEASURE_M4){
+}
+
+void InteractionExpansion::measure_vhist(){
+    
+    std::vector<double> vhist(nblock);  
+
+    for (unsigned i=0; i< nblock; ++i) {
+
+        tlist_type::const_iterator lower, upper; 
+        lower = std::lower_bound (tlist.begin(), tlist.end(), i*blocksize); 
+        upper = std::upper_bound (tlist.begin(), tlist.end(), (i+1)*blocksize, std::less_equal<itime_type>());  //equal is exclude
+ 
+        vhist[i] = 1.*std::distance(lower, upper); //number of vertices in this block
+
+    }
+    measurements["Vhist"] << vhist; 
+}
+
+void InteractionExpansion::measure_RestaP(){
+    
+    Mat G = gf.halfTheta(tlist, vlist); //eigen basis 
+
+    {
+        Eigen::MatrixXcd A = gf.X - gf.X* G; 
+        A.real() += G;  
+        std::complex<double> z = A.determinant(); 
+        
+        measurements["RestaX_R"] << std::real(z); 
+        measurements["RestaX_I"] << std::imag(z); 
+    }
+
+    {
+        Eigen::MatrixXcd A = gf.X2 - gf.X2* G; 
+        A.real() += G;  
+        std::complex<double> z = A.determinant(); 
+        
+        measurements["RestaX2_R"] << std::real(z); 
+        measurements["RestaX2_I"] << std::imag(z); 
+    }
+}
+
+
+void InteractionExpansion::measure_M4(){
+
+         itime_type itau = iblock*blocksize + randomint(blocksize);// a random time inside this block   
+         Mat denmat = gf.denmathalfTheta(itau, tlist, vlist); //g_{ij}(itau) 
 
          //measure M4 
          double M4 = 0.0; 
@@ -115,47 +160,5 @@ void InteractionExpansion::measure_M2()
              }
          }
          measurements["M4"] << M4/std::pow(double(n_site), 3);  
-   }
-
-
-}
-
-void InteractionExpansion::measure_vhist(){
-    
-    std::vector<double> vhist(nblock);  
-
-    for (unsigned i=0; i< nblock; ++i) {
-
-        tlist_type::const_iterator lower, upper; 
-        lower = std::lower_bound (tlist.begin(), tlist.end(), i*blocksize); 
-        upper = std::upper_bound (tlist.begin(), tlist.end(), (i+1)*blocksize, std::less_equal<itime_type>());  //equal is exclude
- 
-        vhist[i] = 1.*std::distance(lower, upper); //number of vertices in this block
-
-    }
-    measurements["Vhist"] << vhist; 
-}
-
-void InteractionExpansion::measure_RestaP(){
-    
-    Mat G = gf.halfTheta(tlist, vlist); //eigen basis 
-
-    {
-        Eigen::MatrixXcd A = gf.X - gf.X* G; 
-        A.real() += G;  
-        std::complex<double> z = A.determinant(); 
-        
-        measurements["RestaX_R"] << std::real(z); 
-        measurements["RestaX_I"] << std::imag(z); 
-    }
-
-    {
-        Eigen::MatrixXcd A = gf.X2 - gf.X2* G; 
-        A.real() += G;  
-        std::complex<double> z = A.determinant(); 
-        
-        measurements["RestaX2_R"] << std::real(z); 
-        measurements["RestaX2_I"] << std::imag(z); 
-    }
 }
 

@@ -39,6 +39,9 @@ if __name__=='__main__':
     for L, W in zip(Llist, Wlist):
         jobid = input.waitfor 
         for V in Vlist:
+
+                           kestimate = 0.06 * abs(V)* L*W * BETA # estimate for the average expansion order 
+                           NBLOCKS = min(NBLOCKlist, key=lambda x:abs(x- kestimate)) 
                
                            inputfile = params(latticename, BCmodifier, L , W,  
                                               V=V, BETA= BETA, WINDOWSIZE=WINDOWSIZE, 

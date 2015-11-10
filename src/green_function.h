@@ -257,6 +257,23 @@ class Green_function{
             return  uK_ *(gtau * uKdag_.col(si));  
         }
 
+        Mat denmathalfTheta(const tlist_type& tlist, vlist_type& vlist)const {
+            //wrap Green's function to halfTheta  
+            Mat gtau = gtau_; 
+            if (ihalfTheta_ >= itau_) {
+                // B G B^{-1}
+                propagator1(-1, ihalfTheta_, itau_, tlist, vlist, gtau);  // B(tau1) ... B(tau2) *U_  
+                propagator1(1, ihalfTheta_, itau_, tlist, vlist, gtau); // V_ * B^{-1}(tau2) ... B^{-1}(tau1)
+
+            }else{
+
+                // B^{-1} G B 
+                propagator2(1, itau_, ihalfTheta_, tlist, vlist, gtau); //  B^{-1}(tau2) ... B^{-1}(tau1) * U_
+                propagator2(-1, itau_, ihalfTheta_, tlist, vlist, gtau);   //  V_ * B(tau1) ... B(tau2)
+            }
+            return  uK_ *(gtau * uKdag_);  
+        }
+
         Vec denmat(const site_type si)const {
            return  uK_ *(gtau_ * uKdag_.col(si));  
         }

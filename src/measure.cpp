@@ -118,8 +118,7 @@ void InteractionExpansion::measure_RestaP(){
 
 void InteractionExpansion::measure_M4(){
 
-         itime_type itau = iblock*blocksize + randomint(blocksize);// a random time inside this block   
-         Mat denmat = gf.denmathalfTheta(itau, tlist, vlist); //g_{ij}(itau) 
+         Mat denmat = gf.denmathalfTheta(tlist, vlist); //g_{ij}(itau) 
 
          //measure M4 
          double M4 = 0.0; 

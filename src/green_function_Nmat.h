@@ -385,12 +385,15 @@ class Green_function{
 
                  Kprop(sign, *lower - itau2, side, A);
                  //std::cout << "prop1:Kprop " <<   *lower  << " " << itau2  << " " << *lower - itau2 << std::endl; 
-                 for (tlist_type::const_iterator it1 =lower, it2 =++lower; it1!=upper; ++it1, ++it2) {
+                 for (tlist_type::const_iterator it1 =lower; it1!=upper; ++it1) {
                     
                      itime_type itau = *it1; 
                      Vprop(vlist[itau][0], vlist[itau][1], side, A); 
                      //std::cout << "prop1:act vertex at " << itau  << std::endl; 
-                 
+ 
+                     tlist_type::const_iterator it2 = it1;
+                     ++it2; 
+                
                      itime_type ditau = (it2 ==upper) ? itau1 - itau: *it2 - itau; 
                      Kprop(sign, ditau , side, A); 
                      //std::cout << "prop1:Kprop " <<   ((it2 ==upper) ? itau1: *it2)  << " " << itau  << " " << ditau << std::endl; 
@@ -424,12 +427,15 @@ class Green_function{
                  Kprop(sign, itau1 - *(--upper), side, A);
                  //std::cout << "prop2:Kprop " <<  itau1 << " " << *upper  << " " << itau1 - *upper << std::endl; 
 
-                 for (tlist_type::const_iterator it1 =upper, it2 =--upper; it1!=lower; --it1, --it2) {
+                 for (tlist_type::const_iterator it1 =upper; it1!=lower; --it1) {
                     
                      itime_type itau = *it1; 
                      Vprop(vlist[itau][0], vlist[itau][1], side, A); 
                      //std::cout << "prop2:act vertex at " << itau  << std::endl; 
-                 
+                     
+                     tlist_type::const_iterator it2 = it1;
+                     --it2;  
+
                      itime_type ditau = itau - *it2; 
                      Kprop(sign, ditau , side, A); 
                      //std::cout << "prop2:Kprop " <<  itau << " " << *it2  << " " << ditau << std::endl; 

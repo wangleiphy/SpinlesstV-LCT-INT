@@ -41,7 +41,8 @@ disttable(get_disttable(distmap, n_site)),
 shellsize(get_shellsize(distmap)), 
 Add(boost::lexical_cast<double>(parms["Add"])),
 Remove(boost::lexical_cast<double>(parms["Remove"])),
-probs() // empty vector 
+probs(), // empty vector 
+MEASURE_M4(parms.defined("MEASURE_M4") && boost::lexical_cast<bool>(parms["MEASURE_M4"]))
 //eng_(parms["SEED"] |42), 
 //itime_rng(eng_, boost::uniform_int<itime_type>(0,itime_max)), 
 //bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))

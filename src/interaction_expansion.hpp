@@ -123,6 +123,8 @@ private:
   const double Add; 
   const double Remove; 
   std::vector<double> probs; 
+  const bool MEASURE_M4; 
+
 
   template<typename T>
   T randomint(const T i) {return random() * i;}//random int [0, i) 

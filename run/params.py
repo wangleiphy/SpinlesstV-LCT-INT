@@ -80,6 +80,7 @@ def params(lattice, BCmodifier, L, W, V= 1.0, BETA = 40., WINDOWSIZE= 4.0, Maxor
             ,'STEPS_PER_BLOCK'  : STEPS_PER_BLOCK
             ,'Add'    : Add
             ,'Remove' : Remove  
+            ,'MEASURE_M4' : 1
             }
 
     writeParameterFile(inputname, parms)

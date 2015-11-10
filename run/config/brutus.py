@@ -10,17 +10,18 @@ BETA = 40. #projection time
 #BCmodifier = "APBCX"
 BCmodifier = ""
 
-latticename = 'chain lattice'
+#latticename = 'chain lattice'
+latticename = 'square lattice'
 #latticename = 'honeycomb lattice'
 ###############################
-nickname = 'PBC_RestaX_4Pi'
+nickname = 'PBC'
 
-Llist = [64]
-Wlist = [1] #Llist 
+Llist = [4, 8, 12, 16, 20]
+Wlist = Llist 
 #Vlist = [1.0, 2.0, 3.0, 4.0]
 #Vlist = arange(1.2, 1.5, 0.02)
 #Vlist = arange(0.2, 2.2, 0.2)
-Vlist = arange(1.0, 3.0, 0.2)
+Vlist = arange(0.5, 5.0, 0.5)
 
 itime_max = 1<<31
 RECALC_PERIOD = 17
@@ -36,8 +37,8 @@ MEASUREMENT_PERIOD = 33           # in unit of block
 tmin = 60
 tmax = 300
 ncores = 16 
-wtime = '4:00'
-bin = '../bin/zeroT_4Pi'
+wtime = '8:00'
+bin = '../bin/zeroT'
 
 resfolder = '/cluster/work/scr6/lewang/spinlessctbssdata/' + nickname  + '/'
 #h, m = [int(i) for i in wtime.split(':')]

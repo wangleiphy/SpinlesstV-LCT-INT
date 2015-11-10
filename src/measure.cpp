@@ -73,6 +73,51 @@ void InteractionExpansion::measure_M2()
     nncorr[dist] +=  parity * denmat(sj) * denmat(sj) /shellsize[dist]; // normalize by number of sites in this shell 
    }
    measurements["nncorr"]  << nncorr; 
+
+   if (MEASURE_M4){
+
+         //measure M4 
+         double M4 = 0.0; 
+         site_type i = randomint(n_site); 
+         for (site_type j=0; j< n_site; ++j){
+             double delta_ij = (i==j)? 1.0:0.0; 
+             for (site_type k=0; k< n_site; ++k){
+                 double delta_ki = (k==i)? 1.0:0.0; 
+                 double delta_kj = (k==j)? 1.0:0.0; 
+                 for (site_type l=0; l< n_site; ++l){
+         
+                       Eigen::Matrix4d mat44=Eigen::Matrix4d::Zero();  
+         
+                       //mat44(0, 0) = denmat(i, i)-1.0; 
+                       //mat44(1, 1) = denmat(j, j)-1.0; 
+                       //mat44(2, 2) = denmat(k, k)-1.0; 
+                       //mat44(3, 3) = denmat(l, l)-1.0; 
+         
+                       mat44(0, 1) = denmat(i, j); 
+                       mat44(0, 2) = denmat(i, k); 
+                       mat44(0, 3) = denmat(i, l); 
+                       mat44(1, 2) = denmat(j, k); 
+                       mat44(1, 3) = denmat(j, l); 
+                       mat44(2, 3) = denmat(k, l); 
+                        
+                       mat44(1,0) = denmat(j, i) - delta_ij;   
+                       mat44(2,0) = denmat(k, i) - delta_ki;   
+                       mat44(2,1) = denmat(k, j) - delta_kj;   
+                       mat44(3,0) = denmat(l, i) - ((l==i)? 1.0:0.0);   
+                       mat44(3,1) = denmat(l, j) - ((l==j)? 1.0:0.0);   
+                       mat44(3,2) = denmat(l, k) - ((l==k)? 1.0:0.0);   
+         
+                       //std::cout <<  mat44.determinant()  << std::endl; 
+         
+                       double parity = lattice.parity(i)*lattice.parity(j)*lattice.parity(k)*lattice.parity(l); 
+                       M4 += parity * mat44.determinant(); 
+                }
+             }
+         }
+         measurements["M4"] << M4/std::pow(double(n_site), 3);  
+   }
+
+
 }
 
 void InteractionExpansion::measure_vhist(){

@@ -29,6 +29,9 @@ void InteractionExpansion::initialize_observables()
   if (Add+Remove <1.0)
      measurements << alps::ngs::RealObservable("Shift"); 
 
+  if (MEASURE_M4)
+     measurements << alps::ngs::RealObservable("M4");
+
   //measurements << alps::ngs::RealVectorObservable("Vhist"); 
 
   measurements << alps::ngs::RealVectorObservable("nncorr"); 
@@ -75,6 +78,12 @@ void InteractionExpansion::measure_observables()
 
 //finial evaluation 
 void InteractionExpansion::evaluate(results_type& results){
+
+
+    if (MEASURE_M4){
+       results.insert("Binder", results["M4"]/(results["M2"]*results["M2"]));
+    }
+
     results.insert("dlogKinEdV", (results["KinEk"]/results["KinE"] - results["PertOrder"])/V);
     results.insert("dlogM2dV", (results["M2k"]/results["M2"] - results["PertOrder"])/V);
 

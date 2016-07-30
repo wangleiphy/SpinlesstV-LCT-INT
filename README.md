@@ -14,13 +14,11 @@ This the code used for the publication
     cd build 
     cmake -DUSE_MACHINE=mymachine -DCMAKE_INSTALL_PREFIX=/install/path/ -DCMAKE_BUILD_TYPE=Release ../src
     make 
+    make install 
 
 ## To run
     mkdir ../data 
-    mpirun -np 4 ./main  -a 10 -T 120 ../input/params.in 
+    mpirun -np 4 ../bin/main  -a 10 -T 120 ../input/params.in 
 The results and checkpoint files will be in ../data/ 
 
-## Author 
-- Lei Wang (ETH Zurich 2014)
-
-Vola!
+Vola, have fun!

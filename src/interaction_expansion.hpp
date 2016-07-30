@@ -71,10 +71,8 @@ private:
   void measure_M2();
   void measure_M4();
   void measure_vhist(); 
-  void measure_RestaP(); 
 
   /*private member variables, constant throughout the simulation*/
-  const alps::Parameters Params;
   const alps::graph_helper<> lattice; 
   const unsigned int max_order;                        
     
@@ -129,24 +127,6 @@ private:
 
   template<typename T>
   T randomint(const T i) {return random() * i;}//random int [0, i) 
-  
-  /*
-  std::pair<tlist_type::const_iterator> vertices(const  unsigned ib) const {//pointer to vertices of inside the block ib 
-    tlist_type::const_iterator lower, upper 
-    lower = std::lower_bound (tlist.begin(), tlist.end(), ib*blocksize); 
-    upper = std::upper_bound (tlist.begin(), tlist.end(), (ib+1)*blocksize, std::less_equal<itime_type>());  //equal is exclude
-
-    return std::make_pair(lower, upper); 
-  }
-  */
-
-  //random number generator 
-  //typedef boost::mt19937 engine_type;
-  //engine_type eng_;
-
-  //mutable boost::variate_generator<engine_type&, boost::uniform_int<itime_type> >  itime_rng; 
-  //mutable boost::variate_generator<engine_type&, boost::uniform_int<site_type> >  bond_rng; 
-  //mutable boost::variate_generator<engine_type&, boost::uniform_real<> > random; 
     
 };
 

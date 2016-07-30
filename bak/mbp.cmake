@@ -1,1 +1,0 @@
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DEIGEN_USE_MKL_ALL /opt/intel/composer_xe_2013_sp1.1.103/mkl/lib/libmkl_intel_lp64.a /opt/intel/composer_xe_2013_sp1.1.103/mkl/lib/libmkl_core.a  /opt/intel/composer_xe_2013_sp1.1.103/mkl/lib/libmkl_sequential.a -lpthread -lm  -I/opt/intel/composer_xe_2013_sp1.1.103/mkl/include -I/opt/local/include/eigen3/")

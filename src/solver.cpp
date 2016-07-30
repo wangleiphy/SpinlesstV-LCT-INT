@@ -1,7 +1,6 @@
 #include "interaction_expansion.hpp"
 
-///The basic updates for the InteractionExpansion algorithm: adding and removing vertices.
-///This is the heart of InteractionExpansion's code.
+///The basic updates: adding and removing vertices.
 void InteractionExpansion::interaction_expansion_step()
 {
        

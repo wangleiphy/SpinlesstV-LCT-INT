@@ -5,6 +5,7 @@
 #include <boost/foreach.hpp>
 #include "types.h"
 
+///build the K matrix for the single particle hoppings
 Mat buildK(const alps::graph_helper<>& lattice, const std::string BCmodifier){
 
     //construct the hamiltonian 

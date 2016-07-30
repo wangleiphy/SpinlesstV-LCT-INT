@@ -19,10 +19,6 @@ void InteractionExpansion::initialize_observables()
                << alps::ngs::RealObservable("KinE")
                << alps::ngs::RealObservable("KinEk")
                << alps::ngs::RealObservable("Energy")
-               << alps::ngs::RealObservable("RestaX_R")
-               << alps::ngs::RealObservable("RestaX_I")
-               << alps::ngs::RealObservable("RestaX2_R")
-               << alps::ngs::RealObservable("RestaX2_I")
 //               << alps::ngs::RealObservable("Kappa")
                ; 
 
@@ -75,8 +71,6 @@ void InteractionExpansion::measure_observables()
   }
 
   //measure_vhist(); 
-    
-  measure_RestaP(); 
 }
 
 //finial evaluation 
@@ -98,9 +92,4 @@ void InteractionExpansion::evaluate(results_type& results){
     results.insert("FS2", (results["kLkR"] - 0.25 * results["PertOrder"]*results["PertOrder"])/(V*V)); 
     results.insert("FS3", (results["kLkR"] - results["kL"]*results["kR"])/(V*V)); 
 
-    results.insert("RestaX_abs",  sqrt(results["RestaX_R"]*results["RestaX_R"] + results["RestaX_I"]*results["RestaX_I"])); 
-    results.insert("RestaX_phi",  2.*atan((results["RestaX_abs"]-results["RestaX_R"])/results["RestaX_I"]) ); 
-
-    results.insert("RestaX2_abs",  sqrt(results["RestaX2_R"]*results["RestaX2_R"] + results["RestaX2_I"]*results["RestaX2_I"])); 
-    results.insert("RestaX2_phi",  2.*atan((results["RestaX2_abs"]-results["RestaX2_R"])/results["RestaX2_I"]) ); 
 }

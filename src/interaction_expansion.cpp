@@ -7,8 +7,7 @@
 
 InteractionExpansion::InteractionExpansion(alps::params &parms, int node)
 :alps::mcbase(parms,node),
-Params(make_deprecated_parameters(parms)), 
-lattice(Params),
+lattice(make_deprecated_parameters(parms)),
 max_order(boost::lexical_cast<unsigned int>(parms["MAX_ORDER"])),
 n_site(lattice.num_sites()),
 n_bond(lattice.num_bonds()),
@@ -43,10 +42,6 @@ Add(boost::lexical_cast<double>(parms["Add"])),
 Remove(boost::lexical_cast<double>(parms["Remove"])),
 probs(), // empty vector 
 MEASURE_M4(parms.defined("MEASURE_M4") && boost::lexical_cast<bool>(parms["MEASURE_M4"]))
-//eng_(parms["SEED"] |42), 
-//itime_rng(eng_, boost::uniform_int<itime_type>(0,itime_max)), 
-//bond_rng(eng_, boost::uniform_int<site_type>(0,n_bond))
-//random(eng_, boost::uniform_real<>()), 
 {   
 
    probs.push_back(Add); 
@@ -95,11 +90,6 @@ void InteractionExpansion::update()
           cycles++; 
       }
 
-      //std::cout << "iblock, itau : " << iblock << "  " << gf.itau() << std::endl; 
-      //std::cout << "tlist: "; 
-      //std::copy(tlist.begin(), tlist.end(), std::ostream_iterator<itime_type>(std::cout, " "));
-      //std::cout << std::endl; 
-
       //we jump to a new block and calculate gf at its time origin
       gf.wrap(iblock*blocksize, tlist, vlist); //this is necessary because otherwise we might jump over it_ some empty block 
 
@@ -113,8 +103,7 @@ void InteractionExpansion::update()
 void InteractionExpansion::measure(){
   if (sweeps > therm_steps && sweeps%measurement_period ==0){
      time_type tau = gf.tau(); 
-     //if (tau >=0.45*beta && tau < 0.55*beta) //only measure when we are in the center
-     if (fabs(tau - 0.5*beta) < window_tau/2.0)
+     if (fabs(tau - 0.5*beta) < window_tau/2.0) //only measure when we are in the center
         measure_observables();
    } 
 }
@@ -138,7 +127,7 @@ void InteractionExpansion::save(alps::hdf5::archive & ar) const {
     }
     
     ar["sweeps"] << sweeps;
-    //ar["cycles"] << cycles;
+    ar["cycles"] << cycles;
     ar["vt"] << vt;
     ar["vi"] << vi;
     ar["vj"] << vj;
@@ -157,7 +146,7 @@ void InteractionExpansion::load(alps::hdf5::archive & ar) {
     std::vector<site_type> vi, vj; 
     
     ar["sweeps"] >> sweeps;
-    //ar["cycles"] >> cycles;
+    ar["cycles"] >> cycles;
     ar["vt"] >> vt;
     ar["vi"] >> vi;  
     ar["vj"] >> vj;

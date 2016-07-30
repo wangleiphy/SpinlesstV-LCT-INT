@@ -6,6 +6,7 @@
 #include <iterator>
 #include <iostream>
 
+///This is the heart of the LCT-INT code
 class Green_function{
 
     public:

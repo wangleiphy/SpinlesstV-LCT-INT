@@ -1,11 +1,8 @@
 '''
-python\ tau.py\ -f\ /cluster/work/scr6/lewang/PQMCDATA/Qpipiskip/squarelatticeperiodicL4W4N8U1Theta20.0dtau0.05Ntau1000Nscratch10Therm20000Sweeps1000000Skip
+python tau.py  -f ../data/test.out
 '''
 
 import pyalps
-#import pyalps.dwa 
-#import matplotlib.pyplot as plt
-#import pyalps.plot
 from report import report
 
 import argparse
@@ -21,10 +18,8 @@ resultFiles = list(set(resultFiles))
 
 for filename in resultFiles:
 
-    obslist = ['PertOrder', 'M2', 'IntE','IntE2', 'Energy','nncorr','dlogKinEdV','dlogM2dV','chiE','FS2','FS3','RestaX_abs','RestaX_phi','M4','Binder']
+    obslist = ['PertOrder','M2', 'IntE','IntE2', 'Energy']
 
     print filename 
-    #print pyalps.dwa.tau(filename, obslist)
-    #print pyalps.dwa.thermalized(filename, obslist)
     report(filename, obslist)
     print "#######################################################################"

@@ -42,9 +42,9 @@ for fileheader in args.fileheaders:
 resultFiles = list(set(resultFiles))
 
 #filter resultFilies
-for f in list(resultFiles):
-    L = int(re.search('L([0-9]*)W',f).group(1)) 
-    V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
+#for f in list(resultFiles):
+#    L = int(re.search('L([0-9]*)W',f).group(1)) 
+#    V= float(re.search('V([0-9]*\.?[0-9]*)ITIMEMAX',f).group(1)) 
     
 #    if V< 1.3 or V>1.4 or L in [3]:
 #        resultFiles.remove(f)

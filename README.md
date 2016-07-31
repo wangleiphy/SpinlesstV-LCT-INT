@@ -13,17 +13,17 @@ It Works for
 - [Eigen3](http://eigen.tuxfamily.org)
 
 ## Compilation
-First, create and edit your machine config file in ./src/config/mymachine.cmake, then 
-mkdir build 
-cd build 
-cmake -DUSE_MACHINE=mymachine -DCMAKE_INSTALL_PREFIX=../ -DCMAKE_BUILD_TYPE=Release ../src
-make 
-make install 
+    First, create and edit your machine config file in ./src/config/mymachine.cmake, then 
+    mkdir build 
+    cd build 
+    cmake -DUSE_MACHINE=mymachine -DCMAKE_INSTALL_PREFIX=../ -DCMAKE_BUILD_TYPE=Release ../src
+    make 
+    make install 
 This will generate an excutable `../bin/main`
 
 ## To run
-mkdir ../data 
-mpirun -np 4 ../bin/main  -a 10 -T 120 ../input/params.in 
+    mkdir ../data 
+    mpirun -np 4 ../bin/main  -a 10 -T 120 ../input/params.in 
 The results and checkpoint files will be in `../data/test.*`
 
 **Vola, have fun!**

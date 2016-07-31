@@ -3,7 +3,7 @@ LCT-INT for spinless fermions
 This the code used for the publication
 - Lei Wang, Mauro Iazzi, Philippe Corboz, and Matthias Troyer, "Efficient continuous-time quantum Monte Carlo method for the ground state of correlated fermions", [Phys. Rev. B 91, 235151 (2015)](http://dx.doi.org/10.1103/PhysRevB.91.235151)
 
-It Works for
+It works for
 - Ground state 
 - Bipartite lattices 
 - Repulsive interaction 
@@ -27,9 +27,10 @@ This will generate an excutable `../bin/main`.
     mpirun -np 4 ../bin/main  -a 10 -T 120 ../input/params.in 
 The result and checkpoint files will be in `../data/`. They are in the [hdf5](https://www.hdfgroup.org/HDF5/) format. 
 To inspect them, run 
+
     h5ls -r ../data/test.out.h5
     h5ls -r ../data/test.chkp/*.h5
-To parse and visualize them, you can use the scripts provided in `../analysis`.
+To parse and visualize them, you can use the scripts provided in `../analysis/`.
 
 **Vola, have fun!**
 

@@ -9,6 +9,7 @@ It Works for
 - Repulsive interaction 
 
 ## Prerequisites
+- [CMake](https://cmake.org)
 - [ALPS](http://alps.comp-phys.org)
 - [Eigen3](http://eigen.tuxfamily.org)
 
@@ -19,14 +20,19 @@ It Works for
     cmake -DUSE_MACHINE=mymachine -DCMAKE_INSTALL_PREFIX=../ -DCMAKE_BUILD_TYPE=Release ../src
     make 
     make install 
-This will generate an excutable `../bin/main`
+This will generate an excutable `../bin/main`.  
 
 ## To run
     mkdir ../data 
     mpirun -np 4 ../bin/main  -a 10 -T 120 ../input/params.in 
-The results and checkpoint files will be in `../data/test.*`
+The result and checkpoint files will be in `../data/`. They are in the [hdf5](https://www.hdfgroup.org/HDF5/) format. 
+To inspect them, run 
+    h5ls -r ../data/test.out.h5
+    h5ls -r ../data/test.chkp/*.h5
+To parse and visualize them, you can use the scripts provided in `../analysis`.
 
 **Vola, have fun!**
+
 
 ## Extensions 
 - Hubbard model, [Phys. Rev. X 5, 031007 (2015)](http://dx.doi.org/10.1103/PhysRevX.5.031007)

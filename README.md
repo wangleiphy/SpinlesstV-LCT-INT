@@ -1,6 +1,6 @@
-LCT-INT (**L**inear Scaling **C**ontinous-**T**ime **INT**eraction expansion) for spinless fermions
+LCT-INT (**L**inear scaling **C**ontinous-**T**ime **INT**eraction expansion) for spinless fermions
 =============================
-This is the code used for the paper
+This is the (original and fresh) code used for the paper
 - Lei Wang, Mauro Iazzi, Philippe Corboz, and Matthias Troyer, "Efficient continuous-time quantum Monte Carlo method for the ground state of correlated fermions", [Phys. Rev. B 91, 235151 (2015)](http://dx.doi.org/10.1103/PhysRevB.91.235151)
 
 It works for

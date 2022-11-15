@@ -39,3 +39,32 @@ To parse and visualize them, you can use the scripts provided in `../analysis/`.
 - Hubbard model, [Phys. Rev. X 5, 031007 (2015)](http://dx.doi.org/10.1103/PhysRevX.5.031007)
 - Mass-imbalanced Hubbard model, [Phys. Rev. B 92, 235129 (2015)](http://dx.doi.org/10.1103/PhysRevB.92.235129)
 - Stochastic series expansion, [Phys. Rev. B 93, 155117 (2016)](http://dx.doi.org/10.1103/PhysRevB.93.155117)
+
+## Run with [Singularity](https://www.sylabs.io/singularity/)
+We also provide options to run our program on Singularity. In this way, one should not worry about the difficulty of compiling the code. Only singularity is needed. 
+
+### Step 1:
+Build the singularity image (Root is needed).
+```bash
+make # You will see main.sif in the current directory
+```
+
+### Step 2 (optional):
+Modify the input of the program in: `input/params.in` and `input/mylattices.xml` to your need.
+
+### Step 3:
+Run the code
+```bash
+make run # This command will run.
+# But if you modify something in Step.2. You may also need to do something in the `Makefile`
+```
+
+Especially, the `filename` in `params.in` should be mount to the container. See the related arguments in `Makefile`.
+```Makefile
+--mount type=bind,src=./input,dst=/project/input
+```
+As example, where the directory `/project/input` in `filename` the config file is from `./input`.
+
+```
+filename = '/project/input/test.dat'
+```

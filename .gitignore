@@ -8,3 +8,6 @@ run/core
 run/job2kill 
 helper/lattice.graph 
 run/*.txt
+*.sif
+input/*.chkp
+input/*.out.h5

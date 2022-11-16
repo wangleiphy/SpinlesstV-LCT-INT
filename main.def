@@ -1,0 +1,32 @@
+BootStrap: library 
+From: qiyang/alps/alps
+
+%post
+    export PARALLEL_BUILD=32
+    export PROJECT_DIR=/project && mkdir -p $PROJECT_DIR && cd $PROJECT_DIR
+
+    # # Download Project
+    cd $PROJECT_DIR && \
+    wget https://github.com/wangleiphy/SpinlesstV-LCT-INT/archive/refs/heads/PBC.zip && \
+    unzip PBC.zip && \
+    rm -f PBC.zip
+
+    # ---Build project---
+    export ALPS_DIR=/project/alps/share/alps/ && \
+    cd $PROJECT_DIR/SpinlesstV-LCT-INT-PBC && \
+    echo "set(CMAKE_CXX_FLAGS -I$PROJECT_DIR/eigen-3.4.0 ${CMAKE_CXX_FLAGS})" >> ./src/config/main.cmake && \
+    mkdir -p build && \
+    mkdir -p data && \
+    cd build && \
+    cmake -DUSE_MACHINE=main -DCMAKE_INSTALL_PREFIX=../ -DCMAKE_BUILD_TYPE=Release ../src && \
+    make -j$PARALLEL_BUILD && make install -j$PARALLEL_BUILD
+
+%environment
+    export LC_ALL=C
+    export CXX=/usr/bin/g++
+    export PROJECT_DIR=/project
+
+%labels
+    MAINTAINER QiYang
+
+%runscript

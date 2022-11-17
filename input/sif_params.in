@@ -1,5 +1,5 @@
-LATTICE_LIBRARY = "/project/input/mylattices.xml"
-filename = '/project/input/test.dat'
+LATTICE_LIBRARY = "/home/yangqi/SpinlesstV-LCT-INT/input/mylattices.xml"
+filename = '/home/yangqi/SpinlesstV-LCT-INT/input/L32V4.dat'
 LATTICE = "chain lattice"
 BCmodifier = ""
 BETA = 40.
@@ -9,7 +9,7 @@ W = 1
 V = 4.0
 MAX_ORDER = 8192 
 THERMALIZATION = 10000
-SWEEPS = 1000000
+SWEEPS = 100000
 SEED = 12347
 ITIME_MAX = 2147483648
 NBLOCKS = 1024

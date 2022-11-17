@@ -11,3 +11,4 @@ run/*.txt
 *.sif
 input/*.chkp
 input/*.out.h5
+*.job

@@ -59,12 +59,4 @@ make run # This command will run.
 # But if you modify something in Step.2. You may also need to do something in the `Makefile`
 ```
 
-Especially, the `filename` in `params.in` should be mount to the container. See the related arguments in `Makefile`.
-```Makefile
---mount type=bind,src=./input,dst=/project/input
-```
-As example, where the directory `/project/input` in `filename` the config file is from `./input`.
-
-```
-filename = '/project/input/test.dat'
-```
+Especially, the `filename` value in `input/params.in` may be under `$PWD` (or one may need to mount the directory of `filename` in singularity container manually). 

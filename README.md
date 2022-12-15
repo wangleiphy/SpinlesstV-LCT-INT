@@ -44,7 +44,7 @@ To parse and visualize them, you can use the scripts provided in `../analysis/`.
 We also provide options to run our program on Singularity. In this way, one should not worry about the difficulty of compiling the code. Only singularity is needed. 
 
 ### Step 1:
-Build the singularity image (Root is needed).
+Build the singularity image (Root or [fakeroot](https://docs.sylabs.io/guides/3.7/user-guide/fakeroot.html) is needed).
 ```bash
 make # You will see main.sif in the current directory
 ```
